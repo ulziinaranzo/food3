@@ -83,8 +83,6 @@ export const Step = () => {
             </div>
           </Form>
         </div>
-
-        {/* Image Section */}
         <div className="p-[20px]">
           <img
             src="Images/form-pic.png"

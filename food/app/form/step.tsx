@@ -53,7 +53,6 @@ export const Step = () => {
                 Sign up to explore your favorite dishes.
               </div>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Username Field */}
                 <FormField
                   control={form.control}
                   name="username"
@@ -66,8 +65,6 @@ export const Step = () => {
                     </FormItem>
                   )}
                 />
-
-                {/* Password Field */}
                 <FormField
                   control={form.control}
                   name="password"
@@ -84,8 +81,6 @@ export const Step = () => {
                     </FormItem>
                   )}
                 />
-
-                {/* Show Password Toggle */}
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="showPassword"
@@ -100,8 +95,6 @@ export const Step = () => {
             </div>
           </Form>
         </div>
-
-        {/* Image Section */}
         <div className="p-[20px]">
           <img
             src="Images/form-pic.png"

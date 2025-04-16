@@ -20,6 +20,14 @@ const foodSchema = new Schema({
     updatedAt: {
        type: Date,
        required: true 
+    },
+    category: {
+        type: String,
+        required: true
+    },
+    ingredients: {
+        type: String,
+        required: true,
     }
 
 })
