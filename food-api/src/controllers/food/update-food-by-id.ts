@@ -4,30 +4,21 @@ import { foodModel } from "../../models/food-model";
 export const updateFoodController: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
-    const { foodName, price, image, updatedAt, category, ingredients } = req.body;
-
-    if (!foodName) {
-      return res.status(400).json({ message: "Food name is required" });
-    }
-
+    const updatedData = req.body;
     const updatedFood = await foodModel.findByIdAndUpdate(
       id,
       {
-        foodName,
-        price,
-        image,
-        updatedAt: new Date(),
-        category,
-        ingredients,
+        ...updatedData,
+        updatedAt: new Date(), 
       },
       { new: true }
     );
 
     if (!updatedFood) {
-      return res.status(404).json({ message: "Food not found" });
+res.status(404).json({ message: "Food not found" });
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Food updated successfully",
       food: updatedFood,
     });
