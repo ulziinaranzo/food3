@@ -1,18 +1,19 @@
 import { RequestHandler } from "express";
-import { foodModel } from "../../models/food-model";
+import { userModel } from "../../models/user-model"; 
 
+export const deleteUserController: RequestHandler = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-export const deleteUserController: RequestHandler = async ( req, res ) => {
-    try {
-        const { id } = req.params;
-        const deleted = await foodModel.findByIdAndDelete(id)
+    const deletedUser = await userModel.findByIdAndDelete(id);
 
-        if (!deleted) {
-            res.status(404).json({message: "User not found"})
-        }
-        res.status(200).json({message: "Food deleted", food: deleted})
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
-    catch(error) {
-        res.status(500).json({message: "Error deleting food"})
-    }
-}
+
+    return res.status(200).json({ message: "User deleted", user: deletedUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error deleting user" });
+  }
+};

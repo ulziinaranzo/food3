@@ -1,17 +1,19 @@
 import { RequestHandler } from "express";
 import { userModel } from "../../models/user-model";
 
-export const getUserController: RequestHandler = async ( req, res) => {
-    try {
-        const { id } = req.params;
-        const user = await userModel.findById(id)
+export const getUserController: RequestHandler = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-        if (!user) {
-            res.status(404).json({message: "User not found"})
-        }
-        res.status(200).json({user: user})
+    const user = await userModel.findById(id).exec();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    catch(error) {
-        res.status(500).json({message: "Server error", error})
-    }
-}
+
+    return res.status(200).json({ user });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return res.status(500).json({ message: "Server error, please try again later." });
+  }
+};

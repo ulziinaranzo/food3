@@ -5,17 +5,18 @@ export const updateFoodController: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
+
     const updatedFood = await foodModel.findByIdAndUpdate(
       id,
       {
         ...updatedData,
-        updatedAt: new Date(), 
+        updatedAt: new Date(),
       },
       { new: true }
     );
 
     if (!updatedFood) {
-res.status(404).json({ message: "Food not found" });
+      return res.status(404).json({ message: "Food not found" });
     }
 
     res.status(200).json({

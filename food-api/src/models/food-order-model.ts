@@ -1,8 +1,21 @@
-import { Schema, model } from "mongoose"
+import { Schema, model } from "mongoose";
+
+const orderItemSchema = new Schema({
+    food: {
+        type: Schema.Types.ObjectId,
+        ref: "food",
+        required: true,
+    },
+    quantity: {
+        type: Number,
+        required: true,
+    }
+})
 
 const foodOrderSchema = new Schema({
     user: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: "user",
         required: true
     },
     totalPrice: {
@@ -10,12 +23,13 @@ const foodOrderSchema = new Schema({
         required: true
     },
     foodOrderItems: {
-        type: String,
-        required: true
+        type: [orderItemSchema],
+        default: []
     },
     status: {
         type: String,
-        required: true
+        enum: ["pending", "delivered", "cancelled"],
+        default: "pending"
     },
     updatedAt: {
         type: Date,
@@ -26,3 +40,5 @@ const foodOrderSchema = new Schema({
         required: true
     }
 })
+
+export const foodOrderModel = model("order", foodOrderSchema)

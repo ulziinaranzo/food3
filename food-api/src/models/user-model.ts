@@ -22,12 +22,9 @@ const userSchema = new Schema({
         enum: ["admin", "user"],
         required: true
     },
-    orderedFoods: {
+    orderedItems: {
         type: [Schema.Types.ObjectId],
-        required: true
-    },
-    ttl: {
-        type: Date,
+        ref: "order",
         required: true
     },
     isVerified: {
