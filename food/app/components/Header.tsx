@@ -20,7 +20,7 @@ export const Header = () => {
             </div>
             </div>
             <div className="flex items-center text-center justify-center gap-[12.81px] ">
-                <Link href={"/form"}>
+                <Link href={"/signup"}>
             <button className="flex items-center justify-center rounded-full px-[12px] py-[8px] bg-white text-black h-[36px]">
   Sign Up
 </button>

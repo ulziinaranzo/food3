@@ -1,3 +1,4 @@
+import { RequestHandler } from "express";
 import { userModel } from "../../models/user-model";
 
 export const createUserController: RequestHandler = async (req, res) => {

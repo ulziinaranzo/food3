@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { foodOrderModel } from "../../models/food-order-model";
 
-export const createFoodOrderController: RequestHandler = async (req, res) => {
+export const updateFoodOrderController: RequestHandler = async (req, res) => {
     try {
         const { id, orderedItems, totalPrice } = req.body;
 
@@ -9,20 +9,23 @@ export const createFoodOrderController: RequestHandler = async (req, res) => {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
-        const newOrder = new foodOrderModel({
-            user: id,
-            totalPrice,
-            foodOrderItems: orderedItems,
-            status: "pending",
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
+        const updatedOrder = await foodOrderModel.findByIdAndUpdate(
+            id,
+            {
+                foodOrderItems: orderedItems,
+                totalPrice,
+                updatedAt: new Date()
+            },
+            { new: true }
+        );
 
-        const savedOrder = await newOrder.save();
+        if (!updatedOrder) {
+            return res.status(404).json({ message: "Order not found" });
+        }
 
-        return res.status(201).json({ message: "Order created successfully", order: savedOrder });
+        return res.status(200).json({ message: "Order updated successfully", order: updatedOrder });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Error creating food order" });
+        return res.status(500).json({ message: "Error updating food order" });
     }
 };
