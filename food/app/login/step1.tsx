@@ -23,9 +23,6 @@ type StepProps = {
 }
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
   }),
@@ -37,7 +34,6 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
       password: "",
     },
   })
@@ -49,11 +45,11 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
-      <div className="flex">
-        <div className="flex flex-col pt-[326px] pl-[100px] pb-[410px] pr-[48px] mb-[24px]">
+      <div className="flex ">
+        <div className="flex flex-col pt-[326px] pl-[100px] pb-[410px] pr-[48px] mb-[24px] ">
           <Form {...form}>
-            <div className="flex flex-col">
-              <img src="/Images/Icon-Button.png" className="w-[36px] h-[36px]" onClick={handlePrev}/>
+            <div className="flex flex-col gap-[24px]">
+              <img src="/Images/Icon-Button.png" className="w-[36px] h-[36px] mb-[24px]" onClick={handlePrev}/>
               <div className="text-black text-[24px] font-[600]">Create your account</div>
               <div className="text-[16px] text-[#71717A] font-[400] mb-[24px]">
                 Sign up to explore your favorite dishes.
@@ -104,9 +100,9 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
               </form>
             </div>
           </Form>
-          <div className="flex gap-[12px] items-center justify-center">
+          <div className="flex gap-[12px] items-center justify-center mt-[50px]">
           <div className="text-[16px] text-[#71717A]">Already have an account?</div>
-          <div className="text-[16px] text-[#2563EB]">Log In</div>
+          <div className="text-[16px] text-[#2563EB] cursor-pointer">Log In</div>
           </div>
 
         </div>
