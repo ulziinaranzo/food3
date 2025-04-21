@@ -57,7 +57,7 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
-                  name="username"
+                  name="password"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
