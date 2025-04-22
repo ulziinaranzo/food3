@@ -54,13 +54,26 @@ const orders = [
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const totalPages = Math.ceil(orders.length / ordersPerPage);
 
+  const toggleOrder = (orderNumber: string) => {
+    setSelectedOrders((prev) =>
+      prev.includes(orderNumber)
+        ? prev.filter((n) => n !== orderNumber)
+        : [...prev, orderNumber]
+    );
+  };
   const paginatedOrders = useMemo<number>(() => {
     const start = (currentPage - 1) * ordersPerPage;
     return orders.slice(start, start + ordersPerPage);
   }, [currentPage]);
 
+  const statusClasses = {
+    Хүргэгдсэн: "border-green-500 text-black bg-green-50 hover:bg-green-100",
+    Цуцалсан: "border-gray-400 text-black bg-gray-50 hover:bg-gray-100",
+    "Хүлээгдэж буй": "border-red-500 text-red-600 bg-red-50 hover:bg-red-100",
+  };
   return (
     <div className="flex w-screen h-screen">
       <div className="flex flex-col bg-white h-screen w-[205px] pt-[36px] p-[20px] gap-[40px]">
@@ -79,7 +92,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-[24px]">
+        <div className="flex flex-col justify-start gap-[24px]">
           <div className="flex pl-[24px] py-[10px] text-black text-[14px] gap-[10px] font-medium">
             <FoodMenuIcon />
             Хоолны цэс
@@ -146,7 +159,7 @@ export default function Home() {
             </div>
           </div>
 
-          {orders.map((item, index) => {
+          {paginatedOrders.map((item, index) => {
             const statusClasses = {
               Хүргэгдсэн:
                 "border-green-500 text-green-600 bg-green-50 hover:bg-green-100",
@@ -195,22 +208,48 @@ export default function Home() {
             );
           })}
         </div>
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <div className="flex justify-end">
+          <div className="w-fit">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={() => {
+                      setCurrentPage((prev) => Math.max(prev - 1, 1));
+                    }}
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem className="rounded-full bg-whtie">
+                  <PaginationLink href="#">{totalPages}</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={() => {
+                      setCurrentPage((prev) => prev + 1);
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        </div>
       </div>
     </div>
   );
