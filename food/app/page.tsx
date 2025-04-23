@@ -13,7 +13,7 @@ export default function Home() {
     try {
       const ids = ["67ff774370b8f9b24e8bc887", "67ff777770b8f9b24e8bc889"];
       const response = await axios.get(
-        `http://localhost:3001/food/category?ids=${ids.join(",")}`
+        `http://localhost:3001/food?categoryId=${ids.join(",")}`
       );
       setFoods(response.data.foods);
       console.log(response);
@@ -21,11 +21,6 @@ export default function Home() {
       console.error("Error fetching foods", error);
     }
   };
-
-  useEffect(() => {
-    getFoods();
-  }, []);
-
   useEffect(() => {
     getFoods();
   }, []);
