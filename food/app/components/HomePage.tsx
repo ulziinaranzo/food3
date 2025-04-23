@@ -4,9 +4,6 @@ import { CategorySection } from "./CategorySection";
 
 export const HomePage = ({ foods, categories }) => {
   const groupedFoods = categories.map((category) => {
-    const foodsInCategory = foods.filter(
-      (food) => food.category._id === category._id
-    );
     return {
       categoryName: category.categoryName,
       foods: foodsInCategory,

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   getFoodController,
-  getFoodsController,
+  getByCategoryAndFoodsController,
   updateFoodController,
   deleteFoodController,
   createFoodController,
@@ -10,9 +10,9 @@ const foodRouter = Router();
 
 foodRouter
   .get("/food/:id", getFoodController)
-  .get("/food", getFoodsController)
+  .get("/food", getByCategoryAndFoodsController)
   .put("/food/:id", updateFoodController)
   .delete("/food/:id", deleteFoodController)
-  .post("/food", createFoodController)
+  .post("/food", createFoodController);
 
 export default foodRouter;
