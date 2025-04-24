@@ -6,32 +6,27 @@ import { PlusIcon } from "lucide-react";
 import CategoryBadge from "../_components/CategoryBadge";
 import FoodCard from "../_components/FoodCard";
 import AddFoodCard from "../_components/AddFoodCard";
+import { Category, Food } from "../_components/Types";
+import { AddFoodForm } from "../_components/AddFoodForm";
+import { Types } from "../_components/Types";
+import { AddCategory } from "../_components/AddCategory";
 
 export default function Home() {
-  type Food = {
-    _id: string;
-    foodName: string;
-    image: string[];
-    price: number;
-    ingredients: string;
-  };
-
-  type Category = {
-    _id: string;
-    categoryName: string;
-    foods?: Food[];
-  };
-
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [foods, setFoods] = useState<Food[]>([]);
-  const [foodCountByCategory, setFoodCountByCategory] = useState<Record<string, number>>({});
+  const [foodCountByCategory, setFoodCountByCategory] = useState<
+    Record<string, number>
+  >({});
   const [totalFoodCount, setTotalFoodCount] = useState<number>(0);
+  const [onClose, setOnClose] = useState<boolean>(false);
+  const [addCategory, setAddCategory] = useState<boolean>(false);
 
   const getFoodCountByCategory = async (categoryId: string) => {
     try {
-      const response = await axios.get(`http://localhost:3001/food/count/${categoryId}`);
-      console.log(`CategoryID: ${categoryId}, Count Response:`, response.data);
+      const response = await axios.get(
+        `http://localhost:3001/food/count/${categoryId}`
+      );
       const { foodCount } = response.data;
       setFoodCountByCategory((prev) => ({
         ...prev,
@@ -45,7 +40,6 @@ export default function Home() {
   const getAllFoodCount = async () => {
     try {
       const response = await axios.get(`http://localhost:3001/food/count`);
-      console.log("Total food count response:", response.data);
       const { foodCount } = response.data;
       setTotalFoodCount(foodCount);
     } catch (error) {
@@ -57,7 +51,6 @@ export default function Home() {
     try {
       const response = await axios.get("http://localhost:3001/category");
       const cats = response.data.categories;
-      console.log("Categories from API:", cats);
       setCategories(cats);
 
       cats.forEach((cat: Category) => {
@@ -73,7 +66,6 @@ export default function Home() {
       const response = await axios.get(
         `http://localhost:3001/food?categoryId=${categoryId}`
       );
-      console.log("Foods by category response:", response.data.foodsByCategory);
       setFoods(response.data.foodsByCategory);
     } catch (error) {
       console.error("Хоол авах үед алдаа гарлаа", error);
@@ -83,6 +75,7 @@ export default function Home() {
   const handleCategorySelect = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
     if (categoryId) getFoods(categoryId);
+    else setFoods([]);
   };
 
   useEffect(() => {
@@ -101,24 +94,29 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col w-full bg-white rounded-lg p-[24px]">
-          <div className="text-[20px] font-semibold text-[#09090B]">Хоолны категори</div>
+          <div className="text-[20px] font-semibold text-[#09090B]">
+            Хоолны категори
+          </div>
           <div className="flex flex-wrap gap-[12px] mt-[16px]">
             <CategoryBadge
-            label="Бүх хоол"
-            count={totalFoodCount}
-            isActive={selectedCategory === null}
-            onClick={() => handleCategorySelect(null)}
+              label="Бүх хоол"
+              count={totalFoodCount}
+              isActive={selectedCategory === categories}
+              onClick={() => handleCategorySelect(null)}
             />
             {categories.map((item) => (
               <CategoryBadge
-              key={item._id}
-              label={item.categoryName}
-              count={foodCountByCategory[item._id] ?? 0}
-              isActive={selectedCategory === item._id}
-              onClick={() => handleCategorySelect(item._id)}
+                key={item._id}
+                label={item.categoryName}
+                count={foodCountByCategory[item._id] ?? 0}
+                isActive={selectedCategory === item._id}
+                onClick={() => handleCategorySelect(item._id)}
               />
             ))}
-            <button className="w-[36px] h-[36px] flex justify-center items-center bg-[#EF4444] rounded-full text-white mt-[2px]">
+            <button
+              className="w-[36px] h-[36px] flex justify-center items-center bg-[#EF4444] rounded-full text-white mt-[2px]"
+              onClick={setAddCategory}
+            >
               <PlusIcon className="w-[16px] h-[16px]" />
             </button>
           </div>
@@ -127,25 +125,62 @@ export default function Home() {
         <div className="flex flex-col w-full h-fit bg-white rounded-lg p-[24px]">
           <div className="text-[20px] font-semibold text-[#09090B] mb-[16px]">
             {selectedCategory
-              ? categories.find((cat) => cat._id === selectedCategory)?.categoryName
+              ? categories.find((cat) => cat._id === selectedCategory)
+                  ?.categoryName
               : "Бүх хоол"}
           </div>
 
           <div className="flex flex-wrap gap-[24px]">
-            <AddFoodCard selectedCategoryName={selectedCategory ? categories.find((cat) => cat._id === selectedCategory)?.categoryName : null}
-            onClick={() => {
-              console.log("Хоол нэмэх товч дарагдлаа")
-            }}
-{foods.map((food, index) => (
-  <FoodCard 
-  key={food._id}
-  image={food.image?.[0]}
-  name={food.foodName}
-  ingredients={food.ingredients}
-  price={food.price}
-  />
-))}
+            <AddFoodCard
+              selectedCategoryName={
+                selectedCategory
+                  ? categories.find((cat) => cat._id === selectedCategory)
+                      ?.categoryName || ""
+                  : null
+              }
+              onClick={() => {
+                setOnClose(true);
+              }}
+            />
+            {foods.map((food) => (
+              <FoodCard
+                key={food._id}
+                image={food.image?.[0]}
+                name={food.foodName}
+                ingredients={food.ingredients}
+                price={food.price}
+              />
+            ))}
           </div>
+          {onClose && (
+            <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg z-50">
+                <AddFoodForm
+                  category={selectedCategory ?? ""}
+                  onClose={() => setOnClose(false)}
+                  categoryName={
+                    selectedCategory
+                      ? categories.find((cat) => cat._id === selectedCategory)
+                          ?.categoryName || ""
+                      : ""
+                  }
+                />
+              </div>
+            </div>
+          )}
+          {addCategory && (
+            <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg z-50">
+                <AddCategory
+                  onClose={() => setAddCategory(false)}
+                  addCategory={() => {
+                    getCategories();
+                    setAddCategory(false);
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
