@@ -1,11 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { DateIcon } from "../assets/DateIcon";
-import { FoodMenuIcon } from "../assets/FoodMenuIcon";
-import { LogoIcon } from "../assets/Logo";
-import { OrderIcon } from "../assets/OrderIcon";
-import { SettingsIcon } from "../assets/SettingsIcon";
+import { DateIcon } from "../../assets/DateIcon";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -76,38 +72,6 @@ export default function Home() {
   };
   return (
     <div className="flex w-screen h-screen">
-      <div className="flex flex-col bg-white h-screen w-[205px] pt-[36px] p-[20px] gap-[40px]">
-        <div className="flex gap-[12px]">
-          <div className="w-[46px] h-[37.29px]">
-            <LogoIcon />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex">
-              <div className="text-black text-[20px] font-[600]">Nom</div>
-              <div className="text-[20px] font-[600] text-[#EF4444]">Nom</div>
-            </div>
-            <div className="text-[#71717A] text-[12px] font-[400]">
-              Swift delivery
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col justify-start gap-[24px]">
-          <div className="flex pl-[24px] py-[10px] text-black text-[14px] gap-[10px] font-medium">
-            <FoodMenuIcon />
-            Хоолны цэс
-          </div>
-          <div className="flex text-white text-[14px] font-medium bg-black rounded-full pl-[24px] py-[9px] gap-[10px]">
-            <OrderIcon />
-            Захиалгууд
-          </div>
-          <div className="flex justify-center items-center text-black text-[14px] gap-[10px] font-medium">
-            <SettingsIcon />
-            Засвар
-          </div>
-        </div>
-      </div>
-
       <div className="flex flex-col pl-[24px] pt-[24px] pr-[40px] pb-[52px] bg-[#E4E4E7] w-full gap-[24px]">
         <div className="flex justify-end">
           <Avatar>
