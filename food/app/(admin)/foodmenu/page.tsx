@@ -11,22 +11,26 @@ import { AddFoodForm } from "../_components/AddFoodForm";
 import { Types } from "../_components/Types";
 import { AddCategory } from "../_components/AddCategory";
 
+// AllCategory type
+type AllCategory = {
+  _id: string;
+  categoryName: string;
+  foods: Food[];
+};
+
 export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [foods, setFoods] = useState<Food[]>([]);
-  const [foodCountByCategory, setFoodCountByCategory] = useState<
-    Record<string, number>
-  >({});
+  const [foodCountByCategory, setFoodCountByCategory] = useState<Record<string, number>>({});
   const [totalFoodCount, setTotalFoodCount] = useState<number>(0);
   const [onClose, setOnClose] = useState<boolean>(false);
   const [addCategory, setAddCategory] = useState<boolean>(false);
+  const [allFoodsByCategory, setAllFoodsByCategory] = useState<AllCategory[]>([]);
 
   const getFoodCountByCategory = async (categoryId: string) => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/food/count/${categoryId}`
-      );
+      const response = await axios.get(`http://localhost:3001/food/count/${categoryId}`);
       const { foodCount } = response.data;
       setFoodCountByCategory((prev) => ({
         ...prev,
@@ -34,6 +38,15 @@ export default function Home() {
       }));
     } catch (error) {
       console.error("Category count fetch алдаа гарлаа", error);
+    }
+  };
+
+  const getAllFoodsByCategory = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/food/grouped-by-category");
+      setAllFoodsByCategory(response.data.data);
+    } catch (error) {
+      console.error("Grouped хоолнууд авах үед алдаа:", error);
     }
   };
 
@@ -63,9 +76,7 @@ export default function Home() {
 
   const getFoods = async (categoryId: string) => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/food?categoryId=${categoryId}`
-      );
+      const response = await axios.get(`http://localhost:3001/food?categoryId=${categoryId}`);
       setFoods(response.data.foodsByCategory);
     } catch (error) {
       console.error("Хоол авах үед алдаа гарлаа", error);
@@ -74,13 +85,18 @@ export default function Home() {
 
   const handleCategorySelect = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
-    if (categoryId) getFoods(categoryId);
-    else setFoods([]);
+    if (categoryId) {
+      getFoods(categoryId);
+    } else {
+      const allFoods = allFoodsByCategory.flatMap((cat) => cat.foods);
+      setFoods(allFoods);
+    }
   };
 
   useEffect(() => {
     getAllFoodCount();
     getCategories();
+    getAllFoodsByCategory();
   }, []);
 
   return (
@@ -94,14 +110,12 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col w-full bg-white rounded-lg p-[24px]">
-          <div className="text-[20px] font-semibold text-[#09090B]">
-            Хоолны категори
-          </div>
+          <div className="text-[20px] font-semibold text-[#09090B]">Хоолны категори</div>
           <div className="flex flex-wrap gap-[12px] mt-[16px]">
             <CategoryBadge
               label="Бүх хоол"
               count={totalFoodCount}
-              isActive={selectedCategory === categories}
+              isActive={selectedCategory === null}
               onClick={() => handleCategorySelect(null)}
             />
             {categories.map((item) => (
@@ -115,7 +129,7 @@ export default function Home() {
             ))}
             <button
               className="w-[36px] h-[36px] flex justify-center items-center bg-[#EF4444] rounded-full text-white mt-[2px]"
-              onClick={setAddCategory}
+              onClick={() => setAddCategory(true)}
             >
               <PlusIcon className="w-[16px] h-[16px]" />
             </button>
@@ -125,8 +139,7 @@ export default function Home() {
         <div className="flex flex-col w-full h-fit bg-white rounded-lg p-[24px]">
           <div className="text-[20px] font-semibold text-[#09090B] mb-[16px]">
             {selectedCategory
-              ? categories.find((cat) => cat._id === selectedCategory)
-                  ?.categoryName
+              ? categories.find((cat) => cat._id === selectedCategory)?.categoryName
               : "Бүх хоол"}
           </div>
 
@@ -134,13 +147,10 @@ export default function Home() {
             <AddFoodCard
               selectedCategoryName={
                 selectedCategory
-                  ? categories.find((cat) => cat._id === selectedCategory)
-                      ?.categoryName || ""
+                  ? categories.find((cat) => cat._id === selectedCategory)?.categoryName || ""
                   : null
               }
-              onClick={() => {
-                setOnClose(true);
-              }}
+              onClick={() => setOnClose(true)}
             />
             {foods.map((food) => (
               <FoodCard
@@ -152,6 +162,7 @@ export default function Home() {
               />
             ))}
           </div>
+
           {onClose && (
             <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg shadow-lg z-50">
@@ -160,14 +171,14 @@ export default function Home() {
                   onClose={() => setOnClose(false)}
                   categoryName={
                     selectedCategory
-                      ? categories.find((cat) => cat._id === selectedCategory)
-                          ?.categoryName || ""
+                      ? categories.find((cat) => cat._id === selectedCategory)?.categoryName || ""
                       : ""
                   }
                 />
               </div>
             </div>
           )}
+
           {addCategory && (
             <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg shadow-lg z-50">

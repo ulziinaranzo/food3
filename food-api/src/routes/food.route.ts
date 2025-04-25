@@ -8,6 +8,7 @@ import {
   getFoodCountByCategory,
 } from "../controllers/food/index";
 import { getTotalFoodCount } from "../controllers/food/get-count-foods-controller";
+import { getFoodsGroupedByCategory } from "../controllers/food/get-all-foods-by category";
 const foodRouter = Router();
 
 foodRouter
@@ -17,5 +18,6 @@ foodRouter
   .delete("/food/:id", deleteFoodController)
   .post("/food", createFoodController)
   .get("/count/:categoryId", getFoodCountByCategory) 
-  .get("/count", getTotalFoodCount) 
+  .get("/count", getTotalFoodCount)
+  .get("/grouped-by-category", getFoodsGroupedByCategory) 
 export default foodRouter;

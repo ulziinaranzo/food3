@@ -17,3 +17,10 @@ export type AddFoodFormProps = {
   onClose: () => void;
   categoryName: string;
 };
+
+export type AllCategory = {
+  _id: string;
+  categoryName: string;
+  foods: Food[]
+}
+
