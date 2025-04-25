@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import { foodCategoryModel } from "../../models/food-category-model";
 import { foodModel } from "../../models/food-model";
 
-// Энэ код зөв бөгөөд ажиллах боломжтой.
 export const getFoodsGroupedByCategory: RequestHandler = async (req, res) => {
     try {
       const categories = await foodCategoryModel.find();

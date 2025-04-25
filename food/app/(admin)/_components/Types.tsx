@@ -21,6 +21,11 @@ export type AddFoodFormProps = {
 export type AllCategory = {
   _id: string;
   categoryName: string;
-  foods: Food[]
-}
+  foods: Food[];
+};
 
+type CategoryWithFoods = {
+  _id: string;
+  categoryName: string;
+  foods: Food[];
+};

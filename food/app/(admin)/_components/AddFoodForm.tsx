@@ -121,7 +121,7 @@ export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
         )}
 
         {imgHave && (
-          <div className="flex flex-col justify-center items-center absolute gap-[8px] right-[900px] top-[550px] z-20">
+          <div className="flex flex-col justify-center items-center absolute gap-[8px] right-[1020px] top-[670px] z-20">
             <img
               className="w-[32px] h-[32px] ml-[20px]"
               src="/Images/AddImage.png"

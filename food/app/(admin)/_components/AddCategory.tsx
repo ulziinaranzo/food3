@@ -16,6 +16,7 @@ export const AddCategory = ({ onClose, addCategory }: AddFoodFormProps) => {
     reset,
     formState: { errors },
   } = useForm<FormData>();
+  
   const onSubmit = async (data: FormData) => {
     try {
       await axios.post("http://localhost:3001/category", {
