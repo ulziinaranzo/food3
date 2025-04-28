@@ -18,14 +18,26 @@ export type AddFoodFormProps = {
   categoryName: string;
 };
 
+export type EditFoodFormProps = {
+  category: string;
+  onClose: () => void;
+  categoryName: string 
+  categories: { _id: string; categoryName: string }[];
+}
+
 export type AllCategory = {
   _id: string;
   categoryName: string;
   foods: Food[];
 };
 
-type CategoryWithFoods = {
+export type CategoryWithFoods = {
   _id: string;
   categoryName: string;
   foods: Food[];
+};
+
+export type AddCategoryProps = {
+  onClose: () => void;
+  addCategory: () => void;
 };

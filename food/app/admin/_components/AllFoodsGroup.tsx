@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Pencil } from "lucide-react";
+import FoodCard from "./FoodCard";
+import AddFoodCard from "./AddFoodCard";
 
 interface Food {
   _id: string;
@@ -20,10 +21,11 @@ export interface CategoryWithFoods {
 }
 
 interface AllFoodGroupsProps {
-  onLoad?: (data: CategoryWithFoods[]) => void;
+  onClose: (value: boolean) => void;
+  setSelectedCategory: (value: string) => void
 }
 
-export const AllFoodGroups = ({ onLoad }: AllFoodGroupsProps) => {
+export const AllFoodGroups = ({ setSelectedCategory, onClose, }: AllFoodGroupsProps) => {
   const [allFoodGroups, setAllFoodGroups] = useState<CategoryWithFoods[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,9 +38,6 @@ export const AllFoodGroups = ({ onLoad }: AllFoodGroupsProps) => {
       const data = response.data.data;
       setAllFoodGroups(data);
       console.log("dasdf", data);
-      if (onLoad) {
-        onLoad(data);
-      }
     } catch (error) {
       console.error("Error fetching food groups:", error);
       setError("Failed to load food groups. Please try again.");
@@ -60,8 +59,10 @@ export const AllFoodGroups = ({ onLoad }: AllFoodGroupsProps) => {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full h-fit">
       {allFoodGroups.map((group) => (
+        <div key={group.category._id} className="flex gap-[24px]  bg-white rounded-lg p-[24px]">
+        
         <div
           key={group.category._id}
           className="text-[20px] font-semibold text-[#09090B] mb-[16px]"
@@ -70,31 +71,21 @@ export const AllFoodGroups = ({ onLoad }: AllFoodGroupsProps) => {
             {group.category.categoryName}
           </h2>
           <div className="flex flex-wrap gap-4">
+          <AddFoodCard
+                      selectedCategoryName={group.category.categoryName}
+                      onClick={() => onClose(true)}
+                    />
             {group.foods.map((food) => (
-              <div
+              <FoodCard
                 key={food._id}
-                className="flex flex-col p-4 gap-3 bg-white rounded-lg shadow-lg relative h-[241px] w-[250px]"
-              >
-                <img
-                  src={food.image}
-                  alt={food.name}
-                  className="w-full h-[150px] object-cover rounded-t-lg"
-                />
-                <button className="w-[36px] h-[36px] flex items-center justify-center absolute right-[12px] top-[120px] bg-white z-10 rounded-full cursor-pointer shadow-md">
-                  <Pencil size={16} color="red" />
-                </button>
-                <div className="flex flex-col gap-1">
-                  <div className="flex justify-between items-center text-[14px] font-[600]">
-                    <span className="text-[#EF4444]">{food.name}</span>
-                    <span className="text-[#09090B]">${food.price}</span>
-                  </div>
-                  <div className="text-[12px] font-[400] text-[#09090B] truncate">
-                    {food.ingredients}
-                  </div>
-                </div>
-              </div>
+                image={food.image}
+                name={food.name}
+                ingredients={food.ingredients}
+                price={food.price}
+              />
             ))}
           </div>
+        </div>
         </div>
       ))}
     </div>

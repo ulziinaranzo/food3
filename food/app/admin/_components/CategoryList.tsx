@@ -1,0 +1,95 @@
+"use client";
+
+import { PlusIcon } from "@/app/assets/PlusIcon";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import CategoryBadge from "./CategoryBadge";
+
+interface CategoryListProps {
+  selectedCategory: string | null;
+  addCategory: (value: boolean) => void;
+  categories: { _id: string; categoryName: string }[];
+  setSelectedCategory: (value: string | null) => void;
+  handleCategorySelect: (value: string | null) => void
+}
+
+export default function CategoryList({
+  selectedCategory,
+  addCategory,
+  categories,
+  setSelectedCategory,
+  handleCategorySelect
+}: CategoryListProps) {
+  const [foodCountByCategory, setFoodCountByCategory] = useState<Record<string, number>>({});
+  const [totalFoodCount, setTotalFoodCount] = useState<number>(0);
+
+  const getFoodCountByCategory = async () => {
+    try {
+      const promises = categories.map(async (category) => {
+        const response = await axios.get(`http://localhost:3001/count/${category._id}`);
+        return { id: category._id, count: response.data.foodCount };
+      });
+
+      const results = await Promise.all(promises);
+      const countMap: Record<string, number> = {};
+      results.forEach(({ id, count }) => {
+        countMap[id] = count;
+      });
+
+      setFoodCountByCategory(countMap);
+    } catch (error) {
+      console.error("Category count fetch алдаа гарлаа", error);
+    }
+  };
+
+  const getAllFoodCount = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3001/count/`);
+      setTotalFoodCount(response.data.totalFoods);
+    } catch (error) {
+      console.error("Нийт хоолны тоо авах үед алдаа гарлаа", error);
+    }
+  };
+
+  useEffect(() => {
+    getAllFoodCount();
+    getFoodCountByCategory();
+  }, [categories]);
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex flex-wrap gap-[12px] mt-[16px]">
+        <CategoryBadge
+          label="Бүх хоол"
+          count={totalFoodCount}
+          isActive={selectedCategory === null}
+          onClick={() => {
+            handleCategorySelect(null);
+          }}
+        />
+
+        {categories.map((item) => (
+          <CategoryBadge
+            key={item._id}
+            label={item.categoryName}
+            count={foodCountByCategory[item._id] ?? 0}
+            isActive={selectedCategory === item._id}
+            onClick={() => {
+              handleCategorySelect(item._id);
+            }}
+          />
+        ))}
+
+        <button
+          className="w-[36px] h-[36px] flex justify-center items-center bg-[#EF4444] rounded-full text-white mt-[2px]"
+          onClick={() => addCategory(true)}
+        >
+          <div className="w-[16px] h-[16px]">
+          <PlusIcon  />
+          </div>
+          
+        </button>
+      </div>
+    </div>
+  );
+}

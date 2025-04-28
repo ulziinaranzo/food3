@@ -1,8 +1,7 @@
 "use client";
-import React from "react";
-import { useState, useRef } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState, useRef } from "react";
 import { AddFoodFormProps } from "./Types";
+import axios from "axios"
 
 export type FormData = {
   name: string;
@@ -12,34 +11,37 @@ export type FormData = {
 };
 
 export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-  } = useForm<FormData>();
-
-  const img = watch("img");
+  const [name, setName] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [ingredients, setIngredients] = useState<string>("");
+  const [img, setImg] = useState<FileList | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const onSubmit = (data: FormData) => {
-    console.log("Data nemegdlee", data);
-    alert("Амжилттай нэмэгдлээ");
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name && price && ingredients && img?.length) {
+      try {
+        await axios.post("http://localhost:3001/food", {
+          foodName: data.name,
+          price: data.price,
+          
+        })
+      }
+    }
   };
 
   const handleRemoveImage = () => {
-    setValue("img", null);
+    setImg(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
-  const imgHave = img?.length === 0 || img === undefined || img === null;
+  const imgHave = !img || img.length === 0;
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={onSubmit}
       className="flex flex-col p-[24px] w-[460px] h-fit bg-white rounded-lg"
     >
       <div className="flex justify-between pb-[40px]">
@@ -60,33 +62,24 @@ export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
             Хоолны нэр
           </div>
           <input
-            {...register("name", { required: "Хоолны нэр хоосон байна" })}
             type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Хоолны нэр"
             className="w-[194px] h-[34px] rounded-sm pl-[12px] py-[9px] border-[1px]"
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm">{errors.name.message}</p>
-          )}
         </div>
         <div className="flex flex-col gap-[8px]">
           <div className="text-[#09090B] text-[14px] font-medium">
             Хоолны үнэ
           </div>
           <input
-            {...register("price", {
-              required: "Хоолны үнэ хоосон байна",
-              pattern: {
-                value: /^[0-9]+$/,
-                message: "Үнэ зөвхөн тоо байж болно",
-              },
-            })}
+            type="text"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
             placeholder="Хоолны үнэ"
             className="w-[194px] h-[34px] rounded-sm pl-[12px] py-[9px] border-[1px]"
           />
-          {errors.price && (
-            <p className="text-red-500 text-sm">{errors.price.message}</p>
-          )}
         </div>
       </div>
       <div className="flex flex-col mb-[24px]">
@@ -94,15 +87,12 @@ export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
           Орц, найрлага
         </div>
         <input
-          {...register("ingredients", {
-            required: "Орц найрлага хоосон байна",
-          })}
-          placeholder="Орц найрлагаа оруулна уу"
+          type="text"
+          value={ingredients}
+          onChange={(e) => setIngredients(e.target.value)}
+          placeholder="Орц найрлага"
           className="w-full h-[90px] rounded-sm pl-[12px] py-[9px] border-[1px]"
         />
-        {errors.ingredients && (
-          <p className="text-red-500 text-sm">{errors.ingredients.message}</p>
-        )}
       </div>
       <div className="flex flex-col gap-[8px]">
         <div className="text-[#09090B] text-[14px] font-medium">
@@ -110,34 +100,26 @@ export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
         </div>
         {imgHave && (
           <input
-            {...register("img", { required: "Зураг шаардлагатай" })}
             type="file"
             className="relative w-[416px] h-[138px] p-[12px] rounded-md mt-[12px] bg-[#7F7F800D] justify-start text-transparent z-10"
-            ref={(e) => {
-              register("img").ref(e);
-              fileInputRef.current = e;
-            }}
+            ref={fileInputRef}
+            onChange={(e) => setImg(e.target.files)}
           />
         )}
-
         {imgHave && (
           <div className="flex flex-col justify-center items-center absolute gap-[8px] right-[1020px] top-[670px] z-20">
             <img
               className="w-[32px] h-[32px] ml-[20px]"
               src="/Images/AddImage.png"
+              alt="Add image"
             />
             <div className="text-[14px] font-medium">
               Choose a file or drag & drop it here
             </div>
           </div>
         )}
-
-        {errors.img && (
-          <div className="text-red-600 text-sm">{errors.img.message}</div>
-        )}
-
         <div className="flex relative justify-center mt-4">
-          {img?.length > 0 && (
+          {img?.length && (
             <>
               <img
                 className="w-full h-[138px] object-cover rounded-[10px]"
@@ -156,7 +138,10 @@ export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
         </div>
       </div>
       <div className="flex justify-end">
-        <button className="flex justify-center items-center bg-black text-white font-medium text-[14px] w-[93px] h-[40px] rounded-lg mt-[48px]">
+        <button
+          type="submit"
+          className="flex justify-center items-center bg-black text-white font-medium text-[14px] w-[93px] h-[40px] rounded-lg mt-[48px]"
+        >
           Хоол нэмэх
         </button>
       </div>
