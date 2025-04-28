@@ -22,10 +22,12 @@ export interface CategoryWithFoods {
 
 interface AllFoodGroupsProps {
   onClose: (value: boolean) => void;
-  setSelectedCategory: (value: string) => void
+  setSelectedCategory: (value: string) => void;
 }
-
-export const AllFoodGroups = ({ setSelectedCategory, onClose, }: AllFoodGroupsProps) => {
+export const AllFoodGroups = ({
+  setSelectedCategory,
+  onClose,
+}: AllFoodGroupsProps) => {
   const [allFoodGroups, setAllFoodGroups] = useState<CategoryWithFoods[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -58,34 +60,41 @@ export const AllFoodGroups = ({ setSelectedCategory, onClose, }: AllFoodGroupsPr
     return <div>{error}</div>;
   }
 
+  const handleEditClick = (food: Food) => {
+    setFoodToEdit(food);
+    setEditFood(true);
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full h-fit">
       {allFoodGroups.map((group) => (
-        <div key={group.category._id} className="flex gap-[24px]  bg-white rounded-lg p-[24px]">
-        
         <div
           key={group.category._id}
-          className="text-[20px] font-semibold text-[#09090B] mb-[16px]"
+          className="flex gap-[24px]  bg-white rounded-lg p-[24px]"
         >
-          <h2 className="text-xl font-bold mb-2">
-            {group.category.categoryName}
-          </h2>
-          <div className="flex flex-wrap gap-4">
-          <AddFoodCard
-                      selectedCategoryName={group.category.categoryName}
-                      onClick={() => onClose(true)}
-                    />
-            {group.foods.map((food) => (
-              <FoodCard
-                key={food._id}
-                image={food.image}
-                name={food.name}
-                ingredients={food.ingredients}
-                price={food.price}
+          <div
+            key={group.category._id}
+            className="text-[20px] font-semibold text-[#09090B] mb-[16px]"
+          >
+            <h2 className="text-xl font-bold mb-2">
+              {group.category.categoryName}
+            </h2>
+            <div className="flex flex-wrap gap-4">
+              <AddFoodCard
+                selectedCategoryName={group.category.categoryName}
+                onClick={() => onClose(true)}
               />
-            ))}
+              {group.foods.map((food) => (
+                <FoodCard
+                  key={food._id}
+                  image={food.image}
+                  name={food.name}
+                  ingredients={food.ingredients}
+                  price={food.price}
+                />
+              ))}
+            </div>
           </div>
-        </div>
         </div>
       ))}
     </div>

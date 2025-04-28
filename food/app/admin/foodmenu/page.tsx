@@ -9,19 +9,22 @@ import CategoryList from "../_components/CategoryList";
 import { AvatarBadge } from "../_components/AvatarBadge";
 import { AllFoodGroups } from "../_components/AllFoodsGroup";
 import { CategoryFoods } from "../_components/CategoryFoods";
-import { EditFoodForm } from "../_components/EditFoodForm";
 
-export default function Home() {
+export default function Page() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [foods, setFoods] = useState<Food[]>([]);
   const [onClose, setOnClose] = useState<boolean>(false);
   const [addCategory, setAddCategory] = useState<boolean>(false);
-  const [allFoodsByCategory, setAllFoodsByCategory] = useState<AllCategory[]>([]);
-  
+  const [allFoodsByCategory, setAllFoodsByCategory] = useState<AllCategory[]>(
+    []
+  );
+
   const getAllFoodsByCategory = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/food/grouped-by-category");
+      const response = await axios.get(
+        "http://localhost:3001/food/grouped-by-category"
+      );
       setAllFoodsByCategory(response.data.data);
     } catch (error) {
       console.error("Grouped хоолнууд авах үед алдаа:", error);
@@ -40,7 +43,9 @@ export default function Home() {
 
   const getFoods = async (categoryId: string) => {
     try {
-      const response = await axios.get(`http://localhost:3001/food?categoryId=${categoryId}`);
+      const response = await axios.get(
+        `http://localhost:3001/food?categoryId=${categoryId}`
+      );
       setFoods(response.data.foodsByCategory);
     } catch (error) {
       console.error("Хоол авах үед алдаа гарлаа", error);
@@ -54,7 +59,7 @@ export default function Home() {
     } else {
       const allFoods = allFoodsByCategory.flatMap((cat) => cat.foods);
       setFoods(allFoods);
-      console.log("allfoods")
+      console.log("allfoods");
     }
   };
 
@@ -67,28 +72,35 @@ export default function Home() {
     <div className="flex w-screen h-screen">
       <div className="flex flex-col pl-[24px] pt-[24px] pr-[40px] pb-[52px] bg-[#E4E4E7] w-full gap-[24px]">
         <div className="flex justify-end">
-          <AvatarBadge/>
+          <AvatarBadge />
         </div>
         <div className="flex flex-col w-full bg-white rounded-lg p-[24px]">
-          <div className="text-[20px] font-semibold text-[#09090B]">Хоолны категори</div>
+          <div className="text-[20px] font-semibold text-[#09090B]">
+            Хоолны категори
+          </div>
           <CategoryList
-  selectedCategory={selectedCategory}
-  addCategory={setAddCategory}
-  categories={categories}
-  setSelectedCategory={setSelectedCategory}
-  handleCategorySelect={handleCategorySelect}
-/>
+            selectedCategory={selectedCategory}
+            addCategory={setAddCategory}
+            categories={categories}
+            setSelectedCategory={setSelectedCategory}
+            handleCategorySelect={handleCategorySelect}
+          />
         </div>
         <div className="flex flex-col ">
-
           <div className="flex flex-wrap ">
             {selectedCategory === null ? (
-              
-              <AllFoodGroups setSelectedCategory={setSelectedCategory}
-              onClose={setOnClose}/>) : (
-              <CategoryFoods selectedCategory={selectedCategory} categories={categories} onClose={setOnClose} foods={foods}/>
+              <AllFoodGroups
+                setSelectedCategory={setSelectedCategory}
+                onClose={setOnClose}
+              />
+            ) : (
+              <CategoryFoods
+                selectedCategory={selectedCategory}
+                categories={categories}
+                onClose={setOnClose}
+                foods={foods}
+              />
             )}
-            
           </div>
 
           {onClose && (
@@ -99,20 +111,13 @@ export default function Home() {
                   onClose={() => setOnClose(false)}
                   categoryName={
                     selectedCategory
-                      ? categories.find((cat) => cat._id === selectedCategory)?.categoryName || ""
+                      ? categories.find((cat) => cat._id === selectedCategory)
+                          ?.categoryName || ""
                       : ""
                   }
                 />
               </div>
             </div>
-          )}
-          {editFood && (
-            <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg shadow-lg z-50">
-                <EditFoodForm setSelectedCategory={setSelectedCategory}
-              onClose={() => {setEditFood(false)}} categories={categories} selectedCategory={selectedCategory}/>
-              </div>
-              </div>
           )}
 
           {addCategory && (

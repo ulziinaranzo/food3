@@ -1,14 +1,6 @@
-"use client";
 import React, { useState, useRef } from "react";
 import { AddFoodFormProps } from "./Types";
-import axios from "axios"
-
-export type FormData = {
-  name: string;
-  price: string;
-  ingredients: string;
-  img: FileList;
-};
+import axios from "axios";
 
 export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
   const [name, setName] = useState<string>("");
@@ -17,16 +9,30 @@ export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
   const [img, setImg] = useState<FileList | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name && price && ingredients && img?.length) {
+      const formData = new FormData();
+      formData.append("foodName", name);
+      formData.append("price", price);
+      formData.append("ingredients", ingredients);
+      formData.append("categoryName", categoryName ?? "");
+      formData.append("img", img[0]);
+
       try {
-        await axios.post("http://localhost:3001/food", {
-          foodName: data.name,
-          price: data.price,
-          
-        })
+        await axios.post("http://localhost:3001/food", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        alert("Амжилттай нэмэгдлээ");
+        onClose();
+      } catch (error: any) {
+        console.error(error);
+        alert("Хоол нэмэхэд алдаа гарлаа");
       }
+    } else {
+      alert("Бүх хэсгийг бөглөнө үү");
     }
   };
 
@@ -107,7 +113,7 @@ export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
           />
         )}
         {imgHave && (
-          <div className="flex flex-col justify-center items-center absolute gap-[8px] right-[1020px] top-[670px] z-20">
+          <div className="flex flex-col justify-center items-center absolute gap-[8px] right-[1020px] top-[610px] z-20">
             <img
               className="w-[32px] h-[32px] ml-[20px]"
               src="/Images/AddImage.png"

@@ -13,8 +13,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import axios from "axios";
 
 const ordersPerPage = 12;
+
 const orders = [
   {
     number: "1",
@@ -51,7 +53,19 @@ const orders = [
 export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  const getOrders = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/food/grouped-by-category"
+      );
+      getOrders(response.data.FoodOrders);
+    } catch (error) {
+      console.error("Хоолны захиалгууд авах үед алдаа гарлаа");
+    }
+  };
 
   const toggleOrder = (orderNumber: string) => {
     setSelectedOrders((prev) =>

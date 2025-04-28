@@ -21,9 +21,10 @@ export type AddFoodFormProps = {
 export type EditFoodFormProps = {
   category: string;
   onClose: () => void;
-  categoryName: string 
+  categoryName: string;
   categories: { _id: string; categoryName: string }[];
-}
+  setSelectedCategory: (valeu: string | null) => void;
+};
 
 export type AllCategory = {
   _id: string;
@@ -40,4 +41,11 @@ export type CategoryWithFoods = {
 export type AddCategoryProps = {
   onClose: () => void;
   addCategory: () => void;
+};
+export type FormData = {
+  name: string;
+  category: string;
+  ingredients: string;
+  img: FileList;
+  price: string;
 };
