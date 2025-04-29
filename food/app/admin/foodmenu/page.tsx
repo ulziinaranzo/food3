@@ -16,20 +16,6 @@ export default function Page() {
   const [foods, setFoods] = useState<Food[]>([]);
   const [onClose, setOnClose] = useState<boolean>(false);
   const [addCategory, setAddCategory] = useState<boolean>(false);
-  const [allFoodsByCategory, setAllFoodsByCategory] = useState<AllCategory[]>(
-    []
-  );
-
-  const getAllFoodsByCategory = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3001/food/grouped-by-category"
-      );
-      setAllFoodsByCategory(response.data.data);
-    } catch (error) {
-      console.error("Grouped хоолнууд авах үед алдаа:", error);
-    }
-  };
 
   const getCategories = async () => {
     try {
@@ -65,7 +51,6 @@ export default function Page() {
 
   useEffect(() => {
     getCategories();
-    getAllFoodsByCategory();
   }, []);
 
   return (

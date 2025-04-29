@@ -23,7 +23,7 @@ export type EditFoodFormProps = {
   onClose: () => void;
   categoryName: string;
   categories: { _id: string; categoryName: string }[];
-  setSelectedCategory: (valeu: string | null) => void;
+  setSelectedCategory: (value: string | null) => void;
 };
 
 export type AllCategory = {
@@ -49,3 +49,11 @@ export type FormData = {
   img: FileList;
   price: string;
 };
+
+export interface Order {
+  id: string;
+  user:string;
+  totalPrice: number,
+  foodOrderItems: OrderItem[],
+  statu
+}

@@ -86,12 +86,20 @@ export const AllFoodGroups = ({
               />
               {group.foods.map((food) => (
                 <FoodCard
-                  key={food._id}
-                  image={food.image}
-                  name={food.name}
-                  ingredients={food.ingredients}
-                  price={food.price}
-                />
+                key={food._id}
+                image={food.image}
+                name={food.name}
+                ingredients={food.ingredients}
+                price={food.price}
+                food={food}
+                selectedCategory={group.category._id}
+                setSelectedCategory={setSelectedCategory}
+                categories={allFoodGroups.map((g) => ({
+                  _id: g.category._id,
+                  categoryName: g.category.categoryName,
+                }))}
+              />
+              
               ))}
             </div>
           </div>

@@ -4,17 +4,28 @@ import { useMemo, useState } from "react";
 import { DateIcon } from "../../assets/DateIcon";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import axios from "axios";
-
+import * as React from "react"
+import { addDays, format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { DateRange } from "react-day-picker"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { PaginationOrder } from "../_components/PaginationOrder";
+ 
+export function DatePickerWithRange({
+  className,
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(2022, 0, 20),
+    to: addDays(new Date(2022, 0, 20), 20),
+  })
 const ordersPerPage = 12;
 
 const orders = [
@@ -55,17 +66,20 @@ export default function Home() {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const [date, setDate] = React.useState<Date>()
 
   const getOrders = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/food/grouped-by-category"
-      );
-      getOrders(response.data.FoodOrders);
+      const response = await axios.get("http://localhost:3001/food-order/");
+      setOrders(response.data.FoodOrders);
     } catch (error) {
-      console.error("Хоолны захиалгууд авах үед алдаа гарлаа");
+      console.error("Хоолны захиалгууд авах үед алдаа гарлаа", error);
     }
+    getOrders();
   };
+   useEffect(() => {
+    getOrders()
+  },[])
 
   const toggleOrder = (orderNumber: string) => {
     setSelectedOrders((prev) =>
@@ -102,6 +116,44 @@ export default function Home() {
               </div>
             </div>
             <div className="flex gap-[12px]">
+            <div className={cn("grid gap-2", className)}>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            id="date"
+            variant={"outline"}
+            className={cn(
+              "w-[300px] justify-start text-left font-normal",
+              !date && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon />
+            {date?.from ? (
+              date.to ? (
+                <>
+                  {format(date.from, "LLL dd, y")} -{" "}
+                  {format(date.to, "LLL dd, y")}
+                </>
+              ) : (
+                format(date.from, "LLL dd, y")
+              )
+            ) : (
+              <span>Pick a date</span>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={setDate}
+            numberOfMonths={2}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
               <div className="flex justify-center items-center font-medium text-[14px] rounded-full text-white px-[8px] py-[16px] bg-[#d1d1d1]">
                 Хүргэлтийн төлөв өөрчлөх
               </div>
@@ -187,46 +239,7 @@ export default function Home() {
           })}
         </div>
         <div className="flex justify-end">
-          <div className="w-fit">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    onClick={() => {
-                      setCurrentPage((prev) => Math.max(prev - 1, 1));
-                    }}
-                  />
-                </PaginationItem>
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <PaginationItem key={i}>
-                    <PaginationLink
-                      href="#"
-                      isActive={currentPage === i + 1}
-                      onClick={() => setCurrentPage(i + 1)}
-                    >
-                      {i + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
-
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem className="rounded-full bg-whtie">
-                  <PaginationLink href="#">{totalPages}</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    onClick={() => {
-                      setCurrentPage((prev) => prev + 1);
-                    }}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <PaginationOrder setCurrentPage={setCurrentPage}/>
         </div>
       </div>
     </div>

@@ -107,7 +107,7 @@ export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
         {imgHave && (
           <input
             type="file"
-            className="relative w-[416px] h-[138px] p-[12px] rounded-md mt-[12px] bg-[#7F7F800D] justify-start text-transparent z-10"
+            className="relative w-[416px] h-[138px] p-[12px] rounded-md mt-[12px] bg-[#7F7F800D] justify-start text-transparent z-30"
             ref={fileInputRef}
             onChange={(e) => setImg(e.target.files)}
           />

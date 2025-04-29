@@ -1,7 +1,7 @@
 import { EditIcon } from "@/app/assets/EditIcon";
 import { useState } from "react";
 import { EditFoodForm } from "./EditFoodForm";
-import { Food } from "./Types";
+import { Category, Food } from "./Types";
 
 type FoodCardProps = {
   image: string;
@@ -11,6 +11,9 @@ type FoodCardProps = {
   setEditFood: (value: boolean) => void;
   food: Food;
   handleEditClick: (food: Food) => void;
+  setSelectedCategory: (value: string | null) => void;
+  selectedCategory: string | null;
+  categories: { _id: string; categoryName: string }[];
 };
 
 export default function FoodCard({
@@ -19,9 +22,22 @@ export default function FoodCard({
   price,
   ingredients,
   food,
-}: FoodCardProps) {
+  setSelectedCategory,
+  selectedCategory,
+  categories,
+}: FoodCardProps & {
+  setSelectedCategory: (value: string) => void;
+  selectedCategory: string;
+  categories: Category[];
+}) {
   const [editFood, setEditFood] = useState<boolean>(false);
   const [foodToEdit, setFoodToEdit] = useState<Food | null>(null);
+
+  const handleEditClick = () => {
+    setFoodToEdit(food);
+    setEditFood(true);
+  };
+
   return (
     <div className="flex flex-col p-4 gap-3 bg-white rounded-lg shadow-lg relative h-[241px] w-[250px]">
       <img
@@ -31,25 +47,25 @@ export default function FoodCard({
       />
       <button
         className="w-[36px] h-[36px] flex items-center justify-center absolute right-[12px] top-[120px] bg-white z-10 rounded-full cursor-pointer shadow-md"
-        onClick={() => setEditFood(true)}
+        onClick={handleEditClick}
       >
         <EditIcon />
       </button>
-      {editFood && (
+
+      {editFood && foodToEdit && (
         <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg z-50">
             <EditFoodForm
               setSelectedCategory={setSelectedCategory}
-              onClose={() => {
-                setEditFood(false);
-              }}
-              categories={categories}
               selectedCategory={selectedCategory}
+              categories={categories}
+              onClose={() => setEditFood(false)}
               foodData={foodToEdit}
             />
           </div>
         </div>
       )}
+
       <div className="flex flex-col gap-1">
         <div className="flex justify-between items-center text-[14px] font-[600]">
           <span className="text-[#EF4444]">{name}</span>
