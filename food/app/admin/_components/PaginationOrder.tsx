@@ -1,4 +1,5 @@
-" use client";
+"use client";
+
 import {
   Pagination,
   PaginationContent,
@@ -9,43 +10,49 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-export const PaginationOrder = () => {
+type PaginationOrderProps = {
+  setCurrentPage: (value: number) => void;
+  totalPages: number;
+  currentPage: number;
+};
+
+export const PaginationOrder = ({
+  setCurrentPage,
+  totalPages,
+  currentPage,
+}: PaginationOrderProps) => {
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
     <div className="w-fit">
       <Pagination>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              href="#"
-              onClick={() => {
-                setCurrentPage((prev) => Math.max(prev - 1, 1));
-              }}
+              onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
             />
           </PaginationItem>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <PaginationItem key={i}>
+
+          {pages.map((page) => (
+            <PaginationItem key={page}>
               <PaginationLink
-                href="#"
-                isActive={currentPage === i + 1}
-                onClick={() => setCurrentPage(i + 1)}
+                isActive={currentPage === page}
+                onClick={() => setCurrentPage(page)}
               >
-                {i + 1}
+                {page}
               </PaginationLink>
             </PaginationItem>
           ))}
 
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem className="rounded-full bg-whtie">
-            <PaginationLink href="#">{totalPages}</PaginationLink>
-          </PaginationItem>
+          {totalPages > 5 && currentPage < totalPages - 2 && (
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+          )}
+
           <PaginationItem>
             <PaginationNext
-              href="#"
-              onClick={() => {
-                setCurrentPage((prev) => prev + 1);
-              }}
+              onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
             />
           </PaginationItem>
         </PaginationContent>

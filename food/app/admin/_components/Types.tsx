@@ -5,6 +5,8 @@ export type Food = {
   image: string[];
   price: number;
   ingredients: string;
+  createdAt: string;
+  updatedAt:string;
 };
 
 export type Category = {
@@ -49,11 +51,23 @@ export type FormData = {
   img: FileList;
   price: string;
 };
+export type FoodOrderItem = {
+  food: Food;
+  quantity: number;
+};
 
-export interface Order {
-  id: string;
-  user:string;
-  totalPrice: number,
-  foodOrderItems: OrderItem[],
-  statu
-}
+export type User = {
+  _id: string;
+  name: string;
+  email: string;
+};
+
+export type Order = {
+  _id: string;
+  user: User;
+  foodOrderItems: FoodOrderItem[];
+  address: string;
+  totalPrice: number;
+  status: "pending" | "delivered" | "cancelled";
+  createdAt: string;
+};

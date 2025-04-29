@@ -6,7 +6,7 @@ export const getFoodOrdersController: RequestHandler = async (req, res) => {
     const foodOrders = await foodOrderModel
       .find({})
       .populate("user") 
-      // .populate("foodOrderItems.food"); 
+      .populate("foodOrderItems.food"); 
 
     if (!foodOrders || foodOrders.length === 0) {
       return res.status(404).json({ message: "No food orders found" });
