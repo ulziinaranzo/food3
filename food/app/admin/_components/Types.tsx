@@ -6,7 +6,7 @@ export type Food = {
   price: number;
   ingredients: string;
   createdAt: string;
-  updatedAt:string;
+  updatedAt: string;
 };
 
 export type Category = {
@@ -18,7 +18,8 @@ export type AddFoodFormProps = {
   category: string;
   onClose: () => void;
   categoryName: string;
-  getFoods: () => void
+  getFoods: () => void;
+  categoryId: string;
 };
 
 export type EditFoodFormProps = {
@@ -26,7 +27,9 @@ export type EditFoodFormProps = {
   onClose: () => void;
   categoryName: string;
   categories: { _id: string; categoryName: string }[];
-  setSelectedCategory: (value: string | null) => void;
+  setSelectedCategory: (value: string) => void;
+  selectedCategory: string;
+  foodData: () => {};
 };
 
 export type AllCategory = {

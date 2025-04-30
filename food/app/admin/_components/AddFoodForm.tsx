@@ -6,13 +6,46 @@ import axios from "axios";
 import { HashLoader } from "react-spinners";
 import { toast } from "sonner";
 
+const UPLOAD_PRESET = "ml_default";
+const CLOUD_NAME = "dxhmgs7wt";
 
-export const AddFoodForm = ({ onClose, categoryName, getFoods }: AddFoodFormProps) => {
+export const AddFoodForm = ({ categoryName, categoryId }: AddFoodFormProps) => {
   const { register, handleSubmit, setValue, watch } = useForm<FormValues>();
   const imgUrl = watch("imgUrl");
   const [preview, setPreview] = useState("");
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
+  const [deployedImg, setDeployedImg] = useState("");
+
+  const uploadImage = async (file: File | undefined) => {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    try {
+      const response = await axios.post(
+        `http://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data.url;
+    } catch (error) {
+      console.error("Зураг deploy хийхэд алдаа гарлаа", error);
+    }
+  };
+
+  const handleUpload = async (file: File) => {
+    const uploadedUrl = await uploadImage(file);
+    console.log(uploadedUrl);
+
+    if (uploadedUrl) {
+      setDeployedImg(uploadedUrl);
+    }
+  };
 
   const onSubmit = async (data: FormValues) => {
     if (!data.foodName || !data.price || !data.ingredients || !data.imgUrl) {
@@ -20,11 +53,16 @@ export const AddFoodForm = ({ onClose, categoryName, getFoods }: AddFoodFormProp
       return;
     }
     setLoading(true);
+
+    console.log(data);
+
     try {
-      await axios.post("http://localhost:3001/food", { ...data, categoryName });
+      await axios.post("http://localhost:3001/food", {
+        ...data,
+        image: deployedImg,
+        category: categoryId,
+      });
       toast.success("Амжилттай нэмэгдлээ");
-      onClose();
-      await getFoods();
     } catch {
       toast.error("Хоол нэмэхэд алдаа гарлаа");
     } finally {
@@ -32,9 +70,11 @@ export const AddFoodForm = ({ onClose, categoryName, getFoods }: AddFoodFormProp
     }
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
+      await handleUpload(file);
       const url = URL.createObjectURL(file);
       setPreview(url);
       setValue("imgUrl", url);
@@ -48,26 +88,39 @@ export const AddFoodForm = ({ onClose, categoryName, getFoods }: AddFoodFormProp
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col p-6 w-[460px] bg-white rounded-lg">
-      <div className="flex justify-between mb-10">
-        <div className="text-lg font-semibold">{categoryName} категорид шинэ хоол нэмэх</div>
-        <button type="button" onClick={onClose} className="w-9 h-9 rounded-full bg-[#F4F4F5] text-sm">X</button>
-      </div>
-
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col p-6 bg-white rounded-lg"
+    >
       <div className="flex gap-6 mb-6">
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Хоолны нэр</label>
-          <input {...register("foodName")} type="text" placeholder="Хоолны нэр" className="w-48 h-9 pl-3 border rounded" />
+          <input
+            {...register("foodName")}
+            type="text"
+            placeholder="Хоолны нэр"
+            className="w-48 h-9 pl-3 border rounded"
+          />
         </div>
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Хоолны үнэ</label>
-          <input {...register("price")} type="text" placeholder="Хоолны үнэ" className="w-48 h-9 pl-3 border rounded" />
+          <input
+            {...register("price")}
+            type="text"
+            placeholder="Хоолны үнэ"
+            className="w-48 h-9 pl-3 border rounded"
+          />
         </div>
       </div>
 
       <div className="flex flex-col mb-6">
         <label className="text-sm font-medium">Орц, найрлага</label>
-        <input {...register("ingredients")} type="text" placeholder="Орц найрлага" className="h-[90px] pl-3 border rounded" />
+        <input
+          {...register("ingredients")}
+          type="text"
+          placeholder="Орц найрлага"
+          className="h-[90px] pl-3 border rounded"
+        />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -89,14 +142,26 @@ export const AddFoodForm = ({ onClose, categoryName, getFoods }: AddFoodFormProp
         )}
         {preview && (
           <div className="relative mt-4">
-            <img src={preview} className="w-full h-[138px] object-cover rounded" />
-            <button type="button" onClick={handleRemoveImage} className="absolute top-2 right-2 bg-[#E4E4E7] w-7 h-7 text-sm rounded-full flex items-center justify-center">x</button>
+            <img
+              src={preview}
+              className="w-full h-[138px] object-cover rounded"
+            />
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              className="absolute top-2 left-100 bg-[#E4E4E7] w-7 h-7 text-sm rounded-full flex items-center justify-center"
+            >
+              x
+            </button>
           </div>
         )}
       </div>
 
       <div className="flex justify-end">
-        <button type="submit" className="mt-12 w-[93px] h-10 rounded-lg bg-black text-white flex justify-center items-center text-sm font-medium">
+        <button
+          type="submit"
+          className="mt-12 w-[93px] h-10 rounded-lg bg-black text-white flex justify-center items-center text-sm font-medium"
+        >
           {loading ? <HashLoader size={16} color="white" /> : "Хоол нэмэх"}
         </button>
       </div>

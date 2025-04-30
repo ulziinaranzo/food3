@@ -4,24 +4,28 @@ import axios from "axios";
 import { Category, Food } from "./Types";
 import AddFoodCard from "./AddFoodCard";
 import FoodCardList from "./FoodCardList";
+import { strict } from "assert";
+import { FoodCard } from "./FoodCard";
 
 interface CategoryFoodsProps {
-  selectedCategory: string | null;
-  categories: Category[];
   onClose: (value: boolean) => void;
+  categoryId: string;
+  categoryName: string;
 }
 
-const CategoryFoods = ({ selectedCategory, categories, onClose }: CategoryFoodsProps) => {
+const CategoryFoods = ({
+  onClose,
+  categoryId,
+  categoryName,
+}: CategoryFoodsProps) => {
   const [foods, setFoods] = useState<Food[]>([]);
 
   const getFoods = async () => {
     try {
-      const url = selectedCategory
-        ? `http://localhost:3001/food?categoryId=${selectedCategory}`
-        : `http://localhost:3001/food`; // selectedCategory байхгүй бол бүх хоолыг авна
-
-      const response = await axios.get(url);
-      setFoods(response.data.foods);
+      const response = await axios.get(
+        `http://localhost:3001/food?categoryId=${categoryId}`
+      );
+      setFoods(response.data?.foodsByCategory);
     } catch (error) {
       console.error("Error fetching foods:", error);
     }
@@ -29,10 +33,7 @@ const CategoryFoods = ({ selectedCategory, categories, onClose }: CategoryFoodsP
 
   useEffect(() => {
     getFoods();
-  }, [selectedCategory]);
-
-  const selectedCat = categories.find((cat) => cat._id === selectedCategory);
-  const categoryName = selectedCat?.categoryName || "Бүх хоол";
+  }, []);
 
   return (
     <div className="flex flex-col w-full h-fit bg-white rounded-lg p-[24px]">
@@ -43,9 +44,16 @@ const CategoryFoods = ({ selectedCategory, categories, onClose }: CategoryFoodsP
       <div className="flex gap-[16px] flex-wrap">
         <AddFoodCard
           selectedCategoryName={categoryName}
-          onClick={() => onClose(true)}
+          categoryId={categoryId}
         />
-        <FoodCardList foods={foods} />
+
+        {foods?.map((food) => {
+          return (
+            <div key={food._id}>
+              <FoodCard food={food} selectedCategory={categoryId} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

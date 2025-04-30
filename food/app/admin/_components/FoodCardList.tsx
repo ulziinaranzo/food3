@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Food, Category } from "./Types";
 import FoodCard from "./FoodCard";
@@ -7,6 +8,7 @@ interface FoodCardListProps {
   categories: Category[];
   selectedCategory: string | null;
   setSelectedCategory: (value: string | null) => void;
+  refreshFoods: () => void;
 }
 
 const FoodCardList = ({
@@ -14,9 +16,18 @@ const FoodCardList = ({
   categories,
   selectedCategory,
   setSelectedCategory,
+  refreshFoods,
 }: FoodCardListProps) => {
+  if (!foods || !Array.isArray(foods)) {
+    return <div>Хоол ачааллаж байна...</div>;
+  }
+
+  if (foods.length === 0) {
+    return <div>Хоол олдсонгүй.</div>;
+  }
+
   return (
-    <div className="flex flex-wrap gap-[24px]">
+    <>
       {foods.map((food) => (
         <FoodCard
           key={food._id}
@@ -24,9 +35,10 @@ const FoodCardList = ({
           categories={categories}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
+          refreshFoods={refreshFoods}
         />
       ))}
-    </div>
+    </>
   );
 };
 

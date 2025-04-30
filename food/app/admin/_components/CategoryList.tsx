@@ -3,29 +3,31 @@ import { PlusIcon } from "@/app/assets/PlusIcon";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import CategoryBadge from "./CategoryBadge";
+import { AddCategory } from "./AddCategory";
 
 interface CategoryListProps {
   selectedCategory: string | null;
-  addCategory: (value: boolean) => void;
   categories: { _id: string; categoryName: string }[];
-  setSelectedCategory: (value: string | null) => void;
-  handleCategorySelect: (value: string | null) => void;
+  handleCategorySelect: (value: string) => void;
 }
 
 export default function CategoryList({
   selectedCategory,
-  addCategory,
   categories,
-  setSelectedCategory,
   handleCategorySelect,
 }: CategoryListProps) {
-  const [foodCountByCategory, setFoodCountByCategory] = useState<Record<string, number>>({});
+  const [foodCountByCategory, setFoodCountByCategory] = useState<
+    Record<string, number>
+  >({});
   const [totalFoodCount, setTotalFoodCount] = useState<number>(0);
+  const [addCategory, setAddCategory] = useState<boolean>(false);
 
   const getFoodCountByCategory = async () => {
     try {
       const promises = categories.map(async (category) => {
-        const response = await axios.get(`http://localhost:3001/count/${category._id}`);
+        const response = await axios.get(
+          `http://localhost:3001/count/${category._id}`
+        );
         return { id: category._id, count: response.data.foodCount };
       });
 
@@ -58,12 +60,12 @@ export default function CategoryList({
   return (
     <div className="flex flex-col">
       <div className="flex flex-wrap gap-[12px] mt-[16px]">
-      <CategoryBadge
+        <CategoryBadge
           label="Бүх хоол"
           count={totalFoodCount}
-          isActive={selectedCategory === null}
+          isActive={selectedCategory === ""}
           onClick={() => {
-            handleCategorySelect(null);
+            handleCategorySelect("");
           }}
         />
 
@@ -77,14 +79,12 @@ export default function CategoryList({
           />
         ))}
 
-        <button
-          className="w-[36px] h-[36px] flex justify-center items-center bg-[#EF4444] rounded-full text-white mt-[2px]"
-          onClick={() => addCategory(true)}
-        >
-          <div className="w-[16px] h-[16px]">
+        {/* <button className="w-[36px] h-[36px] flex justify-center items-center bg-[#EF4444] rounded-full text-white mt-[2px]">
+          <div className="w-[16px] h-[16px]" onclick={setAddCategory(true)}>
             <PlusIcon />
           </div>
-        </button>
+          {addCategory && <AddCategory onClose={() => }/>}
+        </button> */}
       </div>
     </div>
   );

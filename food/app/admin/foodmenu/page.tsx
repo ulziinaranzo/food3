@@ -1,21 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Category, Food } from "../_components/Types";
-import { AddFoodForm } from "../_components/AddFoodForm";
-import { AddCategory } from "../_components/AddCategory";
+import { Category } from "../_components/Types";
 import CategoryList from "../_components/CategoryList";
 import { AvatarBadge } from "../_components/AvatarBadge";
 import CategoryFoods from "../_components/CategoryFoods";
 
 export default function Page() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [foods, setFoods] = useState<Food[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [onClose, setOnClose] = useState<boolean>(false);
-  const [addCategory, setAddCategory] = useState<boolean>(false);
 
-  // 🔄 Категориудыг авах функц
   const getCategories = async () => {
     try {
       const response = await axios.get("http://localhost:3001/category");
@@ -25,15 +20,21 @@ export default function Page() {
     }
   };
 
-  // ✅ Категори сонгох үед дуудагдана
-  const handleCategorySelect = async (categoryId: string | null) => {
+  const handleCategorySelect = async (categoryId: string) => {
     setSelectedCategory(categoryId);
-    // Хэрвээ ангилал тусад нь татах шаардлагагүй бол энд дахин хүсэлт илгээх шаардлагагүй
   };
 
   useEffect(() => {
     getCategories();
   }, []);
+
+  const filteredCategory = categories.filter((item) => {
+    if (selectedCategory == "") {
+      return item;
+    } else {
+      return item._id == selectedCategory;
+    }
+  });
 
   return (
     <div className="flex w-screen h-screen">
@@ -50,24 +51,23 @@ export default function Page() {
           <CategoryList
             categories={categories}
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            addCategory={setAddCategory}
             handleCategorySelect={handleCategorySelect}
           />
         </div>
-
-        {selectedCategory && (
-        <CategoryFoods
-          selectedCategory={selectedCategory}
-          categories={categories}
-          foods={foods}
-          onClose={setOnClose}
-        />
-      )}
+        {filteredCategory.map((item, index) => {
+          return (
+            <div key={item._id}>
+              <CategoryFoods
+                onClose={setOnClose}
+                categoryName={item.categoryName}
+                categoryId={item._id}
+              />
+            </div>
+          );
+        })}
       </div>
 
-      {/* ➕ Хоол нэмэх форм */}
-      {onClose && (
+      {/* {onClose && (
         <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg z-50">
             <AddFoodForm
@@ -75,16 +75,16 @@ export default function Page() {
               onClose={() => setOnClose(false)}
               categoryName={
                 selectedCategory
-                  ? categories.find((cat) => cat._id === selectedCategory)?.categoryName || ""
+                  ? categories.find((cat) => cat._id === selectedCategory)
+                      ?.categoryName || ""
                   : ""
               }
             />
           </div>
         </div>
-      )}
+      )} */}
 
-      {/* ➕ Категори нэмэх форм */}
-      {addCategory && (
+      {/* {addCategory && (
         <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg z-50">
             <AddCategory
@@ -96,15 +96,13 @@ export default function Page() {
             />
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
 
-
 // <div className="flex flex-col ">
 // <div className="flex flex-wrap ">
-  
 
 // {onClose && (
 //   <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
