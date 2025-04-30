@@ -1,154 +1,103 @@
+"use client";
 import React, { useState, useRef } from "react";
-import { AddFoodFormProps } from "./Types";
+import { useForm } from "react-hook-form";
+import { AddFoodFormProps, FormValues } from "./Types";
 import axios from "axios";
+import { HashLoader } from "react-spinners";
+import { toast } from "sonner";
 
-export const AddFoodForm = ({ onClose, categoryName }: AddFoodFormProps) => {
-  const [name, setName] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
-  const [ingredients, setIngredients] = useState<string>("");
-  const [img, setImg] = useState<FileList | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (name && price && ingredients && img?.length) {
-      const formData = new FormData();
-      formData.append("foodName", name);
-      formData.append("price", price);
-      formData.append("ingredients", ingredients);
-      formData.append("categoryName", categoryName ?? "");
-      formData.append("img", img[0]);
+export const AddFoodForm = ({ onClose, categoryName, getFoods }: AddFoodFormProps) => {
+  const { register, handleSubmit, setValue, watch } = useForm<FormValues>();
+  const imgUrl = watch("imgUrl");
+  const [preview, setPreview] = useState("");
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [loading, setLoading] = useState(false);
 
-      try {
-        await axios.post("http://localhost:3001/food", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        alert("Амжилттай нэмэгдлээ");
-        onClose();
-      } catch (error: any) {
-        console.error(error);
-        alert("Хоол нэмэхэд алдаа гарлаа");
-      }
-    } else {
-      alert("Бүх хэсгийг бөглөнө үү");
+  const onSubmit = async (data: FormValues) => {
+    if (!data.foodName || !data.price || !data.ingredients || !data.imgUrl) {
+      toast.error("Бүх хэсгийг бөглөнө үү");
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.post("http://localhost:3001/food", { ...data, categoryName });
+      toast.success("Амжилттай нэмэгдлээ");
+      onClose();
+      await getFoods();
+    } catch {
+      toast.error("Хоол нэмэхэд алдаа гарлаа");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreview(url);
+      setValue("imgUrl", url);
     }
   };
 
   const handleRemoveImage = () => {
-    setImg(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    setPreview("");
+    setValue("imgUrl", "");
+    if (fileRef.current) fileRef.current.value = "";
   };
 
-  const imgHave = !img || img.length === 0;
-
   return (
-    <form
-      onSubmit={onSubmit}
-      className="flex flex-col p-[24px] w-[460px] h-fit bg-white rounded-lg"
-    >
-      <div className="flex justify-between pb-[40px]">
-        <div className="text-[18px] font-semibold">
-          {categoryName} категорид шинэ хоол нэмэх
-        </div>
-        <button
-          type="button"
-          className="w-[36px] h-[36px] rounded-full bg-[#F4F4F5] text-[12px]"
-          onClick={onClose}
-        >
-          X
-        </button>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col p-6 w-[460px] bg-white rounded-lg">
+      <div className="flex justify-between mb-10">
+        <div className="text-lg font-semibold">{categoryName} категорид шинэ хоол нэмэх</div>
+        <button type="button" onClick={onClose} className="w-9 h-9 rounded-full bg-[#F4F4F5] text-sm">X</button>
       </div>
-      <div className="flex gap-[24px] mb-[24px]">
-        <div className="flex flex-col gap-[8px]">
-          <div className="text-[#09090B] text-[14px] font-medium">
-            Хоолны нэр
-          </div>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Хоолны нэр"
-            className="w-[194px] h-[34px] rounded-sm pl-[12px] py-[9px] border-[1px]"
-          />
+
+      <div className="flex gap-6 mb-6">
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">Хоолны нэр</label>
+          <input {...register("foodName")} type="text" placeholder="Хоолны нэр" className="w-48 h-9 pl-3 border rounded" />
         </div>
-        <div className="flex flex-col gap-[8px]">
-          <div className="text-[#09090B] text-[14px] font-medium">
-            Хоолны үнэ
-          </div>
-          <input
-            type="text"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="Хоолны үнэ"
-            className="w-[194px] h-[34px] rounded-sm pl-[12px] py-[9px] border-[1px]"
-          />
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">Хоолны үнэ</label>
+          <input {...register("price")} type="text" placeholder="Хоолны үнэ" className="w-48 h-9 pl-3 border rounded" />
         </div>
       </div>
-      <div className="flex flex-col mb-[24px]">
-        <div className="text-[#09090B] text-[14px] font-medium">
-          Орц, найрлага
-        </div>
-        <input
-          type="text"
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-          placeholder="Орц найрлага"
-          className="w-full h-[90px] rounded-sm pl-[12px] py-[9px] border-[1px]"
-        />
+
+      <div className="flex flex-col mb-6">
+        <label className="text-sm font-medium">Орц, найрлага</label>
+        <input {...register("ingredients")} type="text" placeholder="Орц найрлага" className="h-[90px] pl-3 border rounded" />
       </div>
-      <div className="flex flex-col gap-[8px]">
-        <div className="text-[#09090B] text-[14px] font-medium">
-          Хоолны зураг
-        </div>
-        {imgHave && (
-          <input
-            type="file"
-            className="relative w-[416px] h-[138px] p-[12px] rounded-md mt-[12px] bg-[#7F7F800D] justify-start text-transparent z-30"
-            ref={fileInputRef}
-            onChange={(e) => setImg(e.target.files)}
-          />
-        )}
-        {imgHave && (
-          <div className="flex flex-col justify-center items-center absolute gap-[8px] right-[1020px] top-[610px] z-20">
-            <img
-              className="w-[32px] h-[32px] ml-[20px]"
-              src="/Images/AddImage.png"
-              alt="Add image"
+
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium">Хоолны зураг</label>
+        {!preview && (
+          <>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileRef}
+              onChange={handleImageSelect}
+              className="w-full h-[138px] p-3 bg-[#7F7F800D] text-transparent"
             />
-            <div className="text-[14px] font-medium">
-              Choose a file or drag & drop it here
+            <div className="absolute right-[1020px] top-[610px] flex flex-col items-center gap-2 z-10">
+              <img src="/Images/AddImage.png" className="w-8 h-8" />
+              <div className="text-sm font-medium">Choose or drag image</div>
             </div>
+          </>
+        )}
+        {preview && (
+          <div className="relative mt-4">
+            <img src={preview} className="w-full h-[138px] object-cover rounded" />
+            <button type="button" onClick={handleRemoveImage} className="absolute top-2 right-2 bg-[#E4E4E7] w-7 h-7 text-sm rounded-full flex items-center justify-center">x</button>
           </div>
         )}
-        <div className="flex relative justify-center mt-4">
-          {img?.length && (
-            <>
-              <img
-                className="w-full h-[138px] object-cover rounded-[10px]"
-                src={URL.createObjectURL(img[0])}
-                alt="preview"
-              />
-              <button
-                type="button"
-                className="absolute top-2 right-2 text-[12px] flex justify-center items-center bg-[#E4E4E7] w-[28px] h-[28px] rounded-full"
-                onClick={handleRemoveImage}
-              >
-                x
-              </button>
-            </>
-          )}
-        </div>
       </div>
+
       <div className="flex justify-end">
-        <button
-          type="submit"
-          className="flex justify-center items-center bg-black text-white font-medium text-[14px] w-[93px] h-[40px] rounded-lg mt-[48px]"
-        >
-          Хоол нэмэх
+        <button type="submit" className="mt-12 w-[93px] h-10 rounded-lg bg-black text-white flex justify-center items-center text-sm font-medium">
+          {loading ? <HashLoader size={16} color="white" /> : "Хоол нэмэх"}
         </button>
       </div>
     </form>

@@ -4,32 +4,18 @@ import { EditFoodForm } from "./EditFoodForm";
 import { Category, Food } from "./Types";
 
 type FoodCardProps = {
-  image: string;
-  name: string;
-  price: number;
-  ingredients: string;
-  setEditFood: (value: boolean) => void;
   food: Food;
-  handleEditClick: (food: Food) => void;
-  setSelectedCategory: (value: string | null) => void;
+  categories: Category[];
   selectedCategory: string | null;
-  categories: { _id: string; categoryName: string }[];
+  setSelectedCategory: (value: string | null) => void;
 };
 
 export default function FoodCard({
-  image,
-  name,
-  price,
-  ingredients,
   food,
-  setSelectedCategory,
-  selectedCategory,
   categories,
-}: FoodCardProps & {
-  setSelectedCategory: (value: string) => void;
-  selectedCategory: string;
-  categories: Category[];
-}) {
+  selectedCategory,
+  setSelectedCategory,
+}: FoodCardProps) {
   const [editFood, setEditFood] = useState<boolean>(false);
   const [foodToEdit, setFoodToEdit] = useState<Food | null>(null);
 
@@ -41,8 +27,8 @@ export default function FoodCard({
   return (
     <div className="flex flex-col p-4 gap-3 bg-white rounded-lg shadow-lg relative h-[241px] w-[250px]">
       <img
-        src={image}
-        alt={name}
+        src={food.image?.[0]}
+        alt={food.foodName}
         className="w-full h-[150px] object-cover rounded-t-lg"
       />
       <button
@@ -68,11 +54,11 @@ export default function FoodCard({
 
       <div className="flex flex-col gap-1">
         <div className="flex justify-between items-center text-[14px] font-[600]">
-          <span className="text-[#EF4444]">{name}</span>
-          <span className="text-[#09090B]">${price}</span>
+          <span className="text-[#EF4444]">{food.foodName}</span>
+          <span className="text-[#09090B]">${food.price}</span>
         </div>
         <div className="text-[12px] font-[400] text-[#09090B] truncate">
-          {ingredients}
+          {food.ingredients}
         </div>
       </div>
     </div>

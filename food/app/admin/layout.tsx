@@ -1,14 +1,13 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 import { LogoIcon } from "../assets/Logo";
 import { FoodMenuIcon } from "../assets/FoodMenuIcon";
 import { FoodMenuIconWhite } from "../assets/FoodMenuIconWhite";
 import { OrderIconBlack } from "../assets/OrderIconBlack";
 import { OrderIcon } from "../assets/OrderIcon";
 import { SettingsIcon } from "../assets/SettingsIcon";
+import { Toaster } from "sonner";
 
 function SidebarButton({
   href,
@@ -86,7 +85,9 @@ export default function AdminLayout({
         </nav>
       </aside>
 
-      <main className="flex-1 bg-[#E4E4E7]">{children}</main>
+      <main className="flex-1 bg-[#E4E4E7]">{children}
+        <Toaster/>
+      </main>
     </div>
   );
 }

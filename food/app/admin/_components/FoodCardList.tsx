@@ -1,26 +1,33 @@
-"use client";
-
-import { useState } from "react";
+import React from "react";
+import { Food, Category } from "./Types";
 import FoodCard from "./FoodCard";
-import { Food } from "./Types";
 
 interface FoodCardListProps {
   foods: Food[];
+  categories: Category[];
+  selectedCategory: string | null;
+  setSelectedCategory: (value: string | null) => void;
 }
-export const FoodCardList = ({ foods }: FoodCardListProps) => {
-  const [editFood, setEditFood] = useState<boolean>(false);
+
+const FoodCardList = ({
+  foods,
+  categories,
+  selectedCategory,
+  setSelectedCategory,
+}: FoodCardListProps) => {
   return (
     <div className="flex flex-wrap gap-[24px]">
       {foods.map((food) => (
         <FoodCard
           key={food._id}
-          image={food.image?.[0]}
-          name={food.foodName}
-          ingredients={food.ingredients}
-          price={food.price}
-          setEditFood={setEditFood}
+          food={food}
+          categories={categories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
         />
       ))}
     </div>
   );
 };
+
+export default FoodCardList;

@@ -1,5 +1,4 @@
 "use client";
-
 import { PlusIcon } from "@/app/assets/PlusIcon";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -10,7 +9,7 @@ interface CategoryListProps {
   addCategory: (value: boolean) => void;
   categories: { _id: string; categoryName: string }[];
   setSelectedCategory: (value: string | null) => void;
-  handleCategorySelect: (value: string | null) => void
+  handleCategorySelect: (value: string | null) => void;
 }
 
 export default function CategoryList({
@@ -18,7 +17,7 @@ export default function CategoryList({
   addCategory,
   categories,
   setSelectedCategory,
-  handleCategorySelect
+  handleCategorySelect,
 }: CategoryListProps) {
   const [foodCountByCategory, setFoodCountByCategory] = useState<Record<string, number>>({});
   const [totalFoodCount, setTotalFoodCount] = useState<number>(0);
@@ -59,7 +58,7 @@ export default function CategoryList({
   return (
     <div className="flex flex-col">
       <div className="flex flex-wrap gap-[12px] mt-[16px]">
-        <CategoryBadge
+      <CategoryBadge
           label="Бүх хоол"
           count={totalFoodCount}
           isActive={selectedCategory === null}
@@ -74,9 +73,7 @@ export default function CategoryList({
             label={item.categoryName}
             count={foodCountByCategory[item._id] ?? 0}
             isActive={selectedCategory === item._id}
-            onClick={() => {
-              handleCategorySelect(item._id);
-            }}
+            onClick={() => handleCategorySelect(item._id)}
           />
         ))}
 
@@ -85,9 +82,8 @@ export default function CategoryList({
           onClick={() => addCategory(true)}
         >
           <div className="w-[16px] h-[16px]">
-          <PlusIcon  />
+            <PlusIcon />
           </div>
-          
         </button>
       </div>
     </div>

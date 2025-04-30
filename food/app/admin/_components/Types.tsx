@@ -18,6 +18,7 @@ export type AddFoodFormProps = {
   category: string;
   onClose: () => void;
   categoryName: string;
+  getFoods: () => void
 };
 
 export type EditFoodFormProps = {
@@ -70,4 +71,11 @@ export type Order = {
   totalPrice: number;
   status: "pending" | "delivered" | "cancelled";
   createdAt: string;
+};
+
+export type FormValues = {
+  foodName: string;
+  price: string;
+  ingredients: string;
+  imgUrl: string;
 };
