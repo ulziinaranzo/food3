@@ -1,7 +1,6 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
-import { EditFoodFormProps } from "./Types";
-import { DropdownCategory } from "./DropDownCategory";
+import { Category, Food, FormValues } from "./Types";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +15,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EditIcon } from "@/app/assets/EditIcon";
+import { useForm } from "react-hook-form";
+import { HashLoader } from "react-spinners";
+import { TrashIcon } from "@/app/assets/TrashIcon";
+import { toast } from "sonner";
+import { SelectCategory } from "./SelectCategory";
+
+const UPLOAD_PRESET = "ml_default";
+const CLOUD_NAME = "dxhmgs7wt";
+
+export type EditFoodFormProps = {
+  onClose: () => void;
+  categoryName: string;
+  categories: Category[];
+  setSelectedCategory: (value: string) => void;
+  selectedCategory: string;
+  foodData: Food;
+  onUpdate: () => void;
+};
 
 export const EditFoodForm = ({
   categoryName,
@@ -23,68 +40,101 @@ export const EditFoodForm = ({
   setSelectedCategory,
   selectedCategory,
   foodData,
+  onUpdate,
 }: EditFoodFormProps) => {
-  const [name, setName] = useState<string>(foodData?.foodName || "");
-  const [category, setCategory] = useState<string>(
-    foodData?.categoryName || ""
-  );
-  const [ingredients, setIngredients] = useState<string>(
-    foodData?.ingredients || ""
-  );
-  const [price, setPrice] = useState<string>(foodData?.price || "");
-  const [img, setImg] = useState<FileList | null>(foodData?.img[0] || "");
+  const { register, handleSubmit, setValue } = useForm<FormValues>({
+    defaultValues: {
+      foodName: foodData.foodName,
+      price: foodData.price,
+      ingredients: foodData.ingredients,
+      imgUrl: Array.isArray(foodData.image)
+        ? foodData.image[0]
+        : foodData.image,
+      category: foodData.category,
+    },
+  });
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [preview, setPreview] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const uploadImg = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    try {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      return res.data.url;
+    } catch (err) {
+      console.error("Upload failed", err);
+      toast.error("Зураг оруулахад алдаа гарлаа");
+    }
+  };
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const uploadedUrl = await uploadImg(file);
+    if (uploadedUrl) {
+      setPreview(uploadedUrl);
+      setValue("imgUrl", uploadedUrl);
+    }
+  };
 
   useEffect(() => {
     if (foodData) {
-      setName(foodData.foodName || "");
-      setCategory(foodData.categoryName || "");
-      setIngredients(foodData.ingredients || "");
-      setPrice(foodData.price || "");
+      const initialImg = Array.isArray(foodData.image)
+        ? foodData.image[0]
+        : foodData.image;
+      setPreview(initialImg);
+      setValue("price", foodData.price);
+      setValue("category", foodData.category);
+      setValue("ingredients", foodData.ingredients);
+      setValue("imgUrl", initialImg);
     }
   }, [foodData]);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (name && category && ingredients && price && img?.length) {
-      const formData = new FormData();
-      formData.append("foodName", name);
-      formData.append("price", price);
-      formData.append("ingredients", ingredients);
-      formData.append("categoryName", categoryName ?? "");
-      formData.append("img", img[0]);
+  const onSubmit = async (data: FormValues) => {
+    if (!data.foodName || !data.price || !data.ingredients || !data.imgUrl) {
+      toast.error("Бүх хэсгийг бөглөнө үү");
+      return;
+    }
 
-      try {
-        await axios.post("http://localhost:3001/food", formData, {});
-        alert("Амжилттай өөрчиллөө, cutie");
-        setName("");
-        setCategory("");
-        setIngredients("");
-        setPrice("");
-        setImg(null);
-      } catch (error: any) {
-        console.error(error);
-        alert("Хоолны мэдээлэл өөрчлөхөд алдаа гарлаа");
-      }
-    } else {
-      alert("Бүх хэсгийг бөглөнө үү");
+    setLoading(true);
+    try {
+      await axios.post("http://localhost:3001/food", {
+        ...data,
+        image: data.imgUrl,
+        categoryName: selectedCategory,
+      });
+      toast.success("Амжилттай шинэчлэгдлээ");
+      onUpdate();
+    } catch {
+      toast.error("Хоол шинэчлэхэд алдаа гарлаа");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCategorySelect = (categoryId: string | null) => {
     if (categoryId) {
-      setCategory(categoryId);
+      setSelectedCategory(categoryId);
+      setValue("category", categoryId);
     }
   };
 
   const handleRemoveImage = () => {
-    setImg(null);
+    setPreview("");
+    setValue("imgUrl", "");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
-
-  const imgHave = !img || img.length === 0 || img === null;
 
   return (
     <Dialog>
@@ -99,104 +149,89 @@ export const EditFoodForm = ({
       <DialogContent className="sm:max-w-[484px]">
         <DialogHeader>
           <DialogTitle>Хоолны мэдээлэл</DialogTitle>
-          <DialogDescription></DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={onSubmit}
-          className="h-fit w-[472px] rounded-lg bg-white p-[24px] gap-[24px] flex flex-col"
-        >
-          <div className="grid gap-4 py-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid gap-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-left">
-                Хоолны нэр
-              </Label>
+              <Label htmlFor="foodName">Хоолны нэр</Label>
               <Input
+                {...register("foodName", { required: true })}
                 id="foodName"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="categoryName" className="text-right">
-                Хоолны категори
-              </Label>
-              <DropdownCategory
-                className="w-[288px] rounded-sm pl-[12px] py-[8px] border-[1px]"
-                setSelectedCategory={setCategory}
-                selectedCategory={category}
+              <Label>Хоолны категори</Label>
+              <SelectCategory
+                setSelectedCategory={setSelectedCategory}
+                selectedCategory={selectedCategory}
                 categories={categories}
                 handleCategorySelect={handleCategorySelect}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="ingredients" className="text-left">
-                Хоолны орц, найрлага
-              </Label>
+              <Label htmlFor="ingredients">Орц</Label>
               <Input
+                {...register("ingredients")}
                 id="ingredients"
-                value={ingredients}
-                onChange={(e) => setIngredients(e.target.value)}
                 className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="price" className="text-left">
-                Хоолны үнэ
-              </Label>
+            <div className="grid grid-cols-4 items-center gap-4 ">
+              <Label htmlFor="price">Үнэ</Label>
               <Input
+                {...register("price", { required: true })}
                 id="price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                type="number"
                 className="col-span-3"
               />
             </div>
-            <div className="flex gap-[16px]">
-              <div className="font-400 text-[12px] text-[#71717A] w-[120px]">
-                Хоолны зураг
-              </div>
-              {imgHave && (
-                <input
-                  type="file"
-                  className="relative w-[288px] h-[116px] rounded-md"
-                  ref={fileInputRef}
-                  onChange={(e) => setImg(e.target.files)}
-                />
-              )}
-            </div>
-            {imgHave && (
-              <div className="flex flex-col justify-center items-center absolute gap-[8px] right-[1020px] top-[670px] z-20">
-                <img
-                  className="w-[32px] h-[32px] ml-[20px]"
-                  src="/Images/AddImage.png"
-                  alt="Add image"
-                />
-                <div className="text-[14px] font-medium">
-                  Choose a file or drag & drop it here
-                </div>
-              </div>
-            )}
-            <div className="flex relative justify-center mt-4">
-              {img?.length && (
+
+            <div className="flex gap-[73px]">
+              <Label className="mb-[10px]">Зураг</Label>
+              {!preview ? (
                 <>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    ref={fileInputRef}
+                    className="w-full border rounded p-2 bg-[#7F7F800D] text-transparent h-[150px] z-10"
+                  />
+                  <div className="absolute right-[120px] top-[300px] flex flex-col items-center gap-2">
+                    <img src="/Images/AddImage.png" className="w-8 h-8" />
+                    <div className="text-sm font-medium">
+                      Choose or drag image
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="relative">
                   <img
-                    className="w-full h-[116px] object-cover rounded-[10px]"
-                    src={URL.createObjectURL(img[0])}
-                    alt="preview"
+                    src={preview}
+                    className="w-full h-[116px] object-cover rounded"
+                    alt="Preview"
                   />
                   <button
                     type="button"
-                    className="absolute top-2 right-2 text-[12px] flex justify-center items-center bg-[#E4E4E7] w-[28px] h-[28px] rounded-full"
                     onClick={handleRemoveImage}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-xs"
                   >
                     x
                   </button>
-                </>
+                </div>
               )}
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <div className="flex justify-between w-full">
+              <div className="w-[48px] h-[40px] rounded-lg bg-white border border-red-500 flex justify-center items-center">
+                <TrashIcon />
+              </div>
+              <Button type="submit" disabled={loading}>
+                {loading ? <HashLoader size={16} /> : "Өөрчлөлтийг хадгалах"}
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>

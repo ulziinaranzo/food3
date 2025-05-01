@@ -5,6 +5,7 @@ import { Category } from "../_components/Types";
 import CategoryList from "../_components/CategoryList";
 import { AvatarBadge } from "../_components/AvatarBadge";
 import CategoryFoods from "../_components/CategoryFoods";
+import { SelectCategory } from "../_components/SelectCategory";
 
 export default function Page() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -65,74 +66,13 @@ export default function Page() {
             </div>
           );
         })}
+        <SelectCategory
+          setSelectedCategory={setSelectedCategory}
+          selectedCategory={selectedCategory}
+          categories={categories}
+          handleCategorySelect={handleCategorySelect}
+        />
       </div>
-
-      {/* {onClose && (
-        <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg z-50">
-            <AddFoodForm
-              category={selectedCategory ?? ""}
-              onClose={() => setOnClose(false)}
-              categoryName={
-                selectedCategory
-                  ? categories.find((cat) => cat._id === selectedCategory)
-                      ?.categoryName || ""
-                  : ""
-              }
-            />
-          </div>
-        </div>
-      )} */}
-
-      {/* {addCategory && (
-        <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg z-50">
-            <AddCategory
-              onClose={() => setAddCategory(false)}
-              addCategory={() => {
-                getCategories();
-                setAddCategory(false);
-              }}
-            />
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }
-
-// <div className="flex flex-col ">
-// <div className="flex flex-wrap ">
-
-// {onClose && (
-//   <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
-//     <div className="bg-white rounded-lg shadow-lg z-50">
-//       <AddFoodForm
-//         category={selectedCategory ?? ""}
-//         onClose={() => setOnClose(false)}
-//         categoryName={
-//           selectedCategory
-//             ? categories.find((cat) => cat._id === selectedCategory)
-//                 ?.categoryName || ""
-//             : ""
-//         }
-//       />
-//     </div>
-//   </div>
-// )}
-
-// {addCategory && (
-//   <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
-//     <div className="bg-white rounded-lg shadow-lg z-50">
-//       <AddCategory
-//         onClose={() => setAddCategory(false)}
-//         addCategory={() => {
-//           getCategories();
-//           setAddCategory(false);
-//         }}
-//       />
-//     </div>
-//   </div>
-// )}
-// </div>
-// </div>

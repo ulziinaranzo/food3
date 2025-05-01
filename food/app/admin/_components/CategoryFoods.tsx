@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Category, Food } from "./Types";
+import { Food } from "./Types";
 import AddFoodCard from "./AddFoodCard";
-import FoodCardList from "./FoodCardList";
-import { strict } from "assert";
 import { FoodCard } from "./FoodCard";
 
 interface CategoryFoodsProps {

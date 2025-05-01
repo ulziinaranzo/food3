@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import CategoryBadge from "./CategoryBadge";
 import { AddCategory } from "./AddCategory";
 
-interface CategoryListProps {
+export interface CategoryListProps {
   selectedCategory: string | null;
   categories: { _id: string; categoryName: string }[];
   handleCategorySelect: (value: string) => void;
@@ -83,8 +83,14 @@ export default function CategoryList({
           <div className="w-[16px] h-[16px]" onclick={setAddCategory(true)}>
             <PlusIcon />
           </div>
-          {addCategory && <AddCategory onClose={() => }/>}
-        </button> */}
+        </button>
+        {addCategory && (
+          <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg z-50">
+              <AddCategory onClose={() => setAddCategory(false)} />
+            </div>
+          </div>
+        )} */}
       </div>
     </div>
   );

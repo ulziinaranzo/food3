@@ -7,6 +7,7 @@ export type Food = {
   ingredients: string;
   createdAt: string;
   updatedAt: string;
+  category: string;
 };
 
 export type Category = {
@@ -20,16 +21,6 @@ export type AddFoodFormProps = {
   categoryName: string;
   getFoods: () => void;
   categoryId: string;
-};
-
-export type EditFoodFormProps = {
-  category: string;
-  onClose: () => void;
-  categoryName: string;
-  categories: { _id: string; categoryName: string }[];
-  setSelectedCategory: (value: string) => void;
-  selectedCategory: string;
-  foodData: () => {};
 };
 
 export type AllCategory = {
@@ -78,7 +69,8 @@ export type Order = {
 
 export type FormValues = {
   foodName: string;
-  price: string;
+  price: number;
   ingredients: string;
   imgUrl: string;
+  category: string;
 };

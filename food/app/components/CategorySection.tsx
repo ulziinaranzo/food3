@@ -1,40 +1,50 @@
 "use client";
-import { AddIcon } from "../assets/AddIcon";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Food } from "../admin/_components/Types";
+import { FoodCardHome } from "./FoodCardHome";
 
-export const CategorySection = ({ category, foods }) => {
+type CategorySectionProps = {
+  onClose: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const CategorySection = ({ onClose }: CategorySectionProps) => {
+  const [foodsByCategory, setFoodsByCategory] = useState<
+    Record<string, Food[]>
+  >({});
+  const getFoods = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/grouped-by-category`
+      );
+      const grouped: Record<string, Food[]> = {};
+
+      response.data.data.forEach(
+        (group: { category: { categoryName: string }; foods: Food[] }) => {
+          const categoryName = group.category.categoryName;
+          grouped[categoryName] = group.foods;
+        }
+      );
+
+      setFoodsByCategory(grouped);
+    } catch (error) {
+      console.error("Хоол харуулахад алдаа гарлаа", error);
+    }
+  };
+
+  useEffect(() => {
+    getFoods();
+  }, []);
+
   return (
     <div className="w-full h-fit flex flex-col px-[88px] pb-[54px] gap-[54px] bg-[#404040]">
-      <div className="text-white font-[600] text-[30px]">{category}</div>
-      <div className="grid grid-cols-3 gap-[36px]">
-        {foods?.map((item, index) => (
-          <div
-            key={index}
-            className="flex flex-col p-4 gap-5 bg-white rounded-lg shadow-lg relative"
-          >
-            <img
-              src={item.image?.[0]}
-              alt={item.foodName}
-              className="w-full h-[210px] object-cover rounded-t-lg"
-            />
-            <button className="w-[44px] h-[44px] flex items-center justify-center absolute right-[36px] top-[163px] bg-white z-10 rounded-full cursor-pointer">
-              <AddIcon />
-            </button>
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-center">
-                <div className="font-[600] text-[24px] text-[#EF4444]">
-                  {item.foodName}
-                </div>
-                <div className="font-[600] text-[18px] text-[#09090B]">
-                  {item.price}
-                </div>
-              </div>
-              <div className="text-[14px] font-[400] text-[#09090B]">
-                {item.ingredients}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {Object.entries(foodsByCategory).map(([categoryName, items]) => (
+        <FoodCardHome
+          key={categoryName}
+          categoryName={categoryName}
+          items={items}
+        />
+      ))}
     </div>
   );
 };

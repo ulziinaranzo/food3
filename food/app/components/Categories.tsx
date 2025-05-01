@@ -11,25 +11,23 @@ import Link from "next/link";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-export const Categories = () => {
-  const [categories, setCategories] = useState([]);
-
-  const getCategories = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/category");
-      console.log("API response:", response.data);
-      const categories = response.data.categories;
-      setCategories(categories);
-      console.log("Categories:", categories);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
-  useEffect(() => {
-    getCategories();
-  }, []);
-
+export interface CategoryListProps {
+  selectedCategory: string | null;
+  categories: { _id: string; categoryName: string }[];
+  handleCategorySelect: (value: string) => void;
+}
+interface CategoriesProps {
+  selectedCategory: string | null;
+  categories: { _id: string; categoryName: string }[];
+  handleCategorySelect: (value: string) => void;
+  setFilteredCategories: (value: boolean) => void;
+}
+export const Categories = ({
+  categories,
+  selectedCategory,
+  handleCategorySelect,
+  setFilteredCategories,
+}: CategoriesProps) => {
   return (
     <div className="flex flex-col px-[48px] py-[32px] gap-[36px] bg-[#404040]">
       <Link href={"/order"}>
@@ -45,6 +43,7 @@ export const Categories = () => {
                 <Badge
                   variant="outline"
                   className="px-[20px] py-[4px] text-black bg-white hover:bg-[#EF4444] hover:text-white rounded-full text-[18px] font-[400]"
+                  onClick={() => setFilteredCategories(true)}
                 >
                   {item.categoryName}
                 </Badge>
