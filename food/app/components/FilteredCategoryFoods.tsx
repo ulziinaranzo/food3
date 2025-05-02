@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Food } from "../admin/_components/Types";
 import { FoodCardHome } from "./FoodCardHome";
+import { FoodCardCategories } from "./FoodCardCategories";
 
 interface FilteredCategoryFoodsProps {
   onClose: (value: boolean) => void;
@@ -25,27 +26,29 @@ export const FilteredCategoryFoods = ({
       const response = await axios.get(
         `http://localhost:3001/food?categoryId=${categoryId}`
       );
-      setFoods(response.data?.foodsByCategory || []); 
+      setFoods(response.data?.foodsByCategory || []);
     } catch (error) {
       console.error("Error fetching foods:", error);
     }
   };
 
   useEffect(() => {
-    getFilteredFoods();
-  }, [categoryId]); 
+    if (categoryId) {
+      getFilteredFoods();
+    }
+  }, [categoryId]);
 
   return (
-    <div className="flex flex-col w-full h-fit bg-white rounded-lg p-[24px]">
-      <div className="text-[20px] font-semibold text-[#09090B] mb-[16px]">
+    <div className="flex flex-col w-full h-fit p-[24px] px-[88px]">
+      <div className="text-[20px] font-semibold text-white mb-[16px]">
         {categoryName}
       </div>
 
-      <div className="flex gap-[16px] flex-wrap">
+      <div className="flex gap-[36px] flex-wrap">
         {foods?.length > 0 ? (
           foods.map((food) => (
-            <div key={food._id} className="grid grid-cols-4">
-              <FoodCardHome items={[food]} categoryName={categoryName} />
+            <div key={food._id} className="flex flex-wrap">
+              <FoodCardCategories items={food} />
             </div>
           ))
         ) : (

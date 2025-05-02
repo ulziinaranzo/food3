@@ -68,12 +68,6 @@ export default function Page() {
             </div>
           );
         })}
-        <SelectCategory
-          setSelectedCategory={setSelectedCategory}
-          selectedCategory={selectedCategory}
-          categories={categories}
-          handleCategorySelect={handleCategorySelect}
-        />
       </div>
     </div>
   );

@@ -1,13 +1,14 @@
+import { useEffect, useState } from "react";
 import { Category } from "./Types";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import axios from "axios";
 
 type DropDownCategoryProps = {
   selectedCategory: string;
@@ -19,17 +20,30 @@ type DropDownCategoryProps = {
 
 export const SelectCategory = ({
   selectedCategory,
-  categories,
   setSelectedCategory,
   handleCategorySelect,
 }: DropDownCategoryProps) => {
-  if (!Array.isArray(categories)) {
-    return null;
-  }
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const getAllCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/category");
+        setCategories(response.data.categories);
+      } catch (error) {
+        console.error("Категори авах үед алдаа гарлаа", error);
+      }
+    };
+
+    getAllCategories();
+  }, []);
+
   return (
     <Select
-      value={selectedCategory}
-      onValueChange={(value) => handleCategorySelect(value)}
+      onValueChange={(value) => {
+        handleCategorySelect(value);
+        setSelectedCategory(value);
+      }}
     >
       <SelectTrigger
         className={`w-[288px] rounded-sm pl-[12px] py-[8px] border-[1px] flex items-center justify-between`}
@@ -45,12 +59,11 @@ export const SelectCategory = ({
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {Array.isArray(categories) &&
-            categories.map((item) => (
-              <SelectItem key={item._id} value={item._id}>
-                {item.categoryName}
-              </SelectItem>
-            ))}
+          {categories.map((item) => (
+            <SelectItem key={item._id} value={item._id}>
+              {item.categoryName}
+            </SelectItem>
+          ))}
         </SelectGroup>
       </SelectContent>
     </Select>

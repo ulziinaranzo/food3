@@ -6,16 +6,20 @@ import axios from "axios";
 import { HashLoader } from "react-spinners";
 import { toast } from "sonner";
 
-type AddFoodFormProps= {
+type AddFoodFormProps = {
   categoryName: string;
   categoryId: string;
-}
+  onUpdate: () => void;
+};
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
 
-export const AddFoodForm = ({ categoryName, categoryId }: AddFoodFormProps) => {
+export const AddFoodForm = ({
+  categoryName,
+  categoryId,
+  onUpdate,
+}: AddFoodFormProps) => {
   const { register, handleSubmit, setValue, watch } = useForm<FormValues>();
-  const imgUrl = watch("imgUrl");
   const [preview, setPreview] = useState("");
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,7 +42,7 @@ export const AddFoodForm = ({ categoryName, categoryId }: AddFoodFormProps) => {
       );
       return response.data.url;
     } catch (error) {
-      toast.error("Зураг deploy хийхэд алдаа гарлаа")
+      toast.error("Зураг deploy хийхэд алдаа гарлаа");
       console.error("Зураг deploy хийхэд алдаа гарлаа", error);
     }
   };
@@ -68,6 +72,7 @@ export const AddFoodForm = ({ categoryName, categoryId }: AddFoodFormProps) => {
         category: categoryId,
       });
       toast.success("Амжилттай нэмэгдлээ");
+      onUpdate();
     } catch {
       toast.error("Хоол нэмэхэд алдаа гарлаа");
     } finally {

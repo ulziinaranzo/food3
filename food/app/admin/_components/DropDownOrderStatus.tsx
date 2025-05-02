@@ -1,53 +1,61 @@
-"use client"
-import { Button } from "@/components/ui/button"
+"use client";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import axios from "axios"
-import { useState } from "react"
-import clsx from "clsx"
+} from "@/components/ui/dropdown-menu";
+import axios from "axios";
+import { useState } from "react";
+import clsx from "clsx";
 
 const statusText = {
   delivered: "Хүргэгдсэн",
   cancelled: "Цуцалсан",
   pending: "Хүлээгдэж буй",
-}
+};
 
 const statusStyle = {
   delivered: "border-green-500 bg-green-100 text-green-700",
   cancelled: "border-gray-500 bg-gray-100 text-gray-700",
   pending: "border-red-500 bg-red-100 text-red-700",
-}
+};
 
 type Props = {
   orderId: string;
   status: "pending" | "delivered" | "cancelled";
-  onChange: (orderId: string, status: "pending" | "delivered" | "cancelled") => void;
-}
+  onChange: (
+    orderId: string,
+    status: "pending" | "delivered" | "cancelled"
+  ) => void;
+};
 
 export const DropDownStatus = ({ orderId, status, onChange }: Props) => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const handleStatusChange = async (newStatus: "pending" | "delivered" | "cancelled") => {
+  const handleStatusChange = async (
+    newStatus: "pending" | "delivered" | "cancelled"
+  ) => {
     try {
-      setLoading(true)
-      const res = await axios.patch(`http://localhost:3001/food-orderю${orderId}/status/`, {
-        status: newStatus,
-      })
+      setLoading(true);
+      const res = await axios.put(
+        `http://localhost:3001/food-order/${orderId}/status/`,
+        {
+          status: newStatus,
+        }
+      );
 
       if (res.status === 200) {
-        onChange(orderId, newStatus) 
+        onChange(orderId, newStatus);
       }
     } catch (err) {
-      console.error("Failed to update status", err)
-      alert("Статус шинэчлэхэд алдаа гарлаа")
+      console.error("Failed to update status", err);
+      alert("Статус шинэчлэхэд алдаа гарлаа");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <DropdownMenu>
@@ -75,5 +83,5 @@ export const DropDownStatus = ({ orderId, status, onChange }: Props) => {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};

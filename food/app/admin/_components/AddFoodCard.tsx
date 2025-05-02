@@ -13,11 +13,13 @@ import { AddFoodForm } from "./AddFoodForm";
 type AddFoodCardProps = {
   selectedCategoryName: string;
   categoryId: string;
+  onUpdate: () => void;
 };
 
 export default function AddFoodCard({
   selectedCategoryName,
   categoryId,
+  onUpdate,
 }: AddFoodCardProps) {
   const label = selectedCategoryName
     ? `${selectedCategoryName} цэсэнд хоол нэмэх`
@@ -50,6 +52,7 @@ export default function AddFoodCard({
         <AddFoodForm
           categoryName={selectedCategoryName}
           categoryId={categoryId}
+          onUpdate={onUpdate}
         />
       </DialogContent>
     </Dialog>

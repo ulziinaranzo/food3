@@ -20,7 +20,7 @@ import { HashLoader } from "react-spinners";
 import { TrashIcon } from "@/app/assets/TrashIcon";
 import { toast } from "sonner";
 import { SelectCategory } from "./SelectCategory";
-import { DialogClose } from "@/components/ui/dialog"
+import { DialogClose } from "@/components/ui/dialog";
 
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
@@ -33,7 +33,7 @@ export type EditFoodFormProps = {
   selectedCategory: string;
   foodData: Food;
   onUpdate: () => void;
-  onDelete: (foodId: string) => void
+  onDelete: (foodId: string) => void;
 };
 
 export const EditFoodForm = ({
@@ -43,9 +43,14 @@ export const EditFoodForm = ({
   selectedCategory,
   foodData,
   onUpdate,
-  onDelete
+  onDelete,
 }: EditFoodFormProps) => {
-  const { register, handleSubmit, setValue } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: {
       foodName: foodData.foodName,
       price: foodData.price,
@@ -66,7 +71,7 @@ export const EditFoodForm = ({
     formData.append("file", file);
     formData.append("upload_preset", UPLOAD_PRESET);
     try {
-      const res = await axios.post(
+      const res = await axios.put(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
@@ -110,20 +115,20 @@ export const EditFoodForm = ({
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:3001/food", {
+      await axios.put(`http://localhost:3001/food/${foodData._id}`, {
         ...data,
         image: data.imgUrl,
         categoryName: selectedCategory,
       });
+
+      await onUpdate();
       toast.success("Амжилттай шинэчлэгдлээ");
-      onUpdate();
     } catch {
       toast.error("Хоол шинэчлэхэд алдаа гарлаа");
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleCategorySelect = (categoryId: string | null) => {
     if (categoryId) {
@@ -154,8 +159,8 @@ export const EditFoodForm = ({
         <DialogHeader>
           <DialogTitle>Хоолны мэдээлэл</DialogTitle>
           <DialogDescription>
-    Энд хоолны дэлгэрэнгүй мэдээллийг засварлах боломжтой.
-  </DialogDescription>
+            Энд хоолны дэлгэрэнгүй мэдээллийг засварлах боломжтой.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid gap-4">
@@ -213,7 +218,7 @@ export const EditFoodForm = ({
                   </div>
                 </>
               ) : (
-                <div className="relative flex justify-center items-center w-full h-[180px] border border-dashed border-gray-300 rounded relative overflow-hidden">
+                <div className=" flex justify-center items-center w-full h-[180px] border border-dashed border-gray-300 rounded relative overflow-hidden">
                   <img
                     src={preview}
                     className="w-full h-full object-cover rounded"
@@ -233,13 +238,15 @@ export const EditFoodForm = ({
           <DialogFooter>
             <div className="flex justify-between w-full">
               <DialogClose asChild>
-              <div onClick={() => {
-  onDelete(foodData._id);
-  onUpdate();
-}}
-              className="w-[48px] h-[40px] rounded-lg bg-white border border-red-500 flex justify-center items-center">
-                <TrashIcon />
-              </div>
+                <div
+                  onClick={() => {
+                    onDelete(foodData._id);
+                    onUpdate();
+                  }}
+                  className="w-[48px] h-[40px] rounded-lg bg-white border border-red-500 flex justify-center items-center"
+                >
+                  <TrashIcon />
+                </div>
               </DialogClose>
               <Button type="submit" disabled={loading}>
                 {loading ? <HashLoader size={16} /> : "Өөрчлөлтийг хадгалах"}

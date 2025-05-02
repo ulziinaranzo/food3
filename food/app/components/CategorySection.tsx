@@ -37,7 +37,7 @@ export const CategorySection = ({ onClose }: CategorySectionProps) => {
   }, []);
 
   return (
-    <div className="w-full h-fit flex flex-col px-[88px] pb-[54px] gap-[54px] bg-[#404040]">
+    <div className="w-full h-fit flex flex-col px-[88px] pb-[54px] pt-[54px] gap-[54px] ">
       {Object.entries(foodsByCategory).map(([categoryName, items]) => (
         <FoodCardHome
           key={categoryName}

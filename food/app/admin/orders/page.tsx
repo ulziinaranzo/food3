@@ -4,7 +4,6 @@ import axios from "axios";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PaginationOrder } from "../_components/PaginationOrder";
 import { Order } from "../_components/Types";
-import { DateIcon } from "../../assets/DateIcon";
 import { TitleOrders } from "../_components/TitleOrders";
 import { AvatarBadge } from "../_components/AvatarBadge";
 import { DatePicker } from "../_components/DatePicker";
@@ -59,8 +58,10 @@ export default function Home() {
           <TitleOrders />
           {paginatedOrders.map((item, index) => {
             const statusClasses = {
-              delivered: "border-green-500 text-green-600 bg-green-50 hover:bg-green-100",
-              cancelled: "border-gray-400 text-gray-600 bg-gray-50 hover:bg-gray-100",
+              delivered:
+                "border-green-500 text-green-600 bg-green-50 hover:bg-green-100",
+              cancelled:
+                "border-gray-400 text-gray-600 bg-gray-50 hover:bg-gray-100",
               pending: "border-red-500 text-red-600 bg-red-50 hover:bg-red-100",
             };
             const statusText = {
@@ -81,7 +82,9 @@ export default function Home() {
                     {item.user?.name || "Нэр алга"}
                   </div>
                   <div className="flex items-center text-[14px] text-[#71717A] font-medium">
-                    {item.foodOrderItems.map((f) => f.food?.name || "Хоол алга").join(", ")}
+                    {item.foodOrderItems
+                      .map((f) => f.food?.foodName || "Хоол алга")
+                      .join(", ")}
                   </div>
                   <div className="flex items-center text-[14px] text-[#71717A] font-medium">
                     {format(new Date(item.createdAt), "yyyy-MM-dd")}
@@ -93,16 +96,19 @@ export default function Home() {
                     {item.address || "Хаяг байхгүй"}
                   </div>
                   <div className="flex items-center text-[14px] font-medium pl-[16px] py-[12px]">
-                   <DropDownStatus 
-                   orderId={item._id}
-                   status={item.status}
-                   onChange={async (id, newStatus) => {
-                    const updatedOrder = await changeStatus(id, newStatus)
-                    if (updatedOrder) {
-                      setOrders((prevOrders) => prevOrders.map((order) => order._id === updatedOrder._id ? updatedOrder : order))
-                    }
-                   }}
-                   />
+                    <DropDownStatus
+                      orderId={item._id}
+                      status={item.status}
+                      onChange={(id, newStatus) => {
+                        setOrders((prevOrders) =>
+                          prevOrders.map((order) =>
+                            order._id === id
+                              ? { ...order, status: newStatus }
+                              : order
+                          )
+                        );
+                      }}
+                    />
                   </div>
                 </div>
               </div>

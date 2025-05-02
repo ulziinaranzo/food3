@@ -23,6 +23,7 @@ export const HomePage = () => {
 
   const handleCategorySelect = async (categoryId: string) => {
     setSelectedCategory(categoryId);
+    setFilteredCategories(true);
   };
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export const HomePage = () => {
     }
   });
   return (
-    <div className="bg-black h-fit w-full ">
+    <div className="bg-[#2a2728] h-fit w-full">
       <Categories
         categories={categories}
         selectedCategory={selectedCategory}

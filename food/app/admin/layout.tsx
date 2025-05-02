@@ -47,22 +47,22 @@ export default function AdminLayout({
   return (
     <div className="flex h-screen w-screen overflow-hidden">
       <aside className="flex flex-col bg-white h-full w-[220px] pt-[36px] p-[20px] gap-[40px] overflow-y-auto">
-        {/* Logo and navigation */}
-        <div className="flex gap-[12px]">
-          <div className="w-[46px] h-[37.29px]">
-            <LogoIcon />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex">
-              <div className="text-black text-[20px] font-[600]">Nom</div>
-              <div className="text-[20px] font-[600] text-[#EF4444]">Nom</div>
+        <Link href={"/"}>
+          <div className="flex gap-[12px]">
+            <div className="w-[46px] h-[37.29px]">
+              <LogoIcon />
             </div>
-            <div className="text-[#71717A] text-[12px] font-[400]">
-              Swift delivery
+            <div className="flex flex-col">
+              <div className="flex">
+                <div className="text-black text-[20px] font-[600]">Nom</div>
+                <div className="text-[20px] font-[600] text-[#EF4444]">Nom</div>
+              </div>
+              <div className="text-[#71717A] text-[12px] font-[400]">
+                Swift delivery
+              </div>
             </div>
           </div>
-        </div>
-
+        </Link>
         <nav className="flex flex-col gap-4">
           <SidebarButton
             href="/admin/foodmenu"

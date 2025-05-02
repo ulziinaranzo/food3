@@ -8,25 +8,25 @@ interface FoodCardHomeProps {
 
 export const FoodCardHome = ({ categoryName, items }: FoodCardHomeProps) => {
   return (
-    <div key={categoryName}>
+    <div className="flex flex-col">
       <div className="text-white font-[600] text-[30px] mb-6">
         {categoryName}
       </div>
-      <div className="grid grid-cols-3 gap-[36px]">
+      <div className="flex flex-wrap gap-[36px]">
         {items.map((item) => (
           <div
             key={item._id}
-            className="flex flex-col p-4 gap-5 bg-white rounded-lg shadow-lg relative"
+            className="flex flex-col p-4 gap-5 bg-[#6f6f6f] rounded-lg shadow-lg relative"
           >
             {item.image?.[0] && (
               <img
                 src={item.image?.[0]}
                 alt={item.foodName}
-                className="w-full h-[210px] object-cover rounded-t-lg"
+                className="w-[365px] h-[210px] object-cover rounded-t-lg"
               />
             )}
 
-            <button className="w-[44px] h-[44px] flex items-center justify-center absolute right-[36px] top-[163px] bg-white z-10 rounded-full cursor-pointer">
+            <button className="w-[44px] h-[44px] flex items-center justify-center absolute right-[36px] top-[163px] bg-[white] z-10 rounded-full cursor-pointer">
               <AddIcon />
             </button>
 
@@ -35,11 +35,11 @@ export const FoodCardHome = ({ categoryName, items }: FoodCardHomeProps) => {
                 <div className="font-[600] text-[24px] text-[#EF4444]">
                   {item.foodName}
                 </div>
-                <div className="font-[600] text-[18px] text-[#09090B]">
+                <div className="font-[600] text-[18px] text-[white]">
                   {item.price}₮
                 </div>
               </div>
-              <div className="text-[14px] font-[400] text-[#09090B]">
+              <div className="text-[14px] font-[400] text-[white]">
                 {item.ingredients}
               </div>
             </div>

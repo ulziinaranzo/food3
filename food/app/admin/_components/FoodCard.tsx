@@ -10,7 +10,7 @@ type FoodCardProps = {
   selectedCategory: string;
   setSelectedCategory: (value: string) => void;
   categoryId: string;
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void;
   onUpdate: () => void;
 };
 type foodData = {
@@ -23,6 +23,7 @@ export const FoodCard = ({
   selectedCategory,
   setSelectedCategory,
   onDelete,
+  onUpdate,
   categoryId,
 }: FoodCardProps) => {
   const [editFood, setEditFood] = useState<boolean>(false);
@@ -33,10 +34,10 @@ export const FoodCard = ({
     setEditFood(false);
   };
   const handleDelete = () => {
-    onDelete(food._id)
-  }
+    onDelete(food._id);
+  };
   return (
-    <div className="flex flex-col p-4 gap-3 bg-white rounded-lg shadow-lg relative h-[241px] w-[250px]">
+    <div className="flex flex-col p-4 gap-3 bg-white rounded-lg shadow-lg relative h-[241px] w-[250px] ">
       <img
         src={food.image?.[0] ?? undefined}
         alt={food.foodName}
@@ -51,18 +52,18 @@ export const FoodCard = ({
 
       {editFood && (
         <EditFoodForm
+          categories={categories}
           setSelectedCategory={setSelectedCategory}
           selectedCategory={categoryId}
-          categories={categories}
           foodData={currentFood}
-          onUpdate={handleUpdateFood}
+          onUpdate={onUpdate}
           onClose={() => setEditFood(false)}
           categoryName={food.category}
           onDelete={onDelete}
         />
       )}
 
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 ">
         <div className="flex justify-between items-center text-[14px] font-[600]">
           <span className="text-[#EF4444]">{food.foodName}</span>
           <span className="text-[#09090B]">{food.price}₮</span>
