@@ -1,36 +1,43 @@
 "use client";
-
-import { AddFoodFormProps } from "./Types";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import axios from "axios";
+import { toast } from "sonner"
+import { useState } from "react";
+import { HashLoader } from "react-spinners";
 
 type FormData = {
   name: string;
-};
+}
 
-export const AddCategory = ({ onClose, addCategory }: AddFoodFormProps) => {
+type AddFoodFormProps = {
+  onClose: () => void
+}
+
+export const AddCategory = ({ onClose }: AddFoodFormProps) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<FormData>();
+  const [loading, setLoading] = useState<boolean>(false)
 
   const onSubmit = async (data: FormData) => {
+    setLoading(true)
     try {
       await axios.post("http://localhost:3001/category", {
         categoryName: data.name,
         updatedAt: new Date(),
         createdAt: new Date(),
       });
-      alert("Амжилттай нэмэгдлээ");
-      addCategory();
+      toast.success("Амжилттай нэмэгдлээ");
       onClose();
       reset();
     } catch (error: any) {
       console.error(error);
-      alert("Категори нэмэхэд алдаа гарлаа");
+      toast.error("Категори нэмэхэд алдаа гарлаа");
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -46,7 +53,7 @@ export const AddCategory = ({ onClose, addCategory }: AddFoodFormProps) => {
         <button
           type="button"
           onClick={onClose}
-          className="bg-[#F4F4F5] w-[36px] h-[36px] rounded-full flex justify-center items-center text-[15px]"
+          className="[#F4F4F5] w-[36px] h-[36px] rounded-full flex justify-center items-center text-[15px]"
         >
           x
         </button>
@@ -79,7 +86,7 @@ export const AddCategory = ({ onClose, addCategory }: AddFoodFormProps) => {
           type="submit"
           className="flex px-[16px] py-[10px] text-white bg-black text-[16px] font-medium rounded-lg"
         >
-          Нэмэх
+         {loading ? <HashLoader size={16}/> : "Нэмэх"} 
         </button>
       </div>
     </form>

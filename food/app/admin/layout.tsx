@@ -39,15 +39,15 @@ function SidebarButton({
     </Link>
   );
 }
-
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex w-full">
-      <aside className="flex flex-col bg-white h-fit w-[220px] pt-[36px] p-[20px] gap-[40px]">
+    <div className="flex h-screen w-screen overflow-hidden">
+      <aside className="flex flex-col bg-white h-full w-[220px] pt-[36px] p-[20px] gap-[40px] overflow-y-auto">
+        {/* Logo and navigation */}
         <div className="flex gap-[12px]">
           <div className="w-[46px] h-[37.29px]">
             <LogoIcon />
@@ -85,8 +85,9 @@ export default function AdminLayout({
         </nav>
       </aside>
 
-      <main className="flex-1 bg-[#E4E4E7]">{children}
-        <Toaster/>
+      <main className="flex-1 bg-[#E4E4E7] overflow-y-auto h-full p-4">
+        {children}
+        <Toaster />
       </main>
     </div>
   );

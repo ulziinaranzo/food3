@@ -15,13 +15,6 @@ export type Category = {
   categoryName: string;
   foods?: Food[];
 };
-export type AddFoodFormProps = {
-  category: string;
-  onClose: () => void;
-  categoryName: string;
-  getFoods: () => void;
-  categoryId: string;
-};
 
 export type AllCategory = {
   _id: string;

@@ -1,11 +1,15 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { AddFoodFormProps, FormValues } from "./Types";
+import { FormValues } from "./Types";
 import axios from "axios";
 import { HashLoader } from "react-spinners";
 import { toast } from "sonner";
 
+type AddFoodFormProps= {
+  categoryName: string;
+  categoryId: string;
+}
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
 
@@ -14,7 +18,7 @@ export const AddFoodForm = ({ categoryName, categoryId }: AddFoodFormProps) => {
   const imgUrl = watch("imgUrl");
   const [preview, setPreview] = useState("");
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [deployedImg, setDeployedImg] = useState("");
 
   const uploadImage = async (file: File | undefined) => {
@@ -34,6 +38,7 @@ export const AddFoodForm = ({ categoryName, categoryId }: AddFoodFormProps) => {
       );
       return response.data.url;
     } catch (error) {
+      toast.error("Зураг deploy хийхэд алдаа гарлаа")
       console.error("Зураг deploy хийхэд алдаа гарлаа", error);
     }
   };
@@ -162,7 +167,7 @@ export const AddFoodForm = ({ categoryName, categoryId }: AddFoodFormProps) => {
           type="submit"
           className="mt-12 w-[93px] h-10 rounded-lg bg-black text-white flex justify-center items-center text-sm font-medium"
         >
-          {loading ? <HashLoader size={16} color="white" /> : "Хоол нэмэх"}
+          {loading ? <HashLoader size={16} /> : "Хоол нэмэх"}
         </button>
       </div>
     </form>

@@ -9,11 +9,13 @@ export interface CategoryListProps {
   selectedCategory: string | null;
   categories: { _id: string; categoryName: string }[];
   handleCategorySelect: (value: string) => void;
+  refreshCategories: () => void;
 }
 
 export default function CategoryList({
   selectedCategory,
   categories,
+  refreshCategories,
   handleCategorySelect,
 }: CategoryListProps) {
   const [foodCountByCategory, setFoodCountByCategory] = useState<
@@ -79,18 +81,18 @@ export default function CategoryList({
           />
         ))}
 
-        {/* <button className="w-[36px] h-[36px] flex justify-center items-center bg-[#EF4444] rounded-full text-white mt-[2px]">
-          <div className="w-[16px] h-[16px]" onclick={setAddCategory(true)}>
+        <button className="w-[36px] h-[36px] flex justify-center items-center bg-[#EF4444] rounded-full text-white mt-[2px]">
+          <div className="w-[16px] h-[16px]" onClick={() => {setAddCategory(true)}}>
             <PlusIcon />
           </div>
         </button>
         {addCategory && (
           <div className="fixed inset-0 bg-gray bg-opacity-80 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg z-50">
-              <AddCategory onClose={() => setAddCategory(false)} />
+              <AddCategory onClose={()=> {setAddCategory(false); refreshCategories() }}/>
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

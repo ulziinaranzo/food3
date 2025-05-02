@@ -25,7 +25,7 @@ export const FilteredCategoryFoods = ({
       const response = await axios.get(
         `http://localhost:3001/food?categoryId=${categoryId}`
       );
-      setFoods(response.data?.foodsByCategory || []); // Default to an empty array if no data
+      setFoods(response.data?.foodsByCategory || []); 
     } catch (error) {
       console.error("Error fetching foods:", error);
     }
@@ -33,7 +33,7 @@ export const FilteredCategoryFoods = ({
 
   useEffect(() => {
     getFilteredFoods();
-  }, [categoryId]); // Fetch foods again when categoryId changes
+  }, [categoryId]); 
 
   return (
     <div className="flex flex-col w-full h-fit bg-white rounded-lg p-[24px]">
@@ -42,7 +42,6 @@ export const FilteredCategoryFoods = ({
       </div>
 
       <div className="flex gap-[16px] flex-wrap">
-        {/* Pass the foods array to FoodCardHome */}
         {foods?.length > 0 ? (
           foods.map((food) => (
             <div key={food._id} className="grid grid-cols-4">

@@ -3,7 +3,6 @@ import { EditIcon } from "@/app/assets/EditIcon";
 import { useState } from "react";
 import { Category, Food } from "./Types";
 import { EditFoodForm } from "./EditFoodForm";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 type FoodCardProps = {
   food: Food;
@@ -11,6 +10,8 @@ type FoodCardProps = {
   selectedCategory: string;
   setSelectedCategory: (value: string) => void;
   categoryId: string;
+  onDelete: (id: string) => void
+  onUpdate: () => void;
 };
 type foodData = {
   food: Food[];
@@ -21,6 +22,7 @@ export const FoodCard = ({
   categories,
   selectedCategory,
   setSelectedCategory,
+  onDelete,
   categoryId,
 }: FoodCardProps) => {
   const [editFood, setEditFood] = useState<boolean>(false);
@@ -30,7 +32,9 @@ export const FoodCard = ({
     setCurrentFood(currentFood);
     setEditFood(false);
   };
-
+  const handleDelete = () => {
+    onDelete(food._id)
+  }
   return (
     <div className="flex flex-col p-4 gap-3 bg-white rounded-lg shadow-lg relative h-[241px] w-[250px]">
       <img
@@ -54,6 +58,7 @@ export const FoodCard = ({
           onUpdate={handleUpdateFood}
           onClose={() => setEditFood(false)}
           categoryName={food.category}
+          onDelete={onDelete}
         />
       )}
 

@@ -53,6 +53,7 @@ export default function Page() {
             categories={categories}
             selectedCategory={selectedCategory}
             handleCategorySelect={handleCategorySelect}
+            refreshCategories={getCategories}
           />
         </div>
         {filteredCategory.map((item, index) => {
@@ -62,6 +63,7 @@ export default function Page() {
                 onClose={setOnClose}
                 categoryName={item.categoryName}
                 categoryId={item._id}
+
               />
             </div>
           );

@@ -20,6 +20,7 @@ import { HashLoader } from "react-spinners";
 import { TrashIcon } from "@/app/assets/TrashIcon";
 import { toast } from "sonner";
 import { SelectCategory } from "./SelectCategory";
+import { DialogClose } from "@/components/ui/dialog"
 
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
@@ -32,6 +33,7 @@ export type EditFoodFormProps = {
   selectedCategory: string;
   foodData: Food;
   onUpdate: () => void;
+  onDelete: (foodId: string) => void
 };
 
 export const EditFoodForm = ({
@@ -41,6 +43,7 @@ export const EditFoodForm = ({
   selectedCategory,
   foodData,
   onUpdate,
+  onDelete
 }: EditFoodFormProps) => {
   const { register, handleSubmit, setValue } = useForm<FormValues>({
     defaultValues: {
@@ -121,6 +124,7 @@ export const EditFoodForm = ({
     }
   };
 
+
   const handleCategorySelect = (categoryId: string | null) => {
     if (categoryId) {
       setSelectedCategory(categoryId);
@@ -149,6 +153,9 @@ export const EditFoodForm = ({
       <DialogContent className="sm:max-w-[484px]">
         <DialogHeader>
           <DialogTitle>Хоолны мэдээлэл</DialogTitle>
+          <DialogDescription>
+    Энд хоолны дэлгэрэнгүй мэдээллийг засварлах боломжтой.
+  </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid gap-4">
@@ -161,7 +168,7 @@ export const EditFoodForm = ({
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label>Хоолны категори</Label>
+              <Label className="gap-[3px]">Хоолны категори</Label>
               <SelectCategory
                 setSelectedCategory={setSelectedCategory}
                 selectedCategory={selectedCategory}
@@ -206,16 +213,16 @@ export const EditFoodForm = ({
                   </div>
                 </>
               ) : (
-                <div className="relative">
+                <div className="relative flex justify-center items-center w-full h-[180px] border border-dashed border-gray-300 rounded relative overflow-hidden">
                   <img
                     src={preview}
-                    className="w-full h-[116px] object-cover rounded"
+                    className="w-full h-full object-cover rounded"
                     alt="Preview"
                   />
                   <button
                     type="button"
                     onClick={handleRemoveImage}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-xs"
+                    className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs"
                   >
                     x
                   </button>
@@ -225,9 +232,15 @@ export const EditFoodForm = ({
           </div>
           <DialogFooter>
             <div className="flex justify-between w-full">
-              <div className="w-[48px] h-[40px] rounded-lg bg-white border border-red-500 flex justify-center items-center">
+              <DialogClose asChild>
+              <div onClick={() => {
+  onDelete(foodData._id);
+  onUpdate();
+}}
+              className="w-[48px] h-[40px] rounded-lg bg-white border border-red-500 flex justify-center items-center">
                 <TrashIcon />
               </div>
+              </DialogClose>
               <Button type="submit" disabled={loading}>
                 {loading ? <HashLoader size={16} /> : "Өөрчлөлтийг хадгалах"}
               </Button>
