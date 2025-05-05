@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { Food } from "../admin/_components/Types";
@@ -6,30 +6,25 @@ import { Food } from "../admin/_components/Types";
 type AddFoodToCartProps = {
   onClose: () => void;
   food: Food;
-}
-type CartItem =  {
+};
+type CartItem = {
   foodId: string;
   quantity: number;
-}
+};
 
-export const AddFoodToCart = ({food, onClose}: AddFoodToCartProps) => {
-  const [quantity, setQuantity] = useState<number>(1) 
-  const [totalPrice, setTotalPrice] = useState<number>(food.price)
+export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
+  const [quantity, setQuantity] = useState<number>(1);
+  const [totalPrice, setTotalPrice] = useState<number>(food.price);
 
   useEffect(() => {
-    setTotalPrice(quantity * food.price)
-  }, [quantity, food.price])
+    setTotalPrice(quantity * food.price);
+  }, [quantity, food.price]);
 
   const handleAddToCart = () => {
-    let existingCart: CartItem[] = [];
-    
-    try {
-      const parsed = JSON.parse(localStorage.getItem("cart") || "[]");
-      existingCart = Array.isArray(parsed) ? parsed as CartItem[] : [];
-    } catch (e) {
-      existingCart = [];
-    }
-  
+    const existingCart = JSON.parse(
+      localStorage.getItem("cart") || "[]"
+    ) as CartItem[];
+
     const updatedCart: CartItem[] = [
       ...existingCart,
       {
@@ -37,34 +32,61 @@ export const AddFoodToCart = ({food, onClose}: AddFoodToCartProps) => {
         quantity,
       },
     ];
-  
+
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-    onClose(); 
+    onClose();
   };
-  
+
   return (
-        <div className="flex absolute inset-0 bg-white rounded-lg w-[826px] h-[412px] p-[24px] gap-[24px] z-10">
-        <img src={food.image?.[0]} className="w-[377px] h-[364px] rounded-lg"/> 
-        <div className="flex flex-col">
-          <button className="ml-[340px] flex justify-center items-center rounded-full w-[36px] h-[36px] text-[16px] bg-white border-[1px] pb-[12px] text-[grey] pt-[6px]" onClick={onClose}>x</button>
-          <div className="text-[30px] font-[600] text-[#EF4444] mb-[12px]">{food.foodName}</div>
-          <div className="font-[400] text-[16px] text-[#09090B] mb-[90px]">{food.ingredients}</div>
-          <div className="flex flex justify-between">
-            <div className="flex flex-col">
-            <div className="font-[400] text-[16px] text-[#09090B]">Нийт үнэ</div>
-            <div className="text-[24px] text-[#09090B] font-[600]">{totalPrice}₮</div>
-            </div>
-            <div className="flex justify-center items-center mt-[6px] gap-[12px]">
-            <button onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-            className="rounded-full bg-white w-[44px] h-[44px] text-[16px] border-[1px]" >-</button>
-            <div className="text-[#09090B] text-[18px] font-[600]">{quantity}</div>
-            <button onClick={() => setQuantity((prev) => prev + 1)}
-            className="rounded-full bg-white w-[44px] h-[44px] text-[16px] border-[1px]">+</button>
-          </div>
-          </div>
-          <button onClick={handleAddToCart}
-          className="w-[377px] h-[44px] rounded-lg bg-black text-white flex justify-center items-center mt-[24px] px-[20px]">Сагсанд нэмэх</button>
+    <div className="flex absolute inset-0 bg-white rounded-lg w-[826px] h-[412px] p-[24px] gap-[24px] z-10">
+      <img src={food.image?.[0]} className="w-[377px] h-[364px] rounded-lg" />
+      <div className="flex flex-col">
+        <button
+          className="ml-[340px] flex justify-center items-center rounded-full w-[36px] h-[36px] text-[16px] bg-white border-[1px] pb-[12px] text-[grey] pt-[6px]"
+          onClick={onClose}
+        >
+          x
+        </button>
+        <div className="text-[30px] font-[600] text-[#EF4444] mb-[12px]">
+          {food.foodName}
         </div>
+        <div className="font-[400] text-[16px] text-[#09090B] mb-[90px]">
+          {food.ingredients}
+        </div>
+        <div className="flex justify-between">
+          <div className="flex flex-col">
+            <div className="font-[400] text-[16px] text-[#09090B]">
+              Нийт үнэ
+            </div>
+            <div className="text-[24px] text-[#09090B] font-[600]">
+              {totalPrice}₮
+            </div>
+          </div>
+          <div className="flex justify-center items-center mt-[6px] gap-[12px]">
+            <button
+              onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+              className="rounded-full bg-white w-[44px] h-[44px] text-[16px] border-[1px]"
+            >
+              -
+            </button>
+            <div className="text-[#09090B] text-[18px] font-[600]">
+              {quantity}
+            </div>
+            <button
+              onClick={() => setQuantity((prev) => prev + 1)}
+              className="rounded-full bg-white w-[44px] h-[44px] text-[16px] border-[1px]"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <button
+          onClick={handleAddToCart}
+          className="w-[377px] h-[44px] rounded-lg bg-black text-white flex justify-center items-center mt-[24px] px-[20px]"
+        >
+          Сагсанд нэмэх
+        </button>
       </div>
-    )
-}
+    </div>
+  );
+};

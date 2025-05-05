@@ -44,7 +44,7 @@ export const FilteredCategoryFoods = ({
         {categoryName}
       </div>
 
-      <div className="flex gap-[36px] grid grid-cols-3">
+      <div className="gap-[36px] grid grid-cols-3">
         {foods?.length > 0 ? (
           foods.map((food) => (
             <div key={food._id} className="flex flex-wrap">

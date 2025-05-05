@@ -63,7 +63,6 @@ export default function Page() {
                 onClose={setOnClose}
                 categoryName={item.categoryName}
                 categoryId={item._id}
-
               />
             </div>
           );

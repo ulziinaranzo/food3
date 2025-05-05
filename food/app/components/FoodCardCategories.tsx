@@ -1,17 +1,17 @@
 "use client";
 import { EditIcon } from "@/app/assets/EditIcon";
 import { useState } from "react";
-import { Category, Food } from "./Types";
-import { EditFoodForm } from "./EditFoodForm";
+
 import { AddIcon } from "../assets/AddIcon";
+import { Food } from "../admin/_components/Types";
+import { AddFoodToCart } from "./AddFoodToCart";
 
 type FoodCardProps = {
   items: Food;
 };
 
 export const FoodCardCategories = ({ items }: FoodCardProps) => {
-  const [addCartFood, setAddCartFood] = useState<boolean>(false);
-  const [currentFood, setCurrentFood] = useState<Food>(items);
+  const [selectedFood, setSelectedFood] = useState<Food | null>(null);
 
   return (
     <div className="flex flex-col p-4 gap-5 bg-[#bebebe] rounded-lg shadow-lg relative w-[398px]">
@@ -22,13 +22,15 @@ export const FoodCardCategories = ({ items }: FoodCardProps) => {
       />
       <button
         className="w-[44px] h-[44px] flex items-center justify-center absolute right-[36px] top-[163px] bg-[white] z-10 rounded-full shadow-md cursor-pointer"
-        onClick={() => setAddCartFood(true)}
+        onClick={() => setSelectedFood(items)}
       >
         <AddIcon />
       </button>
       <div className="flex flex-col gap-3 ">
         <div className="flex justify-between items-center  ">
-          <span className="text-[#EF4444] text-[24px] font-[600]">{items.foodName}</span>
+          <span className="text-[#EF4444] text-[24px] font-[600]">
+            {items.foodName}
+          </span>
           <span className="text-[black] text-[18px] font-[600]">
             {items.price}₮
           </span>
@@ -37,6 +39,14 @@ export const FoodCardCategories = ({ items }: FoodCardProps) => {
           {items.ingredients}
         </div>
       </div>
+      {selectedFood?._id === items._id && (
+        <div className="absolute top-0 left-10 z-50 w-full h-full bg-opacity-60 flex justify-center items-center rounded-lg bg-white">
+          <AddFoodToCart
+            food={selectedFood}
+            onClose={() => setSelectedFood(null)}
+          />
+        </div>
+      )}
     </div>
   );
 };
