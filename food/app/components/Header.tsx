@@ -7,7 +7,7 @@ import Link from "next/link";
 export const Header = () => {
     return (
         <div className="flex w-max-[1440px] bg-[#18181B] h-[68px] pr-[88px] pl-[88px] justify-between ">
-            <div className="flex gap-[12px]">
+            <div className="flex justify-center items-center gap-[12px]">
             <div className="w-[46px] h-[37.29px]">
                 <LogoIcon/>
             </div>

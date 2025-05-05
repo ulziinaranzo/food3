@@ -28,7 +28,7 @@ export const Categories = ({
 }: CategoriesProps) => {
   return (
     <div className="flex flex-col px-[48px] pt-[32px] gap-[36px]">
-      <div className="text-white text-[30px]">
+      <div className="text-white text-[30px] ml-[35px]">
         <b>Categories</b>
       </div>
       <div className="px-[48px] pt-[36px] pb-[72px]">
@@ -38,7 +38,7 @@ export const Categories = ({
               <CarouselItem key={item._id} className="basis-auto pl-2">
                 <Badge
                   variant="outline"
-                  className="px-[20px] py-[4px] text-black bg-white hover:bg-[#EF4444] hover:text-white rounded-full text-[18px] font-[400]"
+                  className="px-[20px] py-[4px] text-black bg-white hover:bg-[#EF4444] border-none hover:text-white rounded-full text-[18px] font-[400]"
                   onClick={() => {
                     handleCategorySelect(item._id);
                     setFilteredCategories(true);

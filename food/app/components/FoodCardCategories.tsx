@@ -14,7 +14,7 @@ export const FoodCardCategories = ({ items }: FoodCardProps) => {
   const [currentFood, setCurrentFood] = useState<Food>(items);
 
   return (
-    <div className="flex flex-col p-4 gap-5 bg-[#6f6f6f] rounded-lg shadow-lg relative ">
+    <div className="flex flex-col p-4 gap-5 bg-[#bebebe] rounded-lg shadow-lg relative w-[398px]">
       <img
         src={items.image?.[0] ?? undefined}
         alt={items.foodName}
@@ -28,12 +28,12 @@ export const FoodCardCategories = ({ items }: FoodCardProps) => {
       </button>
       <div className="flex flex-col gap-3 ">
         <div className="flex justify-between items-center  ">
-          <span className="text-[#EF4444] text-[24px]">{items.foodName}</span>
-          <span className="text-[white] text-[18px] font-[600]">
+          <span className="text-[#EF4444] text-[24px] font-[600]">{items.foodName}</span>
+          <span className="text-[black] text-[18px] font-[600]">
             {items.price}₮
           </span>
         </div>
-        <div className="text-[14px] font-[400] text-[white] truncate">
+        <div className="text-[14px] font-[500] text-[black] truncate">
           {items.ingredients}
         </div>
       </div>
