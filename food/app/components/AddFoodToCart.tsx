@@ -21,19 +21,25 @@ export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
   }, [quantity, food.price]);
 
   const handleAddToCart = () => {
-    const existingCart = JSON.parse(
+    const oldCart: CartItem[] = JSON.parse(
       localStorage.getItem("cart") || "[]"
-    ) as CartItem[];
+    );
 
-    const updatedCart: CartItem[] = [
-      ...existingCart,
-      {
-        foodId: food._id,
-        quantity,
-      },
-    ];
+    const found = oldCart.find((item) => item.foodId === food._id);
 
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    let newCart;
+
+    if (found) {
+      newCart = oldCart.map((item) =>
+        item.foodId === food._id
+          ? { ...item, quantity: item.quantity + quantity }
+          : item
+      );
+    } else {
+      newCart = [...oldCart, { foodId: food._id, quantity }];
+    }
+
+    localStorage.setItem("cart", JSON.stringify(newCart));
     onClose();
   };
 
