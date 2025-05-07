@@ -67,3 +67,9 @@ export type FormValues = {
   imgUrl: string;
   category: string;
 };
+
+export type formData = {
+  username: string;
+  password: string;
+  confirmPassword: string;
+};

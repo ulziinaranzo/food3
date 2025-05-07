@@ -1,25 +1,51 @@
-"use client"
+"use client";
 
-import { useState, useContext } from "react"
-import { motion } from "framer-motion"
-import { Step } from "./step"
-import { Step1 } from "./step1"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Step } from "./_components/step";
+import { Step1 } from "./_components/step1";
+import { useAuth } from "@/app/_providers/AuthProvider";
+
+export type FormData = {
+  email: string; 
+  password: string;
+  confirmPassword: string;
+};
 
 export default function Home() {
-  const [step, setStep] = useState<number>(0)
-  type StepProps = {
-    handlePrev: () => void
-    handleNext: () => void
-  }
-  const handlePrev = async () => setStep((prev) => prev - 1)
-  const handleNext = async () => setStep((prev) => prev + 1)
+  const [step, setStep] = useState<number>(0);
+  const { signUp } = useAuth();
+
+  const [formData, setFormData] = useState<FormData>({
+    email: "", 
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handlePrev = async () => setStep((prev) => prev - 1);
+  const handleNext = async () => {
+    if (step === 1) {
+      try {
+        await signUp(formData.email, formData.password); 
+        console.log("✅ Бүртгэл амжилттай");
+      } catch (error) {
+        console.error("Бүртгэхэд алдаа гарлаа", error);
+      }
+    }
+
+    setStep((prev) => prev + 1);
+  };
 
   const handleAnimation = {
     initial: { opacity: 0, x: -100 },
     animate: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: 100 },
     transition: { duration: 0.5 },
-  }
+  };
+
+  const handleFormDataChange = (newData: Partial<FormData>) => {
+    setFormData((prevData) => ({ ...prevData, ...newData }));
+  };
 
   return (
     <motion.div
@@ -30,8 +56,22 @@ export default function Home() {
       animate="animate"
       exit="exit"
     >
-      {step === 0 && <Step handlePrev={handlePrev} handleNext={handleNext} />}
-      {step === 1 && <Step1 handlePrev={handlePrev} handleNext={handleNext} />}
+      {step === 0 && (
+        <Step
+          handlePrev={handlePrev}
+          handleNext={handleNext}
+          formData={formData}
+          onFormDataChange={handleFormDataChange}
+        />
+      )}
+      {step === 1 && (
+        <Step1
+          handlePrev={handlePrev}
+          handleNext={handleNext}
+          formData={formData}
+          onFormDataChange={handleFormDataChange}
+        />
+      )}
     </motion.div>
-  )
+  );
 }
