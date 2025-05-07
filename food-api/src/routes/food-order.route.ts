@@ -7,15 +7,17 @@ import {
   createFoodOrderController,
   updateFoodOrderStatusController,
 } from "../controllers/food-order/index";
+import { authorizationMiddleware } from "../middlewares/authorization-middleware";
+import { authenticationMiddleware } from "../middlewares/authentication-middleware";
 
 const foodOrderRouter = Router();
 
-foodOrderRouter.get("/", getFoodOrdersController);
-foodOrderRouter.get("/:id", getFoodOrderController);
+foodOrderRouter.get("/", authenticationMiddleware, authorizationMiddleware, getFoodOrdersController);
+foodOrderRouter.get("/:id", authenticationMiddleware, authorizationMiddleware, getFoodOrderController);
 foodOrderRouter.post("/", createFoodOrderController);
 foodOrderRouter.put("/:id", updateFoodOrderController);
 foodOrderRouter
-  .delete("/:id", deleteFoodOrderController)
-  .put("/:id/status", updateFoodOrderStatusController);
+  .delete("/:id", authenticationMiddleware, authorizationMiddleware, deleteFoodOrderController)
+  .put("/:id/status", authenticationMiddleware, authorizationMiddleware, updateFoodOrderStatusController);
 
 export default foodOrderRouter;

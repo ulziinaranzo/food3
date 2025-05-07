@@ -45,20 +45,19 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
-      <div className="flex ">
-        <div className="flex flex-col pt-[326px] pl-[100px] pb-[410px] pr-[48px] mb-[24px] ">
+      <div className="flex">
+        <div className="flex flex-col pt-[326px] pl-[100px] pb-[410px] pr-[48px]">
           <Form {...form}>
-            <div className="flex flex-col gap-[24px]">
+            <div className="flex flex-col">
               <img
                 src="/Images/Icon-Button.png"
-                className="w-[36px] h-[36px] mb-[24px]"
+                className="w-[36px] h-[36px] cursor-pointer mb-[20px]"
                 onClick={handlePrev}
               />
-              <div className="text-black text-[24px] font-[600]">
-                Create your account
-              </div>
+              <div className="text-black text-[24px] font-[600] mt-[24px]">
+Нэвтрэх              </div>
               <div className="text-[16px] text-[#71717A] font-[400] mb-[24px]">
-                Sign up to explore your favorite dishes.
+                Нэвтрээд хүссэн хоолоо захиалаарай.
               </div>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -72,7 +71,7 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
                       <FormControl>
                         <Input
                           type={showPassword ? "text" : "password"}
-                          placeholder="Enter your password"
+                          placeholder="Нууц үгээ оруулна уу"
                           {...field}
                         />
                       </FormControl>
@@ -80,23 +79,7 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Enter your password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 mt-[8px]">
                   <Checkbox
                     id="showPassword"
                     checked={showPassword}
@@ -104,21 +87,16 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
                   />
                   <Label htmlFor="showPassword">Show password</Label>
                 </div>
-
-                <Button type="submit" className="w-[416px] h-[36px]">
+                <div className="flex gap-[12px] mt-[24px] justify-start ">
+                <div className="text-[16px] text-[#2563EB]">Кодоо мартсан уу?</div></div>
+                <Link href={"/"}>
+                <Button type="submit" className="w-[416px] h-[36px] mt-[24px]">
                   Let's Go
                 </Button>
+                </Link> 
               </form>
             </div>
           </Form>
-          <div className="flex gap-[12px] items-center justify-center mt-[50px]">
-            <div className="text-[16px] text-[#71717A]">
-              Already have an account?
-            </div>
-            <div className="text-[16px] text-[#2563EB] cursor-pointer">
-              Log In
-            </div>
-          </div>
         </div>
         <div className="p-[20px]">
           <img

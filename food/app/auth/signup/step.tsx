@@ -92,7 +92,8 @@ export const Step = ({ handleNext }: StepProps) => {
             <div className="text-[16px] text-[#71717A]">
               Already have an account?
             </div>
-            <div className="text-[16px] text-[#2563EB]">Log In</div>
+            <Link href={"/auth/login"}>
+            <div className="text-[16px] text-[#2563EB]">Log In</div></Link>
           </div>
         </div>
         <div className="p-[20px]">

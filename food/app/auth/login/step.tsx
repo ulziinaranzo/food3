@@ -13,8 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
 type StepProps = {
@@ -53,15 +51,15 @@ export const Step = ({ handleNext }: StepProps) => {
               <Link href={"/"}>
                 <img
                   src="/Images/Icon-Button.png"
-                  className="w-[36px] h-[36px]"
+                  className="w-[36px] h-[36px] mb-[20px]"
                 />
               </Link>
 
               <div className="text-black text-[24px] font-[600]">
-                Create your account
+              Нэвтрэх
               </div>
               <div className="text-[16px] text-[#71717A] font-[400] mb-[24px]">
-                Sign up to explore your favorite dishes.
+              Нэвтрээд хүссэн хоолоо захиалаарай
               </div>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -74,7 +72,7 @@ export const Step = ({ handleNext }: StepProps) => {
                     <FormItem>
                       <FormControl>
                         <Input
-                          placeholder="Enter your email address"
+                          placeholder="Имэйл хаягаа оруулна уу"
                           {...field}
                         />
                       </FormControl>
@@ -82,18 +80,16 @@ export const Step = ({ handleNext }: StepProps) => {
                     </FormItem>
                   )}
                 />
+                <div className="flex gap-[12px] mt-[24px] justify-start ">
+            <div className="text-[16px] text-[#2563EB]">Кодоо мартсан уу?</div>
+          </div>
                 <Button type="submit" className="w-[416px] h-[36px]">
                   Let's Go
                 </Button>
               </form>
             </div>
           </Form>
-          <div className="flex gap-[12px] mt-[24px] justify-center items-center ">
-            <div className="text-[16px] text-[#71717A]">
-              Already have an account?
-            </div>
-            <div className="text-[16px] text-[#2563EB]">Log In</div>
-          </div>
+          
         </div>
         <div className="p-[20px]">
           <img

@@ -25,10 +25,13 @@ type StepProps = {
 const formSchema = z.object({
   password: z
     .string()
-    .min(6, { message: "Password must be at least 6 characters." }),
+    .min(6, { message: "6-с дээш урттай байх ёстой." }),
   confirmPassword: z
     .string()
-    .min(1, { message: "Please confirm your password." }),
+    .min(1, { message: "Нууц үгээ давтан оруулна уу." })
+    .refine((value:string, context:z.ZodAny) => value !== context?.parent?.password, {
+      message: "Нууц үг таарахгүй байна",
+    }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -123,13 +126,14 @@ export const Step1 = ({ handlePrev, handleNext }: StepProps) => {
                   Show password
                 </Label>
               </div>
-
+              <Link href={"/"}>
               <Button
                 type="submit"
                 className="w-full h-10 bg-black text-white rounded-lg mt-[20px]"
               >
                 Let's Go
               </Button>
+              </Link>
             </form>
           </Form>
 

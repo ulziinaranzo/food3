@@ -9,14 +9,16 @@ import {
 } from "../controllers/food/index";
 import { getTotalFoodCount } from "../controllers/food/get-count-foods-controller";
 import { getFoodsGroupedByCategory } from "../controllers/food/get-all-foods-by category";
+import { authenticationMiddleware } from "../middlewares/authentication-middleware";
+import { authorizationMiddleware } from "../middlewares/authorization-middleware";
 const foodRouter = Router();
 
 foodRouter
   .get("/food/:id", getFoodController)
   .get("/food", getByCategoryAndFoodsController)
-  .put("/food/:id", updateFoodController)
-  .delete("/food/:id", deleteFoodController)
-  .post("/food", createFoodController)
+  .put("/food/:id", authenticationMiddleware, authorizationMiddleware, updateFoodController)
+  .delete("/food/:id", authenticationMiddleware, authorizationMiddleware, deleteFoodController)
+  .post("/food", authenticationMiddleware, authorizationMiddleware, createFoodController)
   .get("/count/:categoryId", getFoodCountByCategory) 
   .get("/count", getTotalFoodCount)
   .get("/grouped-by-category", getFoodsGroupedByCategory) 
