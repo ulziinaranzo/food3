@@ -14,6 +14,10 @@ type User = {
   email: string;
   image: string;
   role: string;
+  phoneNumber?: string;
+  address?: string;
+  _id: string;
+  token?: string
 };
 
 type AuthContextType = {

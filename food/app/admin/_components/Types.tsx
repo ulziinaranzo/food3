@@ -73,3 +73,13 @@ export type formData = {
   password: string;
   confirmPassword: string;
 };
+export type User = {
+  _id: string;
+  email: string;
+  role: "admin" | "user";
+  phoneNumber?: string;
+  address?: string;
+  isVerified?: boolean;
+  createdAt: string;
+  updatedAt: string;
+};

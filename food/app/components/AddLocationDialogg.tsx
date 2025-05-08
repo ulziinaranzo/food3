@@ -1,25 +1,56 @@
-"use client"
-export const AddLocationDialogg = () => {
-    return (
-        <dialog open className="fixed top-[50%] left-[50%] bg-white rounded-lg shadow-lg">
-  <div className="w-[480px] h-[308px] p-[24px]">
-    <div className="flex justify-between mb-[24px]">
-      <div className="text-[#09090B] text-[18px] font-[600]">Хүргэлтийн хаяг</div>
-      <button className="w-[36px] h-[36px] rounded-full flex justify-center items-center bg-[#F4F4F5] text-[#18181B] text-[18px]">x</button>
-    </div>
-    <textarea
-      placeholder="Барилгын дугаар, орц, орон сууцны дугаар зэрэг тодорхой хаягийн мэдээллийг оруулна уу"
-      className="w-[432px] h-[112px] rounded-lg px-[8px] py-[12px] resize-none"
-    />
-    <div className="flex justify-end gap-[16px] mt-[30px]">
-      <button className="px-[16px] py-[12px] bg-white border border-[#E4E4E7] rounded-full text-sm">
-        Буцах
-      </button>
-      <button className="px-[16px] py-[12px] bg-black text-white rounded-full text-sm">
-        Оруулах
-      </button>
-    </div>
-  </div>
-</dialog>
-    )
-}
+"use client";
+import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import axios from "axios";
+
+export const AddLocationDialog = ({ open, setOpen, user, address }: { open: boolean; setOpen: (value: boolean) => void; user: any, address: string }) => {
+  const [localAddress, setLocalAddress] = useState(address);
+
+  const handleSubmit = async () => {
+    try {
+      const res = await axios.put(`http://localhost:3001/user/${user._id}`,
+        {localAddress},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`
+          }
+        })
+        toast.success("Хаяг амжилттай хадгалагдлаа!");
+
+        setOpen(false);
+    
+    } catch (err) {
+      toast.error("Хаяг илгээхэд алдаа гарлаа");
+    }
+  };
+
+  useEffect(() => {
+    setLocalAddress(address)
+  }, [address])
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Хаяг оруулах</DialogTitle>
+        </DialogHeader>
+        <div className="flex justify-center">
+        <img src="/Images/huurhnuu.png" className="flex justify-center w-[100px] h-[100px]"/>
+        </div>
+       
+        <textarea
+          value={localAddress}
+          onChange={(e) => setLocalAddress(e.target.value)}
+          placeholder="Барилгын дугаар, орц, орон сууцны дугаар зэрэг тодорхой хаягийн мэдээллийг оруулна уу"
+          className="w-full h-[112px] rounded-lg px-4 py-3 resize-none border"
+        />
+        <div className="flex justify-end gap-3 mt-4">
+          <button onClick={() => setOpen(false)} className="border px-4 py-2 rounded-full text-sm">Буцах</button>
+          <button onClick={handleSubmit} className="bg-black text-white px-4 py-2 rounded-full text-sm">Оруулах</button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
