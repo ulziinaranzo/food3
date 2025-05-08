@@ -4,16 +4,22 @@ import { userModel } from "../../models/user-model";
 export const updateUserController: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedData = req.body;
+    const { address, phoneNumber, password, role, isVerified, email } =
+      req.body;
 
-    if (!updatedData || Object.keys(updatedData).length === 0) {
-      return res.status(400).json({ message: "No data provided for update" });
+    if (!id) {
+      return res.status(400).json({ message: "Энэ хэрэглэгч байхгүй байна" });
     }
 
     const updatedUser = await userModel.findByIdAndUpdate(
       id,
       {
-        ...updatedData,
+        address,
+        phoneNumber,
+        password,
+        role,
+        isVerified,
+        email,
         updatedAt: new Date(),
       },
       { new: true }
@@ -29,6 +35,8 @@ export const updateUserController: RequestHandler = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating user:", error);
-    return res.status(500).json({ message: "Server error while updating user" });
+    return res
+      .status(500)
+      .json({ message: "Server error while updating user" });
   }
 };

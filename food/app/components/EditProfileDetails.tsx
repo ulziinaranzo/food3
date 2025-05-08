@@ -3,25 +3,22 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import { HashLoader } from "react-spinners";
+import { useAuth } from "@/app/_providers/AuthProvider";
 
 type EditProfileProps = {
-  profileData: any;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  setProfileData: React.Dispatch<React.SetStateAction<any>>;
 };
 
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
 
-export const EditProfile = ({
-  profileData,
-  setIsEditing,
-  setProfileData,
-}: EditProfileProps) => {
-  const [name, setName] = useState(profileData.name || "");
-  const [phoneNumber, setPhoneNumber] = useState(profileData.phoneNumber || "");
-  const [address, setAddress] = useState(profileData.address || "");
-  const [profileImage, setProfileImage] = useState(profileData.profileImage || "");
+export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
+  const { user, token } = useAuth();
+  console.log("user in EditProfile:", user);
+  const [name, setName] = useState(user?.name || "");
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || "");
+  const [address, setAddress] = useState(user?.address || "");
+  const [profileImage, setProfileImage] = useState(user?.image || "");
   const [loading, setLoading] = useState(false);
 
   const uploadImage = async (file: File) => {
@@ -42,30 +39,32 @@ export const EditProfile = ({
   };
 
   const handleSave = async () => {
+    if (!user) {
+      toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй");
+      return;
+    }
     setLoading(true);
     try {
       const updatedProfile = {
-        name,
         phoneNumber,
         address,
-        profileImage,
+        image: profileImage,
       };
 
       const response = await axios.put(
-        `http://localhost:3001/user/${profileData._id}`,
-        updatedProfile
+        `http://localhost:3001/user/${user._id}`,
+        updatedProfile,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
       );
 
       if (response.status === 200) {
         toast.success("Profile updated successfully");
         setIsEditing(false);
-        setProfileData((prev: any) => ({
-          ...prev,
-          name,
-          phoneNumber,
-          address,
-          profileImage,
-        }));
       }
     } catch (err) {
       console.error(err);
@@ -84,18 +83,10 @@ export const EditProfile = ({
   };
 
   return (
-    <div className="absolute top-[100px] right-[600px] flex flex-col items-center bg-white shadow-xl rounded-lg p-8 w-[500px] mx-auto">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Edit Profile</h2>
-
-      <div className="flex flex-col mb-5 w-full">
-        <label className="text-gray-600">Нэр</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border rounded-xl p-3 mt-2 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
+    <div className="absolute top-[100px] right-[600px] flex flex-col bg-white shadow-xl rounded-lg p-8 w-[500px] mx-auto">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        Хувийн мэдээлэл өөрчлөх
+      </h2>
 
       <div className="flex flex-col mb-5 w-full">
         <label className="text-gray-600">Утасны дугаар</label>
@@ -128,7 +119,10 @@ export const EditProfile = ({
           />
         ) : (
           <div className="relative mb-4">
-            <img src={profileImage} className="w-full h-48 object-cover rounded-xl shadow-md" />
+            <img
+              src={profileImage}
+              className="w-full h-48 object-cover rounded-xl shadow-md"
+            />
             <button
               type="button"
               onClick={() => setProfileImage("")}
@@ -154,7 +148,7 @@ export const EditProfile = ({
           disabled={loading}
           className="bg-indigo-600 text-white px-6 py-3 rounded-full shadow-md hover:bg-indigo-700 transition-all duration-300"
         >
-          {loading ? <HashLoader/> : "Шинэчлэх"}
+          {loading ? <HashLoader /> : "Шинэчлэх"}
         </button>
       </div>
     </div>

@@ -9,13 +9,16 @@ import { HeaderCartIcon } from "../assets/HeaderCartIcon";
 import { ProfileIcon } from "../assets/ProfileIcon";
 import { AddLocationDialog } from "./AddLocationDialogg";
 import { OrderDetail } from "./OrderDetail";
+import Profile from "./UserInformation";
 
 export const Header = () => {
   const { user, signOut } = useAuth();
   const [email, setEmail] = useState<string | null>(null);
   const [locatioDialog, setLocationDialog] = useState(false);
   const [foodOrderOpen, setFoodOrderOpen] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] =
+    useState<boolean>(false);
+  const [openUserProfile, setOpenUserProfile] = useState<boolean>(false);
   const address = user?.address || "";
 
   useEffect(() => {
@@ -69,7 +72,11 @@ export const Header = () => {
               </div>
               <NextIcon />
             </button>
-            <AddLocationDialog open={locatioDialog} setOpen={setLocationDialog} user={user} address={address}/>
+            <AddLocationDialog
+              open={locatioDialog}
+              setOpen={setLocationDialog}
+              address={address}
+            />
 
             <button
               className="rounded-full w-[36px] h-[36px] flex justify-center items-center bg-[#F4F4F5]"
@@ -81,7 +88,9 @@ export const Header = () => {
 
             <div className="relative">
               <button
-                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                onClick={() => {
+                  setShowProfileDropdown(!showProfileDropdown);
+                }}
                 className="bg-[#EF4444] rounded-full w-[36px] h-[36px] flex justify-center items-center"
               >
                 <ProfileIcon />
@@ -90,17 +99,31 @@ export const Header = () => {
               {showProfileDropdown && (
                 <div className="absolute top-[45px] right-0 flex flex-col rounded-lg p-[16px] bg-white text-black gap-[16px] shadow-lg z-50">
                   <div className="text-[20px] font-semibold">{user.email}</div>
-                  <Link href={`/user?id=${user._id}`}>
-                    <button className="text-left text-[black] hover:underline border-[1px] border-[#ef4445] px-[12px] py-[7px] rounded-full w-full flex justify-center opacity-90">
-                      Хувийн мэдээлэл
-                    </button>
-                  </Link>
+                  <button
+                    className="text-left text-[black] hover:underline border-[1px] border-[#ef4445] px-[12px] py-[7px] rounded-full w-full flex justify-center opacity-90"
+                    onClick={() => setOpenUserProfile(true)}
+                  >
+                    Хувийн мэдээлэл
+                  </button>
                   <button
                     onClick={signOut}
                     className="flex items-center justify-center rounded-full px-[8px] py-[8px] text-white bg-[#ef4445] h-[36px]"
                   >
                     Гарах
                   </button>
+                </div>
+              )}
+              {openUserProfile && (
+                <div className="fixed inset-0 bg-grey bg-opacity-50 z-50 flex justify-center items-center">
+                  <div className="bg-white p-8 rounded-lg shadow-xl w-[1100px] h-[400px] relative">
+                    <button
+                      className="absolute top-4 right-4 text-gray-600 hover:text-black"
+                      onClick={() => setOpenUserProfile(false)}
+                    >
+                      ❌
+                    </button>
+                    <Profile />
+                  </div>
                 </div>
               )}
             </div>

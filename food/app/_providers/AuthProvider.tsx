@@ -17,7 +17,7 @@ type User = {
   phoneNumber?: string;
   address?: string;
   _id: string;
-  token?: string
+  token?: string;
 };
 
 type AuthContextType = {
@@ -25,6 +25,7 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  token?: string;
 };
 
 const AuthContext = createContext({} as AuthContextType);
@@ -33,6 +34,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [token, setToken] = useState<string | undefined>(undefined);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -98,8 +100,34 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     getUser();
   }, []);
 
+  useEffect(() => {
+    const tokenFromStorage = localStorage.getItem("token");
+    if (!tokenFromStorage) return;
+
+    setToken(tokenFromStorage);
+
+    const getUser = async () => {
+      setLoading(true);
+      try {
+        const { data } = await axios.get("http://localhost:3001/auth/me", {
+          headers: {
+            Authorization: `${tokenFromStorage}`,
+          },
+        });
+        setUser(data);
+      } catch (error) {
+        localStorage.removeItem("token");
+        setUser(undefined);
+        setToken(undefined);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getUser();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, signUp }}>
+    <AuthContext.Provider value={{ user, signIn, signOut, signUp, token }}>
       {!loading && children}
     </AuthContext.Provider>
   );

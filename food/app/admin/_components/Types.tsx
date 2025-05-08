@@ -8,6 +8,8 @@ export type Food = {
   createdAt: string;
   updatedAt: string;
   category: string;
+  quantity: number;
+  foodId: string;
 };
 
 export type Category = {
@@ -42,12 +44,6 @@ export type FormData = {
 export type FoodOrderItem = {
   food: Food;
   quantity: number;
-};
-
-export type User = {
-  _id: string;
-  name: string;
-  email: string;
 };
 
 export type Order = {

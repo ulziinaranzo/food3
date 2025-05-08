@@ -8,8 +8,9 @@ type AddFoodToCartProps = {
   food: Food;
 };
 type CartItem = {
-  foodId: string;
+  food: Food;
   quantity: number;
+  foodId: string;
 };
 
 export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
@@ -21,9 +22,21 @@ export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
   }, [quantity, food.price]);
 
   const handleAddToCart = () => {
-    const oldCart: CartItem[] = JSON.parse(
-      localStorage.getItem("cart") || "[]"
-    );
+    const cartData = localStorage.getItem("cart");
+
+    let oldCart: CartItem[] = [];
+
+    if (cartData) {
+      try {
+        oldCart = JSON.parse(cartData);
+        if (!Array.isArray(oldCart)) {
+          oldCart = [];
+        }
+      } catch (e) {
+        console.error("Error parsing cart data:", e);
+        oldCart = [];
+      }
+    }
 
     const found = oldCart.find((item) => item.foodId === food._id);
 
@@ -36,7 +49,12 @@ export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
           : item
       );
     } else {
-      newCart = [...oldCart, { foodId: food._id, quantity }];
+      const newItem: CartItem = {
+        food: { ...food },
+        quantity,
+        foodId: food._id,
+      };
+      newCart = [...oldCart, newItem];
     }
 
     localStorage.setItem("cart", JSON.stringify(newCart));

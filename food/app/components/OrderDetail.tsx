@@ -6,111 +6,93 @@ import Image from "next/image";
 import { FoodIcon } from "../assets/FoodIcon";
 import { TimeIcon } from "../assets/TimeIcon";
 import { LocationIcon } from "../assets/LocationIcon";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Food } from "../admin/_components/Types";
 import axios from "axios";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet"; 
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { PaymentCard } from "./PaymentCard";
 import { Card, CardContent } from "@/components/ui/card";
 
-
-type CartItem = {
-  quantity: number;
+type LocalCartItem = {
   foodId: string;
+  quantity: number;
 };
 type OrderDetailProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
 };
 
+type CartItem = {
+  quantity: number;
+  foodId: string;
+  food: Food;
+};
+
 export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
-  const [cartItems, setCartItems] = useState<(CartItem & Food)[]>([]);
-  const [foods, setFoods] = useState<Food[]>([]);
-
-  const getFoods = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3001/food`);
-      setFoods(response.data?.foodsByCategory || []);
-    } catch (error) {
-      console.error("Хоолоо татаж авахад алдаа гарлаа:", error);
-    }
-  };
-
-  const loadCartItems = () => {
-    const cart: CartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
-    const merged = cart
-      .map((item) => {
-        const foodData = foods.find((f) => f._id === item.foodId);
-        console.log(item.foodId, foodData?._id);
-        return foodData ? { ...item, ...foodData } : null;
-      })
-      .filter(Boolean) as (CartItem & Food)[]; 
-    setCartItems(merged);
-  };
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const init = async () => {
-      await getFoods();
-    };
-    init();
-  }, []);
-
-  useEffect(() => {
-    if (foods.length > 0) {
-      loadCartItems();
+    const cartData = localStorage.getItem("cart");
+    if (cartData) {
+      try {
+        const parsedData: CartItem[] = JSON.parse(cartData);
+        if (Array.isArray(parsedData)) {
+          setCartItems(parsedData);
+        }
+      } catch (error) {
+        console.error("Хоолны мэдээлэл ирсэнгүй", error);
+      }
     }
-  }, [foods]);
+  }, [open]);
 
-  const updateLocalCart = (updatedItems: (CartItem & Food)[]) => {
+  const updatedCart = (updatedItems: CartItem[]) => {
+    localStorage.setItem("cart", JSON.stringify(updatedItems));
     setCartItems(updatedItems);
-    localStorage.setItem(
-      "cart",
-      JSON.stringify(
-        updatedItems.map(({ _id, quantity }) => ({
-          foodId: _id,
-          quantity,
-        }))
-      )
-    );
-  };
-
-  const handleIncrease = (foodId: string) => {
-    const updated = cartItems.map((item) =>
-      item.foodId === foodId
-        ? { ...item, quantity: (Number(item.quantity) + 1) }
-        : item
-    );
-    updateLocalCart(updated);
   };
 
   const handleDecrease = (foodId: string) => {
     const updated = cartItems.map((item) =>
       item.foodId === foodId
-        ? { ...item, quantity: (Math.max(1, Number(item.quantity) - 1)) }
+        ? { ...item, quantity: Math.max(1, item.quantity - 1) }
         : item
     );
-    updateLocalCart(updated);
+    updatedCart(updated);
+  };
+
+  const handleIncrease = (foodId: string) => {
+    const updated = cartItems.map((item) =>
+      item.foodId === foodId
+        ? {
+            ...item,
+            quantity: item.quantity + 1,
+          }
+        : item
+    );
+    updatedCart(updated);
   };
 
   const handleRemove = (foodId: string) => {
-    const updated = cartItems.filter((item) => item.foodId !== foodId);
-    updateLocalCart(updated);
-  };
-
-  const totalAmount = cartItems.reduce(
-    (acc, item) => acc + Number(item.quantity) * item.price,
-    0
-  );
+    const updated = cartItems.filter
+  }
 
   return (
     <div>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="w-[600px] p-[32px] bg-black">
-        <SheetHeader>
-  <SheetTitle className="text-white text-[20px]">Таны сагс</SheetTitle>
-  <p className="text-sm text-white">Та захиалах хоолоо эндээс харж, засварлаж болно.</p>
-</SheetHeader>
-          
+        <SheetContent side="right" className="w-[1200px] p-[32px] bg-black">
+          <SheetHeader>
+            <SheetTitle className="text-white text-[20px]">
+              Таны сагс
+            </SheetTitle>
+            <p className="text-sm text-white">
+              Та захиалах хоолоо эндээс өөрчилж болно.
+            </p>
+          </SheetHeader>
+
           <div className="flex flex-col">
             <Tabs defaultValue="cart" className="w-full">
               <TabsList className="grid grid-cols-2 bg-[#EF4444] w-full h-[44px] rounded-full mt-[8px] mb-[8px]">
@@ -138,9 +120,9 @@ export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
                             ? "border-b border-dashed border-gray-300"
                             : ""
                         }`}
-                        key={item.foodId}
+                        key={`${item.foodId}-${idx}`}
                       >
-                        <Image
+                        <img
                           src={item.image?.[0]}
                           alt="Food"
                           width={124}
@@ -193,7 +175,7 @@ export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
                     ))}
                   </CardContent>
                 </Card>
-                <PaymentCard totalAmount={totalAmount}/>
+                <PaymentCard totalAmount={totalAmount} />
               </TabsContent>
 
               <TabsContent value="order">
