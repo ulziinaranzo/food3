@@ -1,15 +1,26 @@
 "use client";
 
-export const EmptyFoodCart = () => {
+type EmptyFoodCartProps= {
+  setOpen: (open: boolean) => void;
+}
+export const EmptyFoodCart = ({setOpen}: EmptyFoodCartProps) => {
   return (
-    <div className="flex flex-col justify-center items-center w-full h-[182px] rounded-lg bg-[#71717A] pt-[32px] py-[48px] gap-[4px]">
-      <img src="/Images/9374373.png" className="w-[61px] h-[50px]" />
-      <div className="text-[18px] font-bold text-[black]">
-        Сагс хоосон байна
+    <div className="flex flex-col justify-center items-center w-full h-[240px] rounded-2xl bg-white shadow-md p-8 gap-3 animate-fade-in">
+      <img
+        src="/Images/9374373.png"
+        alt="Empty Cart"
+        className="w-[80px] h-[80px] opacity-80 mt-[30px]"
+      />
+      <div className="text-[20px] font-semibold text-gray-800">
+        Таны сагс хоосон байна
       </div>
-      <div className="text-[#71717A] text-[12px] font-regular">
-        ❤️ Хүссэн хоолоо захиалаад хүргүүлээд аваарай! 🍔{" "}
+      <div className="text-center text-gray-500 text-[14px] px-6">
+        ❤️ Хүссэн хоолоо сонгоод захиалгаа үүсгээрэй! 🍔
       </div>
+      <button className="mt-4 px-6 py-2 bg-[#EF4444] text-white rounded-full hover:bg-[#dc2626] transition"
+      onClick={() => {setOpen(false)}}>
+        Хоол захиалах
+      </button>
     </div>
   );
 };

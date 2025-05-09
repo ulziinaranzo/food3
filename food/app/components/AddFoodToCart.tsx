@@ -23,43 +23,47 @@ export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
 
   const handleAddToCart = () => {
     const cartData = localStorage.getItem("cart");
-
+    console.log("cart", cartData);
+  
     let oldCart: CartItem[] = [];
-
+  
     if (cartData) {
       try {
-        oldCart = JSON.parse(cartData);
+        oldCart = JSON.parse(cartData); // Картны мэдээллийг авна
         if (!Array.isArray(oldCart)) {
           oldCart = [];
         }
       } catch (e) {
-        console.error("Error parsing cart data:", e);
+        console.error("Error parsing cart data:", e); // Алдаа гарвал хоосон массив ашиглана
         oldCart = [];
       }
     }
-
-    const found = oldCart.find((item) => item.foodId === food._id);
-
+  
+    const found = oldCart.find((item) => item.foodId === food._id); // Өмнө нь байсан хоол байгаа эсэхийг шалгана
+  
     let newCart;
-
+  
     if (found) {
+      // Хэрэв хоол байгаа бол тоог нь нэмнэ
       newCart = oldCart.map((item) =>
         item.foodId === food._id
           ? { ...item, quantity: item.quantity + quantity }
           : item
       );
     } else {
+      // Хэрэв хоол байхгүй бол шинээр нэмнэ
       const newItem: CartItem = {
-        food: { ...food },
+        food: { ...food }, // Бүрэн food объект хадгална
         quantity,
         foodId: food._id,
       };
       newCart = [...oldCart, newItem];
     }
-
-    localStorage.setItem("cart", JSON.stringify(newCart));
-    onClose();
+  
+    localStorage.setItem("cart", JSON.stringify(newCart)); // Шинэ картыг localStorage руу хадгална
+    onClose(); // Хаах функц
   };
+  
 
   return (
     <div className="flex absolute inset-0 bg-white rounded-lg w-[826px] h-[412px] p-[24px] gap-[24px] z-10">

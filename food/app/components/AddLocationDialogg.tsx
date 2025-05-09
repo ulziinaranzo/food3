@@ -24,6 +24,10 @@ export const AddLocationDialog = ({
   console.log(token);
 
   const handleSubmit = async () => {
+    if (!user || !user._id) {
+      toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй.");
+      return;
+    }
     try {
       const res = await axios.put(
         `http://localhost:3001/user/${user._id}`,
@@ -75,6 +79,7 @@ export const AddLocationDialog = ({
           </button>
           <button
             onClick={handleSubmit}
+            disabled={!user}
             className="bg-black text-white px-4 py-2 rounded-full text-sm"
           >
             Оруулах

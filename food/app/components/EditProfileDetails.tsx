@@ -15,7 +15,6 @@ const CLOUD_NAME = "dxhmgs7wt";
 export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
   const { user, token } = useAuth();
   console.log("user in EditProfile:", user);
-  const [name, setName] = useState(user?.name || "");
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || "");
   const [address, setAddress] = useState(user?.address || "");
   const [profileImage, setProfileImage] = useState(user?.image || "");
@@ -25,7 +24,6 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", UPLOAD_PRESET);
-
     try {
       const response = await axios.post(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
@@ -37,7 +35,6 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
       return null;
     }
   };
-
   const handleSave = async () => {
     if (!user) {
       toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй");
@@ -50,7 +47,6 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
         address,
         image: profileImage,
       };
-
       const response = await axios.put(
         `http://localhost:3001/user/${user._id}`,
         updatedProfile,
@@ -61,7 +57,6 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
           },
         }
       );
-
       if (response.status === 200) {
         toast.success("Profile updated successfully");
         setIsEditing(false);
@@ -73,7 +68,6 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
       setLoading(false);
     }
   };
-
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -81,13 +75,11 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
       if (url) setProfileImage(url);
     }
   };
-
   return (
     <div className="absolute top-[100px] right-[600px] flex flex-col bg-white shadow-xl rounded-lg p-8 w-[500px] mx-auto">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">
         Хувийн мэдээлэл өөрчлөх
       </h2>
-
       <div className="flex flex-col mb-5 w-full">
         <label className="text-gray-600">Утасны дугаар</label>
         <input
@@ -97,7 +89,6 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
           className="border rounded-xl p-3 mt-2 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
-
       <div className="flex flex-col mb-5 w-full">
         <label className="text-gray-600">Хаяг</label>
         <input
@@ -107,7 +98,6 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
           className="border rounded-xl p-3 mt-2 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
-
       <div className="flex flex-col mb-5 w-full">
         <label className="text-gray-600">Зураг</label>
         {!profileImage ? (
@@ -133,7 +123,6 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
           </div>
         )}
       </div>
-
       <div className="flex gap-6 justify-end w-full">
         <button
           type="button"

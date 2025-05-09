@@ -12,10 +12,10 @@ import { authenticationMiddleware } from "../middlewares/authentication-middlewa
 
 const foodOrderRouter = Router();
 
-foodOrderRouter.get("/", authenticationMiddleware, authorizationMiddleware, getFoodOrdersController);
+foodOrderRouter.get("/", authenticationMiddleware, getFoodOrdersController);
 foodOrderRouter.get("/:id", authenticationMiddleware, authorizationMiddleware, getFoodOrderController);
 foodOrderRouter.post("/", createFoodOrderController);
-foodOrderRouter.put("/:id", updateFoodOrderController);
+foodOrderRouter.put("/:id", authenticationMiddleware, updateFoodOrderController);
 foodOrderRouter
   .delete("/:id", authenticationMiddleware, authorizationMiddleware, deleteFoodOrderController)
   .put("/:id/status", authenticationMiddleware, authorizationMiddleware, updateFoodOrderStatusController);

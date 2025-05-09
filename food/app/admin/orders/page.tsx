@@ -9,6 +9,8 @@ import { AvatarBadge } from "../_components/AvatarBadge";
 import { DatePicker } from "../_components/DatePicker";
 import { format } from "date-fns";
 import { DropDownStatus } from "../_components/DropDownOrderStatus";
+import { useAuth } from "@/app/_providers/AuthProvider";
+import { useRouter } from "next/router";
 
 const ordersPerPage = 12;
 
@@ -16,10 +18,29 @@ export default function Home() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const totalPages = Math.ceil((orders?.length || 0) / ordersPerPage);
+  const { user, token } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/auth/signup")
+    } else if (user.role !== "admin" ){
+      router.push("/")
+    }
+  }, [user, router])
+
+  if (!user || user.role !== "admin") {
+    return <div className="text-bold text-[30px] flex justify-center mt-[100px] text-black">NO THANK YOU, YOU ARE NOT ADMIN</div>
+  }
+
 
   const getOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/food-order/");
+      const response = await axios.get("http://localhost:3001/food-order/",
+        {headers: {
+          Authorization: `${token}`,
+        }}
+      );
       setOrders(response.data.foodOrders);
     } catch (error) {
       console.error("Хоолны захиалгууд авах үед алдаа гарлаа", error);

@@ -33,7 +33,7 @@ export const createFoodOrderController: RequestHandler = async (req, res) => {
 
     const newOrder = await foodOrderModel.create({
       user,
-      foodOrderItems: orderedItems,
+      foodOrderItems: detailedItems,
       totalPrice,
       updatedAt: new Date(),
       createdAt: new Date(),
