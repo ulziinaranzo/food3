@@ -1,17 +1,18 @@
 "use client";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { useState } from "react";
 import { HashLoader } from "react-spinners";
+import { useAuth } from "@/app/_providers/AuthProvider";
 
 type FormData = {
   name: string;
-}
+};
 
 type AddFoodFormProps = {
-  onClose: () => void
-}
+  onClose: () => void;
+};
 
 export const AddCategory = ({ onClose }: AddFoodFormProps) => {
   const {
@@ -20,16 +21,26 @@ export const AddCategory = ({ onClose }: AddFoodFormProps) => {
     reset,
     formState: { errors },
   } = useForm<FormData>();
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
+  const { user, token } = useAuth();
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      await axios.post("http://localhost:3001/category", {
-        categoryName: data.name,
-        updatedAt: new Date(),
-        createdAt: new Date(),
-      });
+      await axios.post(
+        "http://localhost:3001/category",
+        {
+          categoryName: data.name,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.success("Амжилттай нэмэгдлээ");
       onClose();
       reset();
@@ -37,7 +48,7 @@ export const AddCategory = ({ onClose }: AddFoodFormProps) => {
       console.error(error);
       toast.error("Категори нэмэхэд алдаа гарлаа");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -86,7 +97,7 @@ export const AddCategory = ({ onClose }: AddFoodFormProps) => {
           type="submit"
           className="flex px-[16px] py-[10px] text-white bg-black text-[16px] font-medium rounded-lg"
         >
-         {loading ? <HashLoader size={16}/> : "Нэмэх"} 
+          {loading ? <HashLoader size={16} /> : "Нэмэх"}
         </button>
       </div>
     </form>

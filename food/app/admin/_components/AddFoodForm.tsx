@@ -5,6 +5,7 @@ import { FormValues } from "./Types";
 import axios from "axios";
 import { HashLoader } from "react-spinners";
 import { toast } from "sonner";
+import { useAuth } from "@/app/_providers/AuthProvider";
 
 type AddFoodFormProps = {
   categoryName: string;
@@ -24,6 +25,7 @@ export const AddFoodForm = ({
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [deployedImg, setDeployedImg] = useState("");
+  const { user, token } = useAuth();
 
   const uploadImage = async (file: File | undefined) => {
     if (!file) return;
@@ -33,12 +35,7 @@ export const AddFoodForm = ({
     try {
       const response = await axios.post(
         `http://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
       return response.data.url;
     } catch (error) {
@@ -66,11 +63,20 @@ export const AddFoodForm = ({
     console.log(data);
 
     try {
-      await axios.post("http://localhost:3001/food", {
-        ...data,
-        image: deployedImg,
-        category: categoryId,
-      });
+      await axios.post(
+        "http://localhost:3001/food",
+        {
+          ...data,
+          image: deployedImg,
+          category: categoryId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.success("Амжилттай нэмэгдлээ");
       onUpdate();
     } catch {
@@ -144,7 +150,7 @@ export const AddFoodForm = ({
               onChange={handleImageSelect}
               className="w-full h-[138px] p-3 bg-[#7F7F800D] text-transparent"
             />
-            <div className="absolute right-[1020px] top-[610px] flex flex-col items-center gap-2 z-10">
+            <div className="absolute right-[180px] top-[400px] flex flex-col items-center gap-2 z-10">
               <img src="/Images/AddImage.png" className="w-8 h-8" />
               <div className="text-sm font-medium">Choose or drag image</div>
             </div>

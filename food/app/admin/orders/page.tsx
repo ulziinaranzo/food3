@@ -10,37 +10,40 @@ import { DatePicker } from "../_components/DatePicker";
 import { format } from "date-fns";
 import { DropDownStatus } from "../_components/DropDownOrderStatus";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { useRouter } from "next/router";
-
-const ordersPerPage = 12;
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const ordersPerPage = 12;
   const [orders, setOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const totalPages = Math.ceil((orders?.length || 0) / ordersPerPage);
-  const { user, token } = useAuth()
-  const router = useRouter()
+  const { user, token } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) {
-      router.push("/auth/signup")
-    } else if (user.role !== "admin" ){
-      router.push("/")
+      router.push("/auth/signup");
+    } else if (user.role !== "admin") {
+      router.push("/");
     }
-  }, [user, router])
+  }, [user, router]);
 
   if (!user || user.role !== "admin") {
-    return <div className="text-bold text-[30px] flex justify-center mt-[100px] text-black">NO THANK YOU, YOU ARE NOT ADMIN</div>
+    return (
+      <div className="text-bold text-[30px] flex justify-center mt-[100px] text-black">
+        ERROR 404
+      </div>
+    );
   }
-
 
   const getOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/food-order/",
-        {headers: {
+      const response = await axios.get("http://localhost:3001/food-order/", {
+        headers: {
+          "Content-Type": "application/json",
           Authorization: `${token}`,
-        }}
-      );
+        },
+      });
       setOrders(response.data.foodOrders);
     } catch (error) {
       console.error("Хоолны захиалгууд авах үед алдаа гарлаа", error);
@@ -100,7 +103,7 @@ export default function Home() {
                 </div>
                 <div className="grid grid-cols-6 w-full">
                   <div className="flex items-center text-[14px] text-[#71717A] font-medium">
-                    {item.user?.name || "Нэр алга"}
+                    {item.user?._id.slice(-16) || "Нэр алга"}
                   </div>
                   <div className="flex items-center text-[14px] text-[#71717A] font-medium">
                     {item.foodOrderItems

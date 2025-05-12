@@ -7,7 +7,7 @@ import { Step1 } from "./_components/step1";
 import { useAuth } from "@/app/_providers/AuthProvider";
 
 export type FormData = {
-  email: string; 
+  email: string;
   password: string;
   confirmPassword: string;
 };
@@ -17,7 +17,7 @@ export default function Home() {
   const { signUp } = useAuth();
 
   const [formData, setFormData] = useState<FormData>({
-    email: "", 
+    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -26,7 +26,7 @@ export default function Home() {
   const handleNext = async () => {
     if (step === 1) {
       try {
-        await signUp(formData.email, formData.password); 
+        await signUp(formData.email, data.password);
         console.log("✅ Бүртгэл амжилттай");
       } catch (error) {
         console.error("Бүртгэхэд алдаа гарлаа", error);
@@ -46,7 +46,7 @@ export default function Home() {
   const handleFormDataChange = (newData: Partial<FormData>) => {
     setFormData((prevData) => ({ ...prevData, ...newData }));
   };
-
+  console.log("USERRr", formData);
   return (
     <motion.div
       key={step}

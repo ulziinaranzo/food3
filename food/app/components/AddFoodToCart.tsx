@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Food } from "../admin/_components/Types";
+import { HashLoader } from "react-spinners";
 
 type AddFoodToCartProps = {
   onClose: () => void;
@@ -16,6 +17,7 @@ type CartItem = {
 export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [totalPrice, setTotalPrice] = useState<number>(food.price);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setTotalPrice(quantity * food.price);
@@ -24,46 +26,43 @@ export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
   const handleAddToCart = () => {
     const cartData = localStorage.getItem("cart");
     console.log("cart", cartData);
-  
+
     let oldCart: CartItem[] = [];
-  
+
     if (cartData) {
       try {
-        oldCart = JSON.parse(cartData); // Картны мэдээллийг авна
+        oldCart = JSON.parse(cartData);
         if (!Array.isArray(oldCart)) {
           oldCart = [];
         }
       } catch (e) {
-        console.error("Error parsing cart data:", e); // Алдаа гарвал хоосон массив ашиглана
+        console.error("Error parsing cart data:", e);
         oldCart = [];
       }
     }
-  
-    const found = oldCart.find((item) => item.foodId === food._id); // Өмнө нь байсан хоол байгаа эсэхийг шалгана
-  
+
+    const found = oldCart.find((item) => item.foodId === food._id);
+
     let newCart;
-  
+
     if (found) {
-      // Хэрэв хоол байгаа бол тоог нь нэмнэ
       newCart = oldCart.map((item) =>
         item.foodId === food._id
           ? { ...item, quantity: item.quantity + quantity }
           : item
       );
     } else {
-      // Хэрэв хоол байхгүй бол шинээр нэмнэ
       const newItem: CartItem = {
-        food: { ...food }, // Бүрэн food объект хадгална
+        food: { ...food },
         quantity,
         foodId: food._id,
       };
       newCart = [...oldCart, newItem];
     }
-  
-    localStorage.setItem("cart", JSON.stringify(newCart)); // Шинэ картыг localStorage руу хадгална
-    onClose(); // Хаах функц
+
+    localStorage.setItem("cart", JSON.stringify(newCart));
+    onClose();
   };
-  
 
   return (
     <div className="flex absolute inset-0 bg-white rounded-lg w-[826px] h-[412px] p-[24px] gap-[24px] z-10">
@@ -112,7 +111,7 @@ export const AddFoodToCart = ({ food, onClose }: AddFoodToCartProps) => {
           onClick={handleAddToCart}
           className="w-[377px] h-[44px] rounded-lg bg-black text-white flex justify-center items-center mt-[24px] px-[20px]"
         >
-          Сагсанд нэмэх
+          {loading ? <HashLoader /> : "Сагсанд нэмэх"}
         </button>
       </div>
     </div>

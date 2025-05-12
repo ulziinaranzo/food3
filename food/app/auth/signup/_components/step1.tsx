@@ -23,8 +23,8 @@ const formSchema = z
   });
 
 type FormData = {
-  password?: string;
-  confirmPassword?: string;
+  password: string;
+  confirmPassword: string;
 };
 
 type StepProps = {

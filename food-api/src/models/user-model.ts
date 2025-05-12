@@ -43,6 +43,10 @@ const userSchema = new Schema({
     type: Date,
     required: true,
   },
+  image: {
+    type: String,
+    required: false,
+  },
 });
 
 export const userModel = model("user", userSchema);

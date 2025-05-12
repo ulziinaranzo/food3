@@ -13,11 +13,25 @@ import { authenticationMiddleware } from "../middlewares/authentication-middlewa
 const foodOrderRouter = Router();
 
 foodOrderRouter.get("/", authenticationMiddleware, getFoodOrdersController);
-foodOrderRouter.get("/:id", authenticationMiddleware, authorizationMiddleware, getFoodOrderController);
+foodOrderRouter.get("/:id", authenticationMiddleware, getFoodOrderController);
 foodOrderRouter.post("/", createFoodOrderController);
-foodOrderRouter.put("/:id", authenticationMiddleware, updateFoodOrderController);
+foodOrderRouter.put(
+  "/:id",
+  authenticationMiddleware,
+  updateFoodOrderController
+);
 foodOrderRouter
-  .delete("/:id", authenticationMiddleware, authorizationMiddleware, deleteFoodOrderController)
-  .put("/:id/status", authenticationMiddleware, authorizationMiddleware, updateFoodOrderStatusController);
+  .delete(
+    "/:id",
+    authenticationMiddleware,
+    authorizationMiddleware,
+    deleteFoodOrderController
+  )
+  .put(
+    "/:id/status",
+    authenticationMiddleware,
+    authorizationMiddleware,
+    updateFoodOrderStatusController
+  );
 
 export default foodOrderRouter;

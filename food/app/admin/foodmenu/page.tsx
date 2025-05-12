@@ -6,11 +6,31 @@ import CategoryList from "../_components/CategoryList";
 import { AvatarBadge } from "../_components/AvatarBadge";
 import CategoryFoods from "../_components/CategoryFoods";
 import { SelectCategory } from "../_components/SelectCategory";
+import { useAuth } from "@/app/_providers/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [onClose, setOnClose] = useState<boolean>(false);
+  const { user, token } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/auth/signup");
+    } else if (user.role !== "admin") {
+      router.push("/");
+    }
+  }, [user, router]);
+
+  if (!user || user.role !== "admin") {
+    return (
+      <div className="text-bold text-[30px] flex justify-center mt-[100px] text-black">
+        NO THANK YOU, YOU ARE NOT ADMIN
+      </div>
+    );
+  }
 
   const getCategories = async () => {
     try {

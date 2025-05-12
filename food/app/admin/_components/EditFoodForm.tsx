@@ -21,6 +21,7 @@ import { TrashIcon } from "@/app/assets/TrashIcon";
 import { toast } from "sonner";
 import { SelectCategory } from "./SelectCategory";
 import { DialogClose } from "@/components/ui/dialog";
+import { useAuth } from "@/app/_providers/AuthProvider";
 
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
@@ -65,6 +66,7 @@ export const EditFoodForm = ({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user, token } = useAuth();
 
   const uploadImg = async (file: File) => {
     const formData = new FormData();
@@ -73,8 +75,7 @@ export const EditFoodForm = ({
     try {
       const res = await axios.put(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        formData
       );
       return res.data.url;
     } catch (err) {
@@ -115,11 +116,20 @@ export const EditFoodForm = ({
 
     setLoading(true);
     try {
-      await axios.put(`http://localhost:3001/food/${foodData._id}`, {
-        ...data,
-        image: data.imgUrl,
-        categoryName: selectedCategory,
-      });
+      await axios.put(
+        `http://localhost:3001/food/${foodData._id}`,
+        {
+          ...data,
+          image: data.imgUrl,
+          categoryName: selectedCategory,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
+      );
 
       await onUpdate();
       toast.success("Амжилттай шинэчлэгдлээ");
@@ -210,7 +220,7 @@ export const EditFoodForm = ({
                     ref={fileInputRef}
                     className="w-full border rounded p-2 bg-[#7F7F800D] text-transparent h-[150px] z-10"
                   />
-                  <div className="absolute right-[120px] top-[300px] flex flex-col items-center gap-2">
+                  <div className="absolute right-[120px] top-[340px] flex flex-col items-center gap-2">
                     <img src="/Images/AddImage.png" className="w-8 h-8" />
                     <div className="text-sm font-medium">
                       Choose or drag image

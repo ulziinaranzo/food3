@@ -8,7 +8,7 @@ type PropsWithChildren = {
   children: React.ReactNode;
 };
 
-type User = {
+export type User = {
   name: string;
   email: string;
   image: string;
@@ -24,6 +24,7 @@ type AuthContextType = {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   token?: string;
+  setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 };
 
 const AuthContext = createContext({} as AuthContextType);
@@ -67,6 +68,12 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       localStorage.setItem("token", data.token);
       setToken(data.token);
       setUser(data.user);
+      toast.success("Амжилттай нэвтэрлээ");
+      if (data.user.role === "admin") {
+        router.push("/admin/foodmenu");
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       console.error(error);
       toast.error("Бүртгүүлэхэд алдаа гарлаа");
@@ -111,7 +118,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, signOut, token }}>
+    <AuthContext.Provider
+      value={{ user, signIn, signUp, signOut, token, setUser }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

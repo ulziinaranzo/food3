@@ -3,17 +3,18 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import { HashLoader } from "react-spinners";
-import { useAuth } from "@/app/_providers/AuthProvider";
+import { useAuth, User } from "@/app/_providers/AuthProvider";
 
 type EditProfileProps = {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  updateLocalUser: (value: User) => void;
 };
 
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
 
 export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
-  const { user, token } = useAuth();
+  const { user, token, setUser } = useAuth();
   console.log("user in EditProfile:", user);
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || "");
   const [address, setAddress] = useState(user?.address || "");
@@ -60,6 +61,7 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
       if (response.status === 200) {
         toast.success("Profile updated successfully");
         setIsEditing(false);
+        setUser(response.data.user);
       }
     } catch (err) {
       console.error(err);
@@ -76,29 +78,29 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
     }
   };
   return (
-    <div className="absolute top-[100px] right-[600px] flex flex-col bg-white shadow-xl rounded-lg p-8 w-[500px] mx-auto">
+    <div className="absolute top-[50px] right-[200px] flex flex-col bg-white shadow-xl rounded-lg p-8 w-[500px] mx-auto">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">
         Хувийн мэдээлэл өөрчлөх
       </h2>
-      <div className="flex flex-col mb-5 w-full">
+      <div className="flex text-left flex-col mb-5 w-full">
         <label className="text-gray-600">Утасны дугаар</label>
         <input
           type="text"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
-          className="border rounded-xl p-3 mt-2 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border rounded-xl p-3 mt-2 shadow-md focus:outline-none focus:ring-2 focus:ring-red-500"
         />
       </div>
-      <div className="flex flex-col mb-5 w-full">
+      <div className="flex text-left flex-col mb-5 w-full">
         <label className="text-gray-600">Хаяг</label>
         <input
           type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          className="border rounded-xl p-3 mt-2 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border rounded-xl p-3 mt-2 shadow-md focus:outline-none focus:ring-2 focus:ring-red-500"
         />
       </div>
-      <div className="flex flex-col mb-5 w-full">
+      <div className="flex text-left flex-col mb-5 w-full">
         <label className="text-gray-600">Зураг</label>
         {!profileImage ? (
           <input
@@ -135,7 +137,7 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
           type="button"
           onClick={handleSave}
           disabled={loading}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-full shadow-md hover:bg-indigo-700 transition-all duration-300"
+          className="bg-red-400 text-white px-6 py-3 rounded-full shadow-md hover:bg-red-900 transition-all duration-300"
         >
           {loading ? <HashLoader /> : "Шинэчлэх"}
         </button>

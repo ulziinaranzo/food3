@@ -4,7 +4,7 @@ import { userModel } from "../../models/user-model";
 export const updateUserController: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
-    const { address, phoneNumber, password, role, isVerified, email } =
+    const { address, phoneNumber, password, role, isVerified, email, image } =
       req.body;
 
     if (!id) {
@@ -21,6 +21,7 @@ export const updateUserController: RequestHandler = async (req, res) => {
         isVerified,
         email,
         updatedAt: new Date(),
+        image,
       },
       { new: true }
     );

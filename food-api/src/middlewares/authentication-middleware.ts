@@ -18,7 +18,7 @@ export const authenticationMiddleware: RequestHandler = (req, res, next) => {
     (req as any).isAdmin = isAdmin;
 
     next();
-  } catch (error) {
+  } catch (error) {  
     res.status(401).json({ message: "Invalid token" });
   }
 };

@@ -9,7 +9,8 @@ import { HeaderCartIcon } from "../assets/HeaderCartIcon";
 import { ProfileIcon } from "../assets/ProfileIcon";
 import { AddLocationDialog } from "./AddLocationDialogg";
 import { OrderDetail } from "./OrderDetail";
-import Profile from "./UserInformation";
+import Profile from "./Profile";
+import { useRouter } from "next/navigation";
 
 export const Header = () => {
   const { user, signOut } = useAuth();
@@ -20,6 +21,7 @@ export const Header = () => {
     useState<boolean>(false);
   const [openUserProfile, setOpenUserProfile] = useState<boolean>(false);
   const address = user?.address || "";
+  const router = useRouter();
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("formData.email");
@@ -67,7 +69,7 @@ export const Header = () => {
               <div className="text-[#EF4444] text-[12px] font-inter flex">
                 Хүргэлтийн хаяг:
               </div>
-              <div className="text-[#71717A] font-inter text-[12px] ml-[4px] flex">
+              <div className="text-[#71717A] font-inter text-[12px] ml-[4px] flex truncate max-w-[50px]">
                 {address || "Хаяг нэмэх"}
               </div>
               <NextIcon />
@@ -93,7 +95,14 @@ export const Header = () => {
                 }}
                 className="bg-[#EF4444] rounded-full w-[36px] h-[36px] flex justify-center items-center"
               >
-                <ProfileIcon />
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    className="rounded-full w-[36px] h-[36px] object-cover"
+                  />
+                ) : (
+                  <ProfileIcon />
+                )}
               </button>
 
               {showProfileDropdown && (
@@ -106,7 +115,10 @@ export const Header = () => {
                     Хувийн мэдээлэл
                   </button>
                   <button
-                    onClick={signOut}
+                    onClick={() => {
+                      signOut();
+                      router.push("/");
+                    }}
                     className="flex items-center justify-center rounded-full px-[8px] py-[8px] text-white bg-[#ef4445] h-[36px]"
                   >
                     Гарах
@@ -115,7 +127,7 @@ export const Header = () => {
               )}
               {openUserProfile && (
                 <div className="fixed inset-0 bg-grey bg-opacity-50 z-50 flex justify-center items-center">
-                  <div className="bg-white p-8 rounded-lg shadow-xl w-[1100px] h-[400px] relative">
+                  <div className="bg-white p-8 rounded-lg shadow-xl w-[800px] h-[400px] relative">
                     <button
                       className="absolute top-4 right-4 text-gray-600 hover:text-black"
                       onClick={() => setOpenUserProfile(false)}

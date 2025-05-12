@@ -9,6 +9,7 @@ import {
 import axios from "axios";
 import { useState } from "react";
 import clsx from "clsx";
+import { useAuth } from "@/app/_providers/AuthProvider";
 
 const statusText = {
   delivered: "Хүргэгдсэн",
@@ -33,6 +34,7 @@ type Props = {
 
 export const DropDownStatus = ({ orderId, status, onChange }: Props) => {
   const [loading, setLoading] = useState(false);
+  const { user, token } = useAuth();
 
   const handleStatusChange = async (
     newStatus: "pending" | "delivered" | "cancelled"
@@ -43,6 +45,12 @@ export const DropDownStatus = ({ orderId, status, onChange }: Props) => {
         `http://localhost:3001/food-order/${orderId}/status/`,
         {
           status: newStatus,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
         }
       );
 

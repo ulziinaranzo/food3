@@ -29,14 +29,14 @@ export type CartFood = {
 export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
   const [cartItems, setCartItems] = useState<CartFood[]>([]);
   const { user, token } = useAuth();
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const cartData = localStorage.getItem("cart");
     if (cartData) {
       try {
         const parsedData: CartFood[] = JSON.parse(cartData);
         if (Array.isArray(parsedData)) {
-          setCartItems(parsedData);  
+          setCartItems(parsedData);
         }
       } catch (error) {
         console.error("Хоолны мэдээлэл ирсэнгүй", error);
@@ -81,41 +81,42 @@ export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
   }, 0);
 
   const handleSubmit = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const orderedItems = cartItems.map((item) => ({
         food: item.foodId,
-        quantity: item.quantity
-      }))
+        quantity: item.quantity,
+      }));
 
-      const response = await axios.post("http://localhost:3001/food-order",
+      const response = await axios.post(
+        "http://localhost:3001/food-order",
         {
           userId: user?._id,
           orderedItems,
         },
-        {headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
         }
-        }
-      )
-      setLoading(false)
-      toast.success("Хоолны захиалга амжилттай нэмэгдлээ")
-      localStorage.removeItem("cart")
-      setCartItems([]
-      )
+      );
+      setLoading(false);
+      toast.success("Хоолны захиалга амжилттай нэмэгдлээ");
+      localStorage.removeItem("cart");
+      setCartItems([]);
     } catch (error) {
-      console.error(error)
-      toast.error("Хоолны захиалга хийхэд алда гарлаа")
+      console.error(error);
+      toast.error("Хоолны захиалга хийхэд алда гарлаа");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="w-[1200px] p-[32px] bg-black">
+        <SheetContent side="right" className="w-[500px] p-[32px] bg-black">
           <SheetHeader>
             <SheetTitle className="text-white text-[20px]">
               Таны сагс
@@ -137,12 +138,21 @@ export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
               </TabsList>
 
               <TabsContent value="cart">
-                <CartCard cartItems={cartItems} handleIncrease={handleIncrease} handleDecrease={handleDecrease} handleRemove={handleRemove} setOpen={setOpen}/>
-                <PaymentCard handleSubmit={handleSubmit} totalAmount={totalAmount} />
+                <CartCard
+                  cartItems={cartItems}
+                  handleIncrease={handleIncrease}
+                  handleDecrease={handleDecrease}
+                  handleRemove={handleRemove}
+                  setOpen={setOpen}
+                />
+                <PaymentCard
+                  handleSubmit={handleSubmit}
+                  totalAmount={totalAmount}
+                />
               </TabsContent>
 
               <TabsContent value="order">
-               <OrderHistoryTabContent/>
+                <OrderHistoryTabContent />
               </TabsContent>
             </Tabs>
           </div>

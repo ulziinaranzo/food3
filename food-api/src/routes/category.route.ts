@@ -11,9 +11,24 @@ import { authenticationMiddleware } from "../middlewares/authentication-middlewa
 const categoryRouter = Router();
 
 categoryRouter
-  .post("/category", authorizationMiddleware, authenticationMiddleware, createCategoryController)
+  .post(
+    "/category",
+    authenticationMiddleware,
+    authorizationMiddleware,
+    createCategoryController
+  )
   .get("/category", getCategoriesController)
-  .put("/category/:id", authenticationMiddleware, authorizationMiddleware,  updateCategoryController)
-  .delete("/category/:id",  authenticationMiddleware, authorizationMiddleware, deleteCategoryController);
+  .put(
+    "/category/:id",
+    authenticationMiddleware,
+    authorizationMiddleware,
+    updateCategoryController
+  )
+  .delete(
+    "/category/:id",
+    authenticationMiddleware,
+    authorizationMiddleware,
+    deleteCategoryController
+  );
 
 export default categoryRouter;

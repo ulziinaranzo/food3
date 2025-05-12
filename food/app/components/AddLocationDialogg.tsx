@@ -9,6 +9,7 @@ import {
 import { toast } from "sonner";
 import axios from "axios";
 import { useAuth } from "../_providers/AuthProvider";
+import { HashLoader } from "react-spinners";
 
 export const AddLocationDialog = ({
   open,
@@ -20,7 +21,8 @@ export const AddLocationDialog = ({
   address: string;
 }) => {
   const [localAddress, setLocalAddress] = useState(address);
-  const { user, token } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { user, token, setUser } = useAuth();
   console.log(token);
 
   const handleSubmit = async () => {
@@ -40,7 +42,7 @@ export const AddLocationDialog = ({
         }
       );
       toast.success("Хаяг амжилттай хадгалагдлаа!");
-
+      setUser(res.data.user);
       setOpen(false);
     } catch (err) {
       toast.error("Хаяг илгээхэд алдаа гарлаа");
@@ -82,7 +84,7 @@ export const AddLocationDialog = ({
             disabled={!user}
             className="bg-black text-white px-4 py-2 rounded-full text-sm"
           >
-            Оруулах
+            {loading ? <HashLoader /> : "Оруулах"}
           </button>
         </div>
       </DialogContent>

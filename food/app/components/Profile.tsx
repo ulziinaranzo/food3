@@ -6,21 +6,20 @@ import axios from "axios";
 import { EditProfile } from "./EditProfileDetails";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
   if (!user) {
     return <div>Хэрэглэгчийн мэдээлэл олдсонгүй</div>;
   }
-
   return (
     <div className="w-full h-screen mx-auto p-6">
-      <div className="flex bg-gradient-to-r from-silver-300 via-silver-400 to-silver-500 w-[1000px] rounded-lg p-8 mx-auto">
+      <div className="flex bg-gradient-to-r from-silver-300 via-silver-400 to-silver-500 rounded-lg p-8 mx-auto">
         <div className="w-1/3 flex justify-center items-center">
           <img
             src={user.image || "/Images/cuteuser.jpg"}
             alt="Profile"
-            className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover"
+            className="w-50 h-50 rounded-full border-4 border-white shadow-xl object-cover"
           />
         </div>
 
@@ -54,7 +53,9 @@ const Profile = () => {
         </div>
       </div>
 
-      {isEditing && <EditProfile setIsEditing={setIsEditing} />}
+      {isEditing && (
+        <EditProfile setIsEditing={setIsEditing} updateLocalUser={setUser} />
+      )}
     </div>
   );
 };
