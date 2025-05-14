@@ -31,7 +31,7 @@ export default function Home() {
   if (!user || user.role !== "admin") {
     return (
       <div className="text-bold text-[30px] flex justify-center mt-[100px] text-black">
-        ERROR 404
+        ERROR... 404
       </div>
     );
   }

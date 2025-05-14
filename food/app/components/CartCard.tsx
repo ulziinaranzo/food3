@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { EmptyFoodCart } from "./EmptyFoodCart";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2 } from "lucide-react";
@@ -23,9 +23,13 @@ export const CartCard = ({
   return (
     <Card className="bg-white">
       <CardContent className="flex flex-col gap-[5px] p-[16px]">
-        <div className="flex justify-between">
-          <h3 className="text-[#09090B] font-[600] text-[20px]">Миний сагс</h3>
-        </div>
+        <CardHeader className="pb-0">
+          <div className="flex justify-between items-center">
+            <h3 className="text-[#09090B] font-[600] text-[20px]">
+              Миний сагс
+            </h3>
+          </div>
+        </CardHeader>
         <div className="max-h-[600px] overflow-y-auto pr-2">
           {cartItems.length === 0 ? (
             <EmptyFoodCart setOpen={setOpen} />

@@ -11,10 +11,10 @@ export const getFoodOrderController: RequestHandler = async (req, res) => {
       .populate("foodOrderItems.food");
 
     if (!foodOrders || foodOrders.length === 0) {
-      return res.status(404).json({ message: "No orders found for this user" });
+      return res.status(200).json({ foodOrders: [] });
     }
 
-    res.status(200).json({ foodOrders });
+    return res.status(200).json({ foodOrders });
   } catch (error) {
     console.error("Error getting orders:", error);
     res.status(500).json({ message: "Server error", error });

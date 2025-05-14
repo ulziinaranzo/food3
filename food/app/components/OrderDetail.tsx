@@ -116,12 +116,16 @@ export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
   return (
     <div>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="w-[500px] p-[32px] bg-black">
+        <SheetContent
+          side="right"
+          className="w-[500px] p-[32px] bg-black"
+          aria-describedby="cart-description"
+        >
           <SheetHeader>
             <SheetTitle className="text-white text-[20px]">
               Таны сагс
             </SheetTitle>
-            <p className="text-sm text-white">
+            <p id="cart-description" className="text-sm text-white">
               Та захиалах хоолоо эндээс өөрчилж болно.
             </p>
           </SheetHeader>

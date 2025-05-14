@@ -123,11 +123,9 @@ export const Step1 = ({
               />
               <Label htmlFor="showPassword">Нууц үгийг харуулах</Label>
             </div>
-            <Link href={"/"}>
-              <Button type="submit" className="w-full mt-4">
-                Let's Go
-              </Button>
-            </Link>
+            <Button type="submit" className="w-full mt-4">
+              Let's Go
+            </Button>
           </form>
 
           <div className="flex justify-center items-center space-x-2 pt-4">

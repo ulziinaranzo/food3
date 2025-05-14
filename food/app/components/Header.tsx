@@ -109,7 +109,7 @@ export const Header = () => {
                 <div className="absolute top-[45px] right-0 flex flex-col rounded-lg p-[16px] bg-white text-black gap-[16px] shadow-lg z-50">
                   <div className="text-[20px] font-semibold">{user.email}</div>
                   <button
-                    className="text-left text-[black] hover:underline border-[1px] border-[#ef4445] px-[12px] py-[7px] rounded-full w-full flex justify-center opacity-90"
+                    className="text-left text-[black] hover:underline border-[1px] border-[#ef4445] px-[12px] py-[7px] rounded-full w-full flex justify-center items-center opacity-90"
                     onClick={() => setOpenUserProfile(true)}
                   >
                     Хувийн мэдээлэл

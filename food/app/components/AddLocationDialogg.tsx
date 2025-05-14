@@ -23,7 +23,6 @@ export const AddLocationDialog = ({
   const [localAddress, setLocalAddress] = useState(address);
   const [loading, setLoading] = useState<boolean>(false);
   const { user, token, setUser } = useAuth();
-  console.log(token);
 
   const handleSubmit = async () => {
     if (!user || !user._id) {

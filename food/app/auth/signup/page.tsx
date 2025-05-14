@@ -25,8 +25,9 @@ export default function Home() {
   const handlePrev = async () => setStep((prev) => prev - 1);
   const handleNext = async () => {
     if (step === 1) {
+      console.log("🧪 formData:", formData);
       try {
-        await signUp(formData.email, data.password);
+        await signUp(formData.email, formData.password);
         console.log("✅ Бүртгэл амжилттай");
       } catch (error) {
         console.error("Бүртгэхэд алдаа гарлаа", error);

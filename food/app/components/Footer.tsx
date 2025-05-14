@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { LogoIcon } from "../assets/Logo"
+import { LogoIcon } from "../assets/Logo";
 
 export const Footer = () => {
   return (
@@ -22,33 +22,70 @@ export const Footer = () => {
               <div className="text-white text-[20px] font-[600]">Nom</div>
               <div className="text-[20px] font-[600] bg-[#ef4445]">Nom</div>
             </div>
-            <div className="text-white text-[12px] font-[400]">Swift delivery</div>
+            <div className="text-white text-[12px] font-[400]">
+              Swift delivery
+            </div>
           </div>
           <div className="ml-[220px] flex flex-col gap-[16px]">
-            <div className="text-[#71717A] text-[16px] font-[400] hover:underline">NOMNOM</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Home</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Contact us</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Delivery zone</div>
+            <div className="text-[#71717A] text-[16px] font-[400] hover:underline">
+              NOMNOM
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Home
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Contact us
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Delivery zone
+            </div>
           </div>
           <div className="flex flex-col gap-[16px] ml-[112px]">
-            <div className="text-[#71717A] text-[16px] font-[400] hover:underline">MENU</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Appetizers</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Salads</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Pizzas</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Lunch favorites</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Main dishes</div>
+            <div className="text-[#71717A] text-[16px] font-[400] hover:underline">
+              MENU
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Appetizers
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Salads
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Pizzas
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Lunch favorites
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Main dishes
+            </div>
           </div>
           <div className="flex flex-col mt-[44px] gap-[16px] ml-[56px]">
-            <div className="text-white text-[16px] font-[400] hover:underline">Side dish</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Brunch</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Desserts</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Beverages</div>
-            <div className="text-white text-[16px] font-[400] hover:underline">Fish & Sea foods</div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Side dish
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Brunch
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Desserts
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Beverages
+            </div>
+            <div className="text-white text-[16px] font-[400] hover:underline">
+              Fish & Sea foods
+            </div>
           </div>
           <div className="flex flex-col gap-[16px] ml-[112px]">
-            <div className="flex text-[#71717A] text-[16px] font-[400]">FOLLOW US</div>
+            <div className="flex text-[#71717A] text-[16px] font-[400]">
+              FOLLOW US
+            </div>
             <div className="flex gap-[16px]">
-              <img className="w-[28px] h-[28px]" src="/Images/FacebookIcon.png" />
+              <img
+                className="w-[28px] h-[28px]"
+                src="/Images/FacebookIcon.png"
+              />
               <img className="w-[28px] h-[28px]" src="/Images/Instagram.png" />
             </div>
           </div>

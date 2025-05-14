@@ -1,16 +1,16 @@
+// tailwind.config.ts
 import type { Config } from "tailwindcss";
-import lineClamp from "@tailwindcss/line-clamp";
 
 const config: Config = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./app/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
   ],
   theme: {
     extend: {
       animation: {
-        marquee: "marquee 25s linear infinite",
+        marquee: "marquee 20s linear infinite",
       },
       keyframes: {
         marquee: {
@@ -20,7 +20,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [lineClamp],
+  plugins: [],
 };
 
 export default config;

@@ -27,7 +27,7 @@ export default function Page() {
   if (!user || user.role !== "admin") {
     return (
       <div className="text-bold text-[30px] flex justify-center mt-[100px] text-black">
-        NO THANK YOU, YOU ARE NOT ADMIN
+        ERROR...404
       </div>
     );
   }
