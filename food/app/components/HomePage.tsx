@@ -6,6 +6,7 @@ import axios from "axios";
 import { Category } from "../admin/_components/Types";
 import { FilteredCategoryFoods } from "./FilteredCategoryFoods";
 import { OrderDetail } from "./OrderDetail";
+import { api } from "@/axios";
 
 export const HomePage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -16,7 +17,7 @@ export const HomePage = () => {
 
   const getCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/category");
+      const response = await api.get(`/category`);
       setCategories(response.data.categories);
     } catch (error) {
       console.error("Категори авах үед алдаа гарлаа:", error);

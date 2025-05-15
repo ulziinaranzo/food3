@@ -8,6 +8,7 @@ import CategoryFoods from "../_components/CategoryFoods";
 import { SelectCategory } from "../_components/SelectCategory";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { useRouter } from "next/navigation";
+import { api } from "@/axios";
 
 export default function Page() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -34,7 +35,7 @@ export default function Page() {
 
   const getCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/category");
+      const response = await api.get(`/category`);
       setCategories(response.data.categories);
     } catch (error) {
       console.error("Категори авах үед алдаа гарлаа:", error);

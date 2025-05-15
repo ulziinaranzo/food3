@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import axios from "axios";
+import { api } from "@/axios";
 
 type DropDownCategoryProps = {
   selectedCategory: string;
@@ -28,7 +29,7 @@ export const SelectCategory = ({
   useEffect(() => {
     const getAllCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/category");
+        const response = await api.get(`/category`);
         setCategories(response.data.categories);
       } catch (error) {
         console.error("Категори авах үед алдаа гарлаа", error);

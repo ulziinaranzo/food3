@@ -14,6 +14,7 @@ import { OrderHistoryTabContent } from "./OrderHistoryTabContent";
 import { CartCard } from "./CartCard";
 import { useAuth } from "../_providers/AuthProvider";
 import { toast } from "sonner";
+import { api } from "@/axios";
 
 type OrderDetailProps = {
   open: boolean;
@@ -88,19 +89,10 @@ export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
         quantity: item.quantity,
       }));
 
-      const response = await axios.post(
-        "http://localhost:3001/food-order",
-        {
-          userId: user?._id,
-          orderedItems,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
+      const response = await api.post(`/food-order`, {
+        userId: user?._id,
+        orderedItems,
+      });
       setLoading(false);
       toast.success("Хоолны захиалга амжилттай нэмэгдлээ");
       localStorage.removeItem("cart");

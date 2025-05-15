@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { SelectCategory } from "./SelectCategory";
 import { DialogClose } from "@/components/ui/dialog";
 import { useAuth } from "@/app/_providers/AuthProvider";
+import { api } from "@/axios";
 
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
@@ -116,20 +117,11 @@ export const EditFoodForm = ({
 
     setLoading(true);
     try {
-      await axios.put(
-        `http://localhost:3001/food/${foodData._id}`,
-        {
-          ...data,
-          image: data.imgUrl,
-          categoryName: selectedCategory,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
+      await api.put(`/food/${foodData._id}`, {
+        ...data,
+        image: data.imgUrl,
+        categoryName: selectedCategory,
+      });
 
       await onUpdate();
       toast.success("Амжилттай шинэчлэгдлээ");

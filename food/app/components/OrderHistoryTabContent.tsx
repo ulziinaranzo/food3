@@ -9,6 +9,7 @@ import { useAuth } from "../_providers/AuthProvider";
 import axios from "axios";
 import { Order } from "../admin/_components/Types";
 import { format } from "date-fns";
+import { api } from "@/axios";
 
 export const OrderHistoryTabContent = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,15 +19,7 @@ export const OrderHistoryTabContent = () => {
   const getOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `http://localhost:3001/food-order/${user?._id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
+      const response = await api.get(`/food-order/${user?._id}`);
       setOrders(response.data.foodOrders);
     } catch (error) {
       console.error("Хоолны захиалгуудыг харуулахад алдаа гарлаа", error);

@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import CategoryBadge from "./CategoryBadge";
 import { AddCategory } from "./AddCategory";
+import { api } from "@/axios";
 
 export interface CategoryListProps {
   selectedCategory: string | null;
@@ -27,9 +28,7 @@ export default function CategoryList({
   const getFoodCountByCategory = async () => {
     try {
       const promises = categories.map(async (category) => {
-        const response = await axios.get(
-          `http://localhost:3001/count/${category._id}`
-        );
+        const response = await api.get(`/count/${category._id}`);
         return { id: category._id, count: response.data.foodCount };
       });
 
@@ -47,7 +46,7 @@ export default function CategoryList({
 
   const getAllFoodCount = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/count/`);
+      const response = await api.get(`/count/`);
       setTotalFoodCount(response.data.totalFoods);
     } catch (error) {
       console.error("Нийт хоолны тоо авах үед алдаа гарлаа", error);

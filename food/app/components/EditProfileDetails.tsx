@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { HashLoader } from "react-spinners";
 import { useAuth, User } from "@/app/_providers/AuthProvider";
+import { api } from "@/axios";
 
 type EditProfileProps = {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,16 +49,7 @@ export const EditProfile = ({ setIsEditing }: EditProfileProps) => {
         address,
         image: profileImage,
       };
-      const response = await axios.put(
-        `http://localhost:3001/user/${user._id}`,
-        updatedProfile,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
+      const response = await api.put(`/user/${user._id}`, updatedProfile);
       if (response.status === 200) {
         toast.success("Profile updated successfully");
         setIsEditing(false);

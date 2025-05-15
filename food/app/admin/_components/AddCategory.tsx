@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { HashLoader } from "react-spinners";
 import { useAuth } from "@/app/_providers/AuthProvider";
+import { api } from "@/axios";
 
 type FormData = {
   name: string;
@@ -27,20 +28,11 @@ export const AddCategory = ({ onClose }: AddFoodFormProps) => {
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      await axios.post(
-        "http://localhost:3001/category",
-        {
-          categoryName: data.name,
-          updatedAt: new Date(),
-          createdAt: new Date(),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
+      await api.post(`/category`, {
+        categoryName: data.name,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      });
       toast.success("Амжилттай нэмэгдлээ");
       onClose();
       reset();

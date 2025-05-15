@@ -10,6 +10,7 @@ import axios from "axios";
 import { useState } from "react";
 import clsx from "clsx";
 import { useAuth } from "@/app/_providers/AuthProvider";
+import { api } from "@/axios";
 
 const statusText = {
   delivered: "Хүргэгдсэн",
@@ -41,18 +42,9 @@ export const DropDownStatus = ({ orderId, status, onChange }: Props) => {
   ) => {
     try {
       setLoading(true);
-      const res = await axios.put(
-        `http://localhost:3001/food-order/${orderId}/status/`,
-        {
-          status: newStatus,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
+      const res = await api.put(`/food-order/${orderId}/status/`, {
+        status: newStatus,
+      });
 
       if (res.status === 200) {
         onChange(orderId, newStatus);

@@ -6,6 +6,7 @@ import axios from "axios";
 import { HashLoader } from "react-spinners";
 import { toast } from "sonner";
 import { useAuth } from "@/app/_providers/AuthProvider";
+import { api } from "@/axios";
 
 type AddFoodFormProps = {
   categoryName: string;
@@ -63,20 +64,11 @@ export const AddFoodForm = ({
     console.log(data);
 
     try {
-      await axios.post(
-        "http://localhost:3001/food",
-        {
-          ...data,
-          image: deployedImg,
-          category: categoryId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
+      await api.post(`/food`, {
+        ...data,
+        image: deployedImg,
+        category: categoryId,
+      });
       toast.success("Амжилттай нэмэгдлээ");
       onUpdate();
     } catch {

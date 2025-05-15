@@ -5,6 +5,7 @@ import axios from "axios";
 import { Food } from "../admin/_components/Types";
 import { FoodCardHome } from "./FoodCardHome";
 import { FoodCardCategories } from "./FoodCardCategories";
+import { api } from "@/axios";
 
 interface FilteredCategoryFoodsProps {
   onClose: (value: boolean) => void;
@@ -23,9 +24,7 @@ export const FilteredCategoryFoods = ({
 
   const getFilteredFoods = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/food?categoryId=${categoryId}`
-      );
+      const response = await api.get(`/food?categoryId=${categoryId}`);
       setFoods(response.data?.foodsByCategory || []);
     } catch (error) {
       console.error("Error fetching foods:", error);

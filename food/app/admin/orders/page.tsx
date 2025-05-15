@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { DropDownStatus } from "../_components/DropDownOrderStatus";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { useRouter } from "next/navigation";
+import { api } from "@/axios";
 
 export default function Home() {
   const ordersPerPage = 12;
@@ -38,12 +39,7 @@ export default function Home() {
 
   const getOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/food-order/", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
+      const response = await api.get(`/food-order/`);
       setOrders(response.data.foodOrders);
     } catch (error) {
       console.error("Хоолны захиалгууд авах үед алдаа гарлаа", error);

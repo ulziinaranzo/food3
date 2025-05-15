@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/app/_providers/AuthProvider";
+import { api } from "@/axios";
 
 interface CategoryFoodsProps {
   onClose: (value: boolean) => void;
@@ -45,9 +46,7 @@ const CategoryFoods = ({
 
   const getFoods = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/food?categoryId=${categoryId}`
-      );
+      const response = await api.get(`/food?categoryId=${categoryId}`);
       setFoods(response.data?.foodsByCategory);
     } catch (error) {
       console.error("Error fetching foods:", error);
@@ -57,12 +56,7 @@ const CategoryFoods = ({
   const handleDeleteFood = async (_id: string) => {
     try {
       setFoods((prevFoods) => prevFoods.filter((food) => food._id !== _id));
-      await axios.delete(`http://localhost:3001/food/${_id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
+      await api.delete(`food/${_id}`);
       console.log("sdf");
       toast.success("Хоол амжилттай устлаа");
       onClose(true);
@@ -78,12 +72,7 @@ const CategoryFoods = ({
       setFoods((prevFoods) =>
         prevFoods.filter((food) => food.category !== categoryId)
       );
-      await axios.delete(`http://localhost:3001/category/${categoryId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
+      await api.delete(`/category/${categoryId}`);
       toast.success("Категори болон категори дахь хоолууд амжилттай устлаа");
       onClose(true);
       await getFoods();
@@ -145,7 +134,7 @@ const CategoryFoods = ({
             <div key={food._id}>
               <FoodCard
                 selectedCategory={categoryId}
-                category={food.category} 
+                category={food.category}
                 food={food}
                 onDelete={handleDeleteFood}
                 categories={[]}

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Food } from "../admin/_components/Types";
 import { FoodCardHome } from "./FoodCardHome";
+import { api } from "@/axios";
 
 type CategorySectionProps = {
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,9 +15,7 @@ export const CategorySection = ({ onClose }: CategorySectionProps) => {
   >({});
   const getFoods = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3001/grouped-by-category`
-      );
+      const response = await api.get(`/grouped-by-category`);
       const grouped: Record<string, Food[]> = {};
 
       response.data.data.forEach(

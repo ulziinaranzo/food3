@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useAuth } from "../_providers/AuthProvider";
 import { HashLoader } from "react-spinners";
+import { api } from "@/axios";
 
 export const AddLocationDialog = ({
   open,
@@ -30,16 +31,7 @@ export const AddLocationDialog = ({
       return;
     }
     try {
-      const res = await axios.put(
-        `http://localhost:3001/user/${user._id}`,
-        { address: localAddress },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
+      const res = await api.put(`/user/${user._id}`, { address: localAddress });
       toast.success("Хаяг амжилттай хадгалагдлаа!");
       setUser(res.data.user);
       setOpen(false);
