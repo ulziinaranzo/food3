@@ -1,11 +1,11 @@
 import express from "express";
-import foodRouter from "./routes/food.route";
-import categoryRouter from "./routes/category.route";
-import { connectToDatabase } from "./database/connect-to-db";
-import userRouter from "./routes/user.route";
-import foodOrderRouter from "./routes/food-order.route";
+import foodRouter from "../src/routes/food.route";
+import categoryRouter from "../src/routes/category.route";
+import { connectToDatabase } from "../src/database/connect-to-db";
+import userRouter from "../src/routes/user.route";
+import foodOrderRouter from "../src/routes/food-order.route";
 import cors from "cors";
-import { authRouter } from "./routes/auth.route";
+import { authRouter } from "../src/routes/auth.route";
 import dotenv from "dotenv";
 
 connectToDatabase();

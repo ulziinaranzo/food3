@@ -7,35 +7,30 @@ import { EditFoodForm } from "./EditFoodForm";
 type FoodCardProps = {
   food: Food;
   categories: Category[];
-  selectedCategory: string;
-  setSelectedCategory: (value: string) => void;
-  categoryId: string;
-  onDelete: (id: string) => void;
+  selectedCategory: string | null;
+  setSelectedCategory: (value: string | null) => void;
+  category: string;
+  onDelete?: (id: string) => void;
   onUpdate: () => void;
+  refreshFoods?: () => void;
 };
-type foodData = {
-  food: Food[];
-  categories: Category[];
-};
+
 export const FoodCard = ({
   food,
   categories,
   selectedCategory,
   setSelectedCategory,
-  onDelete,
+  onDelete = () => {},
   onUpdate,
-  categoryId,
+  category,
 }: FoodCardProps) => {
   const [editFood, setEditFood] = useState<boolean>(false);
   const [currentFood, setCurrentFood] = useState<Food>(food);
 
-  const handleUpdateFood = () => {
-    setCurrentFood(currentFood);
-    setEditFood(false);
-  };
   const handleDelete = () => {
     onDelete(food._id);
   };
+
   return (
     <div className="flex flex-col p-4 gap-3 bg-white rounded-lg shadow-lg relative h-[241px] w-[250px] ">
       <img
@@ -54,12 +49,12 @@ export const FoodCard = ({
         <EditFoodForm
           categories={categories}
           setSelectedCategory={setSelectedCategory}
-          selectedCategory={categoryId}
+          selectedCategory={category}
           foodData={currentFood}
           onUpdate={onUpdate}
           onClose={() => setEditFood(false)}
           categoryName={food.category}
-          onDelete={onDelete}
+          onDelete={handleDelete}
         />
       )}
 

@@ -145,7 +145,7 @@ const CategoryFoods = ({
             <div key={food._id}>
               <FoodCard
                 selectedCategory={categoryId}
-                categoryId={categoryId}
+                category={food.category} 
                 food={food}
                 onDelete={handleDeleteFood}
                 categories={[]}

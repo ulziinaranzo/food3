@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Food, Category } from "./Types";
-import FoodCard from "./FoodCard";
+import { FoodCard } from "./FoodCard";
 
 interface FoodCardListProps {
   foods: Food[];
@@ -35,7 +35,8 @@ const FoodCardList = ({
           categories={categories}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
-          refreshFoods={refreshFoods}
+          onUpdate={refreshFoods}
+          category={food.category ?? ""}
         />
       ))}
     </>

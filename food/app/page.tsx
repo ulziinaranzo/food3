@@ -1,6 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
-import { BackgroundPic } from "./components/BackGroundImg";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { HomePage } from "./components/HomePage";
