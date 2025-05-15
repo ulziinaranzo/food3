@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Step } from "./_components/step";
 import { Step1 } from "./_components/step1";
 import { useAuth } from "@/app/_providers/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export type FormData = {
   email: string;

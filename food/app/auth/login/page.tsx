@@ -21,7 +21,6 @@ type StepProps = {
 export default function Home() {
   const [step, setStep] = useState<number>(0);
   const { signIn } = useAuth();
-  const { push } = useRouter();
 
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -35,7 +34,6 @@ export default function Home() {
         await signIn(formData.email, formData.password);
         console.log("Нэвтрэх гэж буй:", formData.email, formData.password);
         console.log("Амжилттай нэвтэрлээ");
-        push("/");
         toast.success("Амжилттай нэвтэрлээ");
       } catch (error) {
         console.error("Нэвтрэхэд алдаа гарлаа");

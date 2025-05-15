@@ -1,4 +1,5 @@
 "use client";
+import { api } from "@/axios";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { data } = await axios.post("http://localhost:3001/auth/signin", {
+      const { data } = await api.post("http://localhost:3001/auth/signin", {
         email,
         password,
       });
@@ -46,7 +47,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setToken(data.token);
       setUser(data.user);
       toast.success("Амжилттай нэвтэрлээ");
-
       if (data.user.role === "admin") {
         router.push("/admin/foodmenu");
       } else {
@@ -60,11 +60,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const signUp = async (email: string, password: string) => {
     try {
-      const { data } = await axios.post("http://localhost:3001/auth/signup", {
+      const { data } = await api.post("http://localhost:3001/auth/signup", {
         email,
         password,
       });
-
       localStorage.setItem("token", data.token);
       setToken(data.token);
       setUser(data.user);
@@ -98,11 +97,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
     const getUser = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3001/auth/me", {
-          headers: {
-            Authorization: `${tokenFromStorage}`,
-          },
-        });
+        const { data } = await api.get(`auth/me`);
         setUser(data);
       } catch (error) {
         console.error("Автомат нэвтрэхэд алдаа:", error);
