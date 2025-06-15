@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import AddFoodCard from "./AddFoodCard";
 import { FoodCard } from "./FoodCard";
 import { toast } from "sonner";

@@ -2,10 +2,8 @@
 import { useEffect, useState } from "react";
 import { Categories } from "./Categories";
 import { CategorySection } from "./CategorySection";
-import axios from "axios";
 import { Category } from "../admin/_components/Types";
 import { FilteredCategoryFoods } from "./FilteredCategoryFoods";
-import { OrderDetail } from "./OrderDetail";
 import { api } from "@/axios";
 
 export const HomePage = () => {

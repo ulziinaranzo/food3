@@ -1,6 +1,5 @@
 "use client";
 import { PlusIcon } from "@/app/assets/PlusIcon";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import CategoryBadge from "./CategoryBadge";
 import { AddCategory } from "./AddCategory";

@@ -1,18 +1,21 @@
 "use client";
-
+import { motion } from "framer-motion";
 import { LogoIcon } from "../assets/Logo";
 
+const marqueeText = "Fresh fast delivered";
 export const Footer = () => {
   return (
     <div className="flex flex-col w-max-[1440px] h-fit pt-[60px] pb-[111px] bg-[#18181B]">
       <div className="flex w-full bg-[#EF4444] pl-[98px] pt-[28px] pb-[28px] gap-[34px] overflow-hidden">
-        <div className="whitespace-nowrap animate-marquee font-[600] text-[30px] text-[#FAFAFA]">
-          {Array.from({ length: 20 }).map((_, index) => (
-            <span key={index} className="mr-[60px] inline-block">
-              Fresh fast delivered
-            </span>
-          ))}
-        </div>
+        <motion.div
+          className="whitespace-nowrap font-[600] text-[30px] text-[#FAFAFA]"
+          animate={{ x: ["100%", "-100%"] }}
+          transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
+        >
+          {Array.from({ length: 20 })
+            .map(() => marqueeText)
+            .join("    ")}{" "}
+        </motion.div>
       </div>
       <div className="flex flex-col mt-[76px] mb-[104px]">
         <div className="flex pl-[88px] pr-[88px]">

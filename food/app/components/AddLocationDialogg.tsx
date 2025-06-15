@@ -7,7 +7,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import axios from "axios";
 import { useAuth } from "../_providers/AuthProvider";
 import { HashLoader } from "react-spinners";
 import { api } from "@/axios";
@@ -46,7 +45,7 @@ export const AddLocationDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="w-[400px]">
         <DialogHeader>
           <DialogTitle>Хаяг оруулах</DialogTitle>
         </DialogHeader>

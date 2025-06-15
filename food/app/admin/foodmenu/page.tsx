@@ -1,11 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Category } from "../_components/Types";
 import CategoryList from "../_components/CategoryList";
 import { AvatarBadge } from "../_components/AvatarBadge";
 import CategoryFoods from "../_components/CategoryFoods";
-import { SelectCategory } from "../_components/SelectCategory";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { useRouter } from "next/navigation";
 import { api } from "@/axios";

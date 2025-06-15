@@ -6,7 +6,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import axios from "axios";
 import { useState } from "react";
 import clsx from "clsx";
 import { useAuth } from "@/app/_providers/AuthProvider";

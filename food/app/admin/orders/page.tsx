@@ -1,6 +1,5 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
-import axios from "axios";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PaginationOrder } from "../_components/PaginationOrder";
 import { Order } from "../_components/Types";
@@ -12,13 +11,14 @@ import { DropDownStatus } from "../_components/DropDownOrderStatus";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { useRouter } from "next/navigation";
 import { api } from "@/axios";
+import { DateRange } from "react-day-picker";
 
 export default function Home() {
   const ordersPerPage = 12;
   const [orders, setOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const totalPages = Math.ceil((orders?.length || 0) / ordersPerPage);
-  const { user, token } = useAuth();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,7 +28,6 @@ export default function Home() {
       router.push("/");
     }
   }, [user, router]);
-
   if (!user || user.role !== "admin") {
     return (
       <div className="text-bold text-[30px] flex justify-center mt-[100px] text-black">
@@ -36,7 +35,6 @@ export default function Home() {
       </div>
     );
   }
-
   const getOrders = async () => {
     try {
       const response = await api.get(`/food-order/`);
@@ -49,10 +47,20 @@ export default function Home() {
     getOrders();
   }, []);
 
+  const filteredOrders = useMemo(() => {
+    if (!dateRange?.from && !dateRange?.to) return orders;
+    return orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      const from = dateRange?.from ? new Date(dateRange.from) : null;
+      const to = dateRange?.to ? new Date(dateRange.to) : null;
+      return (!from || orderDate >= from) && (!to || orderDate <= to);
+    });
+  }, [orders, dateRange]);
   const paginatedOrders = useMemo<Order[]>(() => {
     const start = (currentPage - 1) * ordersPerPage;
-    return orders.slice(start, start + ordersPerPage);
-  }, [currentPage, orders]);
+    return filteredOrders.slice(start, start + ordersPerPage);
+  }, [currentPage, filteredOrders]);
+  const totalPages = Math.ceil((filteredOrders?.length || 0) / ordersPerPage);
 
   return (
     <div className="flex w-screen h-screen">
@@ -65,32 +73,22 @@ export default function Home() {
             <div className="flex flex-col">
               <div className="text-[20px] font-bold text-[#09090B]">Orders</div>
               <div className="font-medium text-[12px] text-[#71717A]">
-                {orders.length} хоол
+                {filteredOrders.length} хоол
               </div>
             </div>
             <div className="flex gap-[12px] items-center">
-              <DatePicker />
+              <DatePicker onDateChange={setDateRange} />
               <div className="flex justify-center items-center font-medium text-[14px] rounded-full text-white px-[8px] py-[16px] bg-[#d1d1d1]">
                 Хүргэлтийн төлөв өөрчлөх
               </div>
             </div>
           </div>
+
           <TitleOrders />
+
           {paginatedOrders.map((item, index) => {
-            const statusClasses = {
-              delivered:
-                "border-green-500 text-green-600 bg-green-50 hover:bg-green-100",
-              cancelled:
-                "border-gray-400 text-gray-600 bg-gray-50 hover:bg-gray-100",
-              pending: "border-red-500 text-red-600 bg-red-50 hover:bg-red-100",
-            };
-            const statusText = {
-              delivered: "Хүргэгдсэн",
-              cancelled: "Цуцалсан",
-              pending: "Хүлээгдэж буй",
-            };
             return (
-              <div key={index} className="w-full flex h-[52px]">
+              <div key={item._id} className="w-full flex h-[52px]">
                 <div className="flex w-[48px] justify-center items-center">
                   <Checkbox />
                 </div>
@@ -120,8 +118,8 @@ export default function Home() {
                       orderId={item._id}
                       status={item.status}
                       onChange={(id, newStatus) => {
-                        setOrders((prevOrders) =>
-                          prevOrders.map((order) =>
+                        setOrders((prev) =>
+                          prev.map((order) =>
                             order._id === id
                               ? { ...order, status: newStatus }
                               : order

@@ -11,6 +11,8 @@ import { AddLocationDialog } from "./AddLocationDialogg";
 import { OrderDetail } from "./OrderDetail";
 import Profile from "./Profile";
 import { useRouter } from "next/navigation";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export const Header = () => {
   const { user, signOut } = useAuth();
@@ -99,6 +101,7 @@ export const Header = () => {
                   <img
                     src={user.image}
                     className="rounded-full w-[36px] h-[36px] object-cover"
+                    alt="Profile"
                   />
                 ) : (
                   <ProfileIcon />
@@ -125,23 +128,17 @@ export const Header = () => {
                   </button>
                 </div>
               )}
-              {openUserProfile && (
-                <div className="fixed inset-0 bg-grey bg-opacity-50 z-50 flex justify-center items-center">
-                  <div className="bg-white p-8 rounded-lg shadow-xl w-[800px] h-[400px] relative">
-                    <button
-                      className="absolute top-4 right-4 text-gray-600 hover:text-black"
-                      onClick={() => setOpenUserProfile(false)}
-                    >
-                      ❌
-                    </button>
-                    <Profile />
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         )}
       </div>
+
+      <Dialog open={openUserProfile} onOpenChange={setOpenUserProfile}>
+        <DialogContent className="max-w-[900px] max-h-[600px] p-0">
+          <DialogTitle> </DialogTitle>
+          <Profile />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

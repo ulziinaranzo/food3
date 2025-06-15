@@ -10,11 +10,24 @@ interface FoodCardHomeProps {
 
 export const FoodCardHome = ({ categoryName, items }: FoodCardHomeProps) => {
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleOpenDialog = (food: Food) => {
+    setSelectedFood(food);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedFood(null);
+  };
+
   return (
     <div className="flex flex-col">
       <div className="text-white font-[600] text-[30px] mb-6">
         {categoryName}
       </div>
+
       <div className="grid grid-cols-3 gap-[36px]">
         {items.map((item) => (
           <div
@@ -28,12 +41,14 @@ export const FoodCardHome = ({ categoryName, items }: FoodCardHomeProps) => {
                 className="w-[365px] h-[210px] object-cover rounded-t-lg"
               />
             )}
+
             <button
-              onClick={() => setSelectedFood(item)}
-              className="w-[44px] h-[44px] flex items-center justify-center absolute right-[36px] top-[163px] bg-[white] z-10 rounded-full cursor-pointer"
+              onClick={() => handleOpenDialog(item)}
+              className="w-[44px] h-[44px] flex items-center justify-center absolute right-[36px] top-[163px] bg-[white] z-10 rounded-full cursor-pointer hover:bg-gray-50 transition-colors"
             >
               <AddIcon />
             </button>
+
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center">
                 <div className="font-[600] text-[24px] text-[#EF4444]">
@@ -47,19 +62,16 @@ export const FoodCardHome = ({ categoryName, items }: FoodCardHomeProps) => {
                 {item.ingredients}
               </div>
             </div>
-            {selectedFood?._id === item._id && (
-              <div className="absolute top-0 left-10 z-50 w-full h-full bg-opacity-60 flex justify-center items-center rounded-lg bg-white">
-                <AddFoodToCart
-                  food={selectedFood}
-                  onClose={() => {
-                    setSelectedFood(null);
-                  }}
-                />
-              </div>
-            )}
           </div>
         ))}
       </div>
+      {selectedFood && (
+        <AddFoodToCart
+          open={isDialogOpen}
+          onClose={handleCloseDialog}
+          food={selectedFood}
+        />
+      )}
     </div>
   );
 };

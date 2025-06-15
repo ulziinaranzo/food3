@@ -30,7 +30,7 @@
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
-    "framer-motion": "^12.7.4",
+    "framer-motion": "^12.18.1",
     "install": "^0.13.0",
     "lucide-react": "^0.487.0",
     "mongoose": "^8.13.2",

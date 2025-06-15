@@ -2,7 +2,6 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { Food } from "../admin/_components/Types";
-import axios from "axios";
 import {
   Sheet,
   SheetContent,

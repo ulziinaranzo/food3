@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Food } from "../admin/_components/Types";
-import { FoodCardHome } from "./FoodCardHome";
 import { FoodCardCategories } from "./FoodCardCategories";
 import { api } from "@/axios";
 

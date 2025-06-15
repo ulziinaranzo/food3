@@ -1,9 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../_providers/AuthProvider";
-import { toast } from "sonner";
-import axios from "axios";
 import { EditProfile } from "./EditProfileDetails";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const Profile = () => {
   const { user, setUser } = useAuth();
@@ -12,8 +16,9 @@ const Profile = () => {
   if (!user) {
     return <div>Хэрэглэгчийн мэдээлэл олдсонгүй</div>;
   }
+
   return (
-    <div className="w-full h-screen mx-auto p-6">
+    <div className="w-full h-full mx-auto p-6">
       <div className="flex bg-gradient-to-r from-silver-300 via-silver-400 to-silver-500 rounded-lg p-8 mx-auto">
         <div className="w-1/3 flex justify-center items-center">
           <img
@@ -27,19 +32,19 @@ const Profile = () => {
           <h2 className="text-3xl font-bold text-gray-800">
             Хэрэглэгчийн мэдээлэл
           </h2>
-          <div className="flex  mt-[20px]">
+          <div className="flex mt-[20px]">
             <div className="text-lg text-gray-700 w-[150px]">Имэйл:</div>
-            <p className="text-lg text-gray-700 ">{user.email}</p>
+            <p className="text-lg text-gray-700">{user.email}</p>
           </div>
-          <div className="flex  mt-[20px]">
+          <div className="flex mt-[20px]">
             <div className="text-lg text-gray-700 w-[150px]">Дугаар:</div>
-            <p className="text-lg text-gray-700 ">
+            <p className="text-lg text-gray-700">
               {user.phoneNumber || "Утасны дугаар байхгүй байна"}
             </p>
           </div>
-          <div className="flex  mt-[20px]">
+          <div className="flex mt-[20px]">
             <div className="text-lg text-gray-700 w-[150px]">Хаяг:</div>
-            <p className="text-lg text-gray-700 ">
+            <p className="text-lg text-gray-700">
               {user.address || "Хаяг байхгүй байна"}
             </p>
           </div>
@@ -52,10 +57,14 @@ const Profile = () => {
           </button>
         </div>
       </div>
-
-      {isEditing && (
-        <EditProfile setIsEditing={setIsEditing} updateLocalUser={setUser} />
-      )}
+      <Dialog open={isEditing} onOpenChange={setIsEditing}>
+        <DialogContent className="max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Хувийн мэдээлэл өөрчлөх</DialogTitle>
+          </DialogHeader>
+          <EditProfile setIsEditing={setIsEditing} updateLocalUser={setUser} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

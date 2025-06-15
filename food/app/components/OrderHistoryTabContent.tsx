@@ -6,7 +6,6 @@ import { TimeIcon } from "../assets/TimeIcon";
 import { LocationIcon } from "../assets/LocationIcon";
 import { useEffect, useState } from "react";
 import { useAuth } from "../_providers/AuthProvider";
-import axios from "axios";
 import { Order } from "../admin/_components/Types";
 import { format } from "date-fns";
 import { api } from "@/axios";

@@ -1,9 +1,10 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
-
 import {
   Popover,
   PopoverContent,
@@ -11,9 +12,18 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
-export const DatePicker = () => {
+
+export const DatePicker = ({
+  onDateChange,
+}: {
+  onDateChange: (date: DateRange | undefined) => void;
+}) => {
   const [date, setDate] = useState<DateRange | undefined>();
+
+  useEffect(() => {
+    onDateChange(date);
+  }, [date, onDateChange]);
+
   return (
     <div className={cn("grid gap-2")}>
       <Popover>
