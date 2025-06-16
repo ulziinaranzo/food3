@@ -3,7 +3,7 @@ import { userModel } from "../../models/user-model";
 
 export const getMe: RequestHandler = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = (req as any).userId;
     const user = await userModel.findById(userId).select("-password");
 
     if (!user) {

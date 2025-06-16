@@ -15,7 +15,9 @@ const port = 3001;
 dotenv.config();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({ origin: "food-delivery-site-tau.vercel.app", credentials: true })
+);
 app.use(foodRouter);
 app.use(categoryRouter);
 app.use(userRouter);

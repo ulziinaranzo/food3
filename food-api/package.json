@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon api/index.ts",
     "build": "tsc",
     "start": "node api/index.ts",
     "deploy": "vercel --prod"
