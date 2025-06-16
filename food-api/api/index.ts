@@ -16,8 +16,15 @@ dotenv.config();
 
 app.use(express.json());
 app.use(
-  cors({ origin: "food-delivery-site-tau.vercel.app", credentials: true })
+  cors({
+    origin: [
+      "https://food-delivery-site-tau.vercel.app", 
+      "http://localhost:3000"                      
+    ],
+    credentials: true,
+  })
 );
+
 app.use(foodRouter);
 app.use(categoryRouter);
 app.use(userRouter);
