@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 interface CategoryFoodsProps {
   onClose: (value: boolean) => void;
@@ -45,6 +45,8 @@ const CategoryFoods = ({
 
   const getFoods = async () => {
     try {
+      const token = localStorage.getItem("token");
+      if (token) setAuthToken(token);
       const response = await api.get(`/food?categoryId=${categoryId}`);
       setFoods(response.data?.foodsByCategory);
     } catch (error) {

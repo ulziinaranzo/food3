@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { SelectCategory } from "./SelectCategory";
 import { DialogClose } from "@/components/ui/dialog";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 const UPLOAD_PRESET = "ml_default";
 const CLOUD_NAME = "dxhmgs7wt";
@@ -117,12 +117,13 @@ export const EditFoodForm = ({
 
     setLoading(true);
     try {
+      const token = localStorage.getItem("token");
+      if (token) setAuthToken(token);
       await api.put(`/food/${foodData._id}`, {
         ...data,
         image: data.imgUrl,
         categoryName: selectedCategory,
       });
-
       await onUpdate();
       toast.success("Амжилттай шинэчлэгдлээ");
     } catch {

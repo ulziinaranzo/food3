@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import clsx from "clsx";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 const statusText = {
   delivered: "Хүргэгдсэн",
@@ -34,12 +34,13 @@ type Props = {
 
 export const DropDownStatus = ({ orderId, status, onChange }: Props) => {
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
 
   const handleStatusChange = async (
     newStatus: "pending" | "delivered" | "cancelled"
   ) => {
     try {
+      const token = localStorage.getItem("token");
+      if (token) setAuthToken(token);
       setLoading(true);
       const res = await api.put(`/food-order/${orderId}/status/`, {
         status: newStatus,

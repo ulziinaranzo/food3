@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 type DropDownCategoryProps = {
   selectedCategory: string;
@@ -28,6 +28,8 @@ export const SelectCategory = ({
   useEffect(() => {
     const getAllCategories = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (token) setAuthToken(token);
         const response = await api.get(`/category`);
         setCategories(response.data.categories);
       } catch (error) {

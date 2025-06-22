@@ -60,14 +60,10 @@ export const AddFoodForm = ({
       return;
     }
     setLoading(true);
-    const token = localStorage.getItem("token");
-    if (token) {
-      setAuthToken(token);
-    }
-
     console.log(data);
-
     try {
+      const token = localStorage.getItem("token");
+      if (token) setAuthToken(token);
       await api.post(`/food`, {
         ...data,
         image: deployedImg,
