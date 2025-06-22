@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import { DropDownStatus } from "../_components/DropDownOrderStatus";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { useRouter } from "next/navigation";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 import { DateRange } from "react-day-picker";
 
 export default function Home() {
@@ -37,6 +37,8 @@ export default function Home() {
   }
   const getOrders = async () => {
     try {
+      const token = localStorage.getItem("token");
+      if (token) setAuthToken(token);
       const response = await api.get(`/food-order/`);
       setOrders(response.data.foodOrders);
     } catch (error) {

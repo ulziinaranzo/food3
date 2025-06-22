@@ -60,7 +60,6 @@ export const AddFoodForm = ({
       return;
     }
     setLoading(true);
-    console.log(data);
     try {
       const token = localStorage.getItem("token");
       if (token) setAuthToken(token);
@@ -71,8 +70,15 @@ export const AddFoodForm = ({
       });
       toast.success("Амжилттай нэмэгдлээ");
       onUpdate();
-    } catch {
-      toast.error("Хоол нэмэхэд алдаа гарлаа");
+    } catch (error: any) {
+      console.error("Хоол нэмэхэд алдаа гарлаа:", error);
+      let message = "Хоол нэмэхэд алдаа гарлаа";
+      if (error.response?.data?.message) {
+        message = error.response.data.message;
+      } else if (error.message) {
+        message = error.message;
+      }
+      toast.error(message);
     } finally {
       setLoading(false);
     }

@@ -1,20 +1,45 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { LogoIcon } from "../assets/Logo";
 
-const marqueeText = "Fresh fast delivered";
+const marqueeText = "Fast fresh delivered";
+
 export const Footer = () => {
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const controls = useAnimation();
+
+  useEffect(() => {
+    if (!marqueeRef.current) return;
+    const width = marqueeRef.current.scrollWidth;
+
+    controls.start({
+      x: [-width, 0],
+      transition: {
+        x: {
+          repeat: Infinity,
+          repeatType: "loop",
+          duration: 30,
+          ease: "linear",
+        },
+      },
+    });
+  }, [controls]);
+
   return (
-    <div className="flex flex-col w-max-[1440px] h-fit pt-[60px] pb-[111px] bg-[#18181B]">
-      <div className="flex w-full bg-[#EF4444] pl-[98px] pt-[28px] pb-[28px] gap-[34px] overflow-hidden">
+    <div className="flex flex-col max-w-[1440px] h-fit pt-[60px] pb-[111px] bg-[#18181B] mx-auto">
+      <div className="flex w-full bg-[#EF4444] pl-[40px] pr-[40px] pt-[28px] pb-[28px] gap-[34px] overflow-hidden relative">
         <motion.div
+          ref={marqueeRef}
           className="whitespace-nowrap font-[600] text-[30px] text-[#FAFAFA]"
-          animate={{ x: ["100%", "-100%"] }}
-          transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
+          animate={controls}
+          initial={{ x: 0 }}
         >
-          {Array.from({ length: 20 })
-            .map(() => marqueeText)
-            .join("    ")}{" "}
+          {Array.from({ length: 40 }).map((_, i) => (
+            <span key={i} className="mr-[4rem]">
+              {marqueeText}
+            </span>
+          ))}
         </motion.div>
       </div>
       <div className="flex flex-col mt-[76px] mb-[104px]">
@@ -88,13 +113,18 @@ export const Footer = () => {
               <img
                 className="w-[28px] h-[28px]"
                 src="/Images/FacebookIcon.png"
+                alt="Facebook"
               />
-              <img className="w-[28px] h-[28px]" src="/Images/Instagram.png" />
+              <img
+                className="w-[28px] h-[28px]"
+                src="/Images/Instagram.png"
+                alt="Instagram"
+              />
             </div>
           </div>
         </div>
 
-        <div className="flex text-[#71717A] ml-[88px] text-[14px] font-[400] gap-[48px] pt-[32px] border-t-1 border-[#F4F4F566] mt-[104px] w-[1264px]">
+        <div className="flex text-[#71717A] ml-[88px] text-[14px] font-[400] gap-[48px] pt-[32px] border-t border-[#F4F4F566] mt-[104px] w-[1264px]">
           <div>Copy right 2024 © Nomnom LLC</div>
           <div>Privacy policy</div>
           <div>Terms and conditions</div>
