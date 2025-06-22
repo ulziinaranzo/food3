@@ -18,8 +18,8 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
-      "https://food-delivery-site-tau.vercel.app", 
-      "http://localhost:3000"                      
+      "https://food-delivery-site-nine.vercel.app/",
+      "http://localhost:3000",
     ],
     credentials: true,
   })
