@@ -23,7 +23,6 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  token?: string;
   setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 };
 
@@ -32,7 +31,6 @@ const AuthContext = createContext({} as AuthContextType);
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
   const [user, setUser] = useState<User | undefined>();
-  const [token, setToken] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
 
   const signIn = async (email: string, password: string) => {
@@ -43,8 +41,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       });
 
       localStorage.setItem("token", data.token);
-      setToken(data.token);
-      setAuthToken(data.token);
       setUser(data.user);
       toast.success("Амжилттай нэвтэрлээ");
 
@@ -67,8 +63,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       });
 
       localStorage.setItem("token", data.token);
-      setToken(data.token);
-      setAuthToken(data.token);
       setUser(data.user);
       toast.success("Амжилттай нэвтэрлээ");
 
@@ -85,7 +79,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const signOut = async () => {
     localStorage.removeItem("token");
-    setToken(undefined);
     setUser(undefined);
     setAuthToken(null);
     router.push("/login");
@@ -97,20 +90,21 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setLoading(false);
       return;
     }
-
-    setToken(tokenFromStorage);
     setAuthToken(tokenFromStorage);
 
     const getUser = async () => {
+      const token = localStorage.getItem("token");
+      console.log("token", token);
+      if (!token) return;
+      setAuthToken(token);
       try {
         const { data } = await api.get("/auth/me");
+        console.log("irj bgaa hereglegch:", data);
+
         setUser(data);
       } catch (error) {
-        console.error("Автомат нэвтрэхэд алдаа:", error);
         localStorage.removeItem("token");
-        setToken(undefined);
-        setUser(undefined);
-        setAuthToken(null);
+        console.error("Автомат нэвтрэхэд алдаа:", error);
       } finally {
         setLoading(false);
       }
@@ -120,9 +114,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user, signIn, signUp, signOut, token, setUser }}
-    >
+    <AuthContext.Provider value={{ user, signIn, signUp, signOut, setUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );

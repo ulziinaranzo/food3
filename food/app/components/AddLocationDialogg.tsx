@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useAuth } from "../_providers/AuthProvider";
 import { HashLoader } from "react-spinners";
 import { api } from "@/axios";
+import { setAuthToken } from "@/axios";
 
 export const AddLocationDialog = ({
   open,
@@ -22,7 +23,7 @@ export const AddLocationDialog = ({
 }) => {
   const [localAddress, setLocalAddress] = useState(address);
   const [loading, setLoading] = useState<boolean>(false);
-  const { user, token, setUser } = useAuth();
+  const { user, setUser } = useAuth();
 
   const handleSubmit = async () => {
     if (!user || !user._id) {
@@ -30,6 +31,8 @@ export const AddLocationDialog = ({
       return;
     }
     try {
+      const token = localStorage.getItem("token");
+      if (token) setAuthToken(token);
       const res = await api.put(`/user/${user._id}`, { address: localAddress });
       toast.success("Хаяг амжилттай хадгалагдлаа!");
       setUser(res.data.user);
@@ -38,10 +41,6 @@ export const AddLocationDialog = ({
       toast.error("Хаяг илгээхэд алдаа гарлаа");
     }
   };
-
-  useEffect(() => {
-    setLocalAddress(address);
-  }, [address]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

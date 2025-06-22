@@ -13,19 +13,18 @@ export const authenticationMiddleware: RequestHandler = (req, res, next) => {
   console.log(token);
 
   try {
-    const { userId, isAdmin } = jwt.verify(
-      token,
-      process.env.JWT_NUUTS as string
-    ) as {
+    console.log(process.env.JWT_SECRET);
+    console.log("hi1");
+
+    const { userId } = jwt.verify(token, process.env.JWT_SECRET as string) as {
       userId: string;
-      isAdmin: boolean;
     };
+    console.log("hi2");
 
     (req as any).userId = userId;
-    (req as any).isAdmin = isAdmin;
 
     next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ message: "Invalid token", error });
   }
 };

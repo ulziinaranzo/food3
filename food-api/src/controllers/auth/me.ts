@@ -4,7 +4,16 @@ import { userModel } from "../../models/user-model";
 export const getMe: RequestHandler = async (req, res) => {
   try {
     const userId = (req as any).userId;
-    const user = await userModel.findById(userId).select("-password");
+    const user = await userModel
+      .findById(userId)
+      .select("-password")
+      .populate({
+        path: "orderedItems",
+        populate: {
+          path: "foodOrderItems.food",
+          model: "food",
+        },
+      });
 
     if (!user) {
       res.status(404).json({ message: "Хэрэглэгч олдсонгүй" });

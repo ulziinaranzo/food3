@@ -8,29 +8,28 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../_providers/AuthProvider";
 import { Order } from "../admin/_components/Types";
 import { format } from "date-fns";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 export const OrderHistoryTabContent = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
 
-  const getOrders = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/food-order/${user?._id}`);
-      setOrders(response.data.foodOrders);
-    } catch (error) {
-      console.error("Хоолны захиалгуудыг харуулахад алдаа гарлаа", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (user?._id) {
-      getOrders();
-    }
+    const getOrders = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          setAuthToken(token);
+        }
+        const response = await api.get(`/food-order/${user?._id}`);
+        setOrders(response.data.foodOrders);
+      } catch (error) {
+        console.error("Хоолны захиалгуудыг харуулахад алдаа гарлаа", error);
+      }
+    };
+
+    if (user?._id) getOrders();
   }, [user]);
 
   return (
