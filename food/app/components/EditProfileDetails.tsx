@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { HashLoader } from "react-spinners";
 import { useAuth, User } from "@/app/_providers/AuthProvider";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 type EditProfileProps = {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,6 +41,10 @@ export const EditProfile = ({
     if (!user) {
       toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй");
       return;
+    }
+    const token = localStorage.getItem("token");
+    if (token) {
+      setAuthToken(token);
     }
     setLoading(true);
     try {

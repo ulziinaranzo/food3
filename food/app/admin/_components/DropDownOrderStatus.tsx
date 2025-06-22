@@ -34,7 +34,7 @@ type Props = {
 
 export const DropDownStatus = ({ orderId, status, onChange }: Props) => {
   const [loading, setLoading] = useState(false);
-  const { user, token } = useAuth();
+  const { user } = useAuth();
 
   const handleStatusChange = async (
     newStatus: "pending" | "delivered" | "cancelled"

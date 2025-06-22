@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { HashLoader } from "react-spinners";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 type FormData = {
   name: string;
@@ -23,10 +23,14 @@ export const AddCategory = ({ onClose }: AddFoodFormProps) => {
     formState: { errors },
   } = useForm<FormData>();
   const [loading, setLoading] = useState<boolean>(false);
-  const { user, token } = useAuth();
+  const { user } = useAuth();
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
+    const token = localStorage.getItem("token");
+    if (token) {
+      setAuthToken(token);
+    }
     try {
       await api.post(`/category`, {
         categoryName: data.name,

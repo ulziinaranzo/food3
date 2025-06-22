@@ -67,7 +67,7 @@ export const EditFoodForm = ({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
-  const { user, token } = useAuth();
+  const { user } = useAuth();
 
   const uploadImg = async (file: File) => {
     const formData = new FormData();

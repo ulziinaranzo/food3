@@ -6,7 +6,7 @@ import axios from "axios";
 import { HashLoader } from "react-spinners";
 import { toast } from "sonner";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 type AddFoodFormProps = {
   categoryName: string;
@@ -26,7 +26,7 @@ export const AddFoodForm = ({
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [deployedImg, setDeployedImg] = useState("");
-  const { user, token } = useAuth();
+  const { user } = useAuth();
 
   const uploadImage = async (file: File | undefined) => {
     if (!file) return;
@@ -60,6 +60,10 @@ export const AddFoodForm = ({
       return;
     }
     setLoading(true);
+    const token = localStorage.getItem("token");
+    if (token) {
+      setAuthToken(token);
+    }
 
     console.log(data);
 

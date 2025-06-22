@@ -13,7 +13,7 @@ import { OrderHistoryTabContent } from "./OrderHistoryTabContent";
 import { CartCard } from "./CartCard";
 import { useAuth } from "../_providers/AuthProvider";
 import { toast } from "sonner";
-import { api } from "@/axios";
+import { api, setAuthToken } from "@/axios";
 
 type OrderDetailProps = {
   open: boolean;
@@ -28,12 +28,16 @@ export type CartFood = {
 
 export const OrderDetail = ({ open, setOpen }: OrderDetailProps) => {
   const [cartItems, setCartItems] = useState<CartFood[]>([]);
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const cartData = localStorage.getItem("cart");
     if (cartData) {
       try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          setAuthToken(token);
+        }
         const parsedData: CartFood[] = JSON.parse(cartData);
         if (Array.isArray(parsedData)) {
           setCartItems(parsedData);

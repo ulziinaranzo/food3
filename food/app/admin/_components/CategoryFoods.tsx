@@ -41,7 +41,7 @@ const CategoryFoods = ({
 }: CategoryFoodsProps) => {
   const [foods, setFoods] = useState<Food[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const { user, token } = useAuth();
+  const { user } = useAuth();
 
   const getFoods = async () => {
     try {

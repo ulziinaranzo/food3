@@ -12,7 +12,7 @@ export default function Page() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [onClose, setOnClose] = useState<boolean>(false);
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
