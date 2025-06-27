@@ -12,8 +12,8 @@ import { authenticationMiddleware } from "../middlewares/authentication-middlewa
 
 const foodOrderRouter = Router();
 
-foodOrderRouter.get("/", authenticationMiddleware, getFoodOrdersController);
-foodOrderRouter.get("/:id", authenticationMiddleware, getFoodOrderController);
+foodOrderRouter.get("/",  getFoodOrdersController);
+foodOrderRouter.get("/:id",  getFoodOrderController);
 foodOrderRouter.post("/", createFoodOrderController);
 foodOrderRouter.put(
   "/:id",
