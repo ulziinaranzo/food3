@@ -14,7 +14,7 @@ const userRouter = Router();
 userRouter
   .post("/user", createUserController)
   .get("/user/:id", getUserController)
-  .put("/user/:id", authenticationMiddleware, updateUserController)
+  .put("/user/:id", updateUserController)
   .delete(
     "/user/:id",
     authenticationMiddleware,
