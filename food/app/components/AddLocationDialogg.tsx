@@ -30,17 +30,29 @@ export const AddLocationDialog = ({
       toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй.");
       return;
     }
+
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
       if (token) setAuthToken(token);
-      const res = await api.put(`/user/${user._id}`, { address: localAddress });
+
+      const res = await api.put(`/user/${user._id}`, {
+        address: localAddress,
+      });
+
       toast.success("Хаяг амжилттай хадгалагдлаа!");
       setUser(res.data.user);
       setOpen(false);
     } catch (err) {
       toast.error("Хаяг илгээхэд алдаа гарлаа");
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setLocalAddress(address);
+  }, [address]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -70,10 +82,10 @@ export const AddLocationDialog = ({
           </button>
           <button
             onClick={handleSubmit}
-            disabled={!user}
-            className="bg-black text-white px-4 py-2 rounded-full text-sm"
+            disabled={!user || loading}
+            className="bg-black text-white px-4 py-2 rounded-full text-sm flex items-center justify-center min-w-[80px]"
           >
-            {loading ? <HashLoader /> : "Оруулах"}
+            {loading ? <HashLoader size={20} color="#fff" /> : "Оруулах"}
           </button>
         </div>
       </DialogContent>

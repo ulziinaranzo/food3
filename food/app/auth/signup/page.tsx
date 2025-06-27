@@ -5,13 +5,7 @@ import { motion } from "framer-motion";
 import { Step } from "./_components/step";
 import { Step1 } from "./_components/step1";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { useRouter } from "next/navigation";
-
-export type FormData = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+import { FormData } from "./_components/Types";
 
 export default function Home() {
   const [step, setStep] = useState<number>(0);
@@ -23,7 +17,8 @@ export default function Home() {
     confirmPassword: "",
   });
 
-  const handlePrev = async () => setStep((prev) => prev - 1);
+  const handlePrev = () => setStep((prev) => prev - 1);
+
   const handleNext = async () => {
     if (step === 1) {
       console.log("🧪 formData:", formData);
@@ -31,11 +26,14 @@ export default function Home() {
         await signUp(formData.email, formData.password);
         console.log("✅ Бүртгэл амжилттай");
       } catch (error) {
-        console.error("Бүртгэхэд алдаа гарлаа", error);
+        console.error("❌ Бүртгэхэд алдаа гарлаа", error);
       }
     }
-
     setStep((prev) => prev + 1);
+  };
+
+  const handleFormDataChange = (newData: Partial<FormData>) => {
+    setFormData((prevData) => ({ ...prevData, ...newData }));
   };
 
   const handleAnimation = {
@@ -45,10 +43,6 @@ export default function Home() {
     transition: { duration: 0.5 },
   };
 
-  const handleFormDataChange = (newData: Partial<FormData>) => {
-    setFormData((prevData) => ({ ...prevData, ...newData }));
-  };
-  console.log("USERRr", formData);
   return (
     <motion.div
       key={step}
