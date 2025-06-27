@@ -26,7 +26,7 @@ export const AddLocationDialog = ({
   const { user, getUser, setUser } = useAuth(); // ✅ setUser нэмэгдсэн
 
   const handleSubmit = async () => {
-    if (!user || !(user._id || user.id)) {
+    if (!user || !user._id) {
       toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй.");
       return;
     }
@@ -36,7 +36,7 @@ export const AddLocationDialog = ({
       const token = localStorage.getItem("token");
       if (token) setAuthToken(token);
 
-      const res = await api.put(`/user/${user._id || user.id}`, {
+      const res = await api.put(`/user/${user._id}`, {
         address: localAddress,
       });
 

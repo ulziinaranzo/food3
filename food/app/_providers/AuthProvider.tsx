@@ -38,33 +38,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const getUser = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    setAuthToken(token);
-
-    try {
-      setLoading(true);
-      const { data } = await api.get<User>("/auth/me");
-      setUser(data);
-    } catch (error) {
-      console.error("Хэрэглэгчийн мэдээлэл авах алдаа:", error);
-      localStorage.removeItem("token");
-      setAuthToken(null);
-      setUser(undefined);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []);
-
   const signIn = async (email: string, password: string) => {
     try {
       const { data } = await api.post<{
@@ -112,6 +85,33 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       return undefined;
     }
   };
+
+  const getUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    setAuthToken(token);
+
+    try {
+      setLoading(true);
+      const { data } = await api.get<User>("/auth/me");
+      setUser(data);
+    } catch (error) {
+      console.error("Хэрэглэгчийн мэдээлэл авах алдаа:", error);
+      localStorage.removeItem("token");
+      setAuthToken(null);
+      setUser(undefined);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const signOut = () => {
     setIsLoggingOut(true);
