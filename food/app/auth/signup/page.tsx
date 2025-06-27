@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { Step } from "./_components/step";
 import { Step1 } from "./_components/step1";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { FormData } from "./_components/Types";
+import { FormData, EmailStepData, PasswordStepData } from "./_components/Types";
+import { toast } from "sonner";
 
 export default function Home() {
   const [step, setStep] = useState<number>(0);
@@ -19,21 +20,39 @@ export default function Home() {
 
   const handlePrev = () => setStep((prev) => prev - 1);
 
-  const handleNext = async () => {
-    if (step === 1) {
-      console.log("🧪 formData:", formData);
-      try {
-        await signUp(formData.email, formData.password);
-        console.log("✅ Бүртгэл амжилттай");
-      } catch (error) {
-        console.error("❌ Бүртгэхэд алдаа гарлаа", error);
-      }
-    }
-    setStep((prev) => prev + 1);
+  const handleNextEmail = (data: EmailStepData) => {
+    setFormData((prev) => ({ ...prev, email: data.email }));
+    setStep(1);
   };
 
-  const handleFormDataChange = (newData: Partial<FormData>) => {
-    setFormData((prevData) => ({ ...prevData, ...newData }));
+  const handleSubmitPassword = async (data: PasswordStepData) => {
+    const newFormData = { ...formData, ...data };
+    setFormData(newFormData);
+
+    try {
+      await signUp({
+        email: newFormData.email,
+        password: newFormData.password,
+        name: "Таны нэр",
+      });
+      setStep(2);
+    } catch (error) {
+      let errorMessage = "Алдаа гарлаа";
+
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        typeof (error as any).response?.data?.message === "string"
+      ) {
+        errorMessage = (error as any).response.data.message;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      toast.error(`Бүртгэхэд алдаа гарлаа: ${errorMessage}`);
+      console.error("❌ Бүртгэхэд алдаа гарлаа", error);
+    }
   };
 
   const handleAnimation = {
@@ -55,19 +74,22 @@ export default function Home() {
       {step === 0 && (
         <Step
           handlePrev={handlePrev}
-          handleNext={handleNext}
-          formData={formData}
-          onFormDataChange={handleFormDataChange}
+          handleNext={handleNextEmail}
+          defaultData={{ email: formData.email }}
         />
       )}
       {step === 1 && (
         <Step1
           handlePrev={handlePrev}
-          handleNext={handleNext}
-          formData={formData}
-          onFormDataChange={handleFormDataChange}
+          handleSubmitPassword={handleSubmitPassword}
+          defaultData={{
+            email: formData.email,
+            password: formData.password,
+            confirmPassword: formData.confirmPassword,
+          }}
         />
       )}
+      {step === 2 && <div>🎉 Бүртгэл амжилттай!</div>}
     </motion.div>
   );
 }

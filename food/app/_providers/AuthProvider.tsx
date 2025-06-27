@@ -1,120 +1,132 @@
 "use client";
-import { api, setAuthToken } from "@/axios";
-import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "sonner";
 
-type PropsWithChildren = {
-  children: React.ReactNode;
-};
+import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { PropsWithChildren } from "react";
+import { api, setAuthToken } from "@/axios";
 
 export type User = {
-  name: string;
+  _id: string;
+  name?: string;
   email: string;
-  image: string;
-  role: string;
+  image?: string;
+  role?: string;
   phoneNumber?: string;
   address?: string;
-  _id: string;
 };
 
 type AuthContextType = {
   user?: User;
+  loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+  signUp: (user: {
+    email: string;
+    password: string;
+    name?: string;
+  }) => Promise<{ data: any; status: number } | undefined>;
+  signOut: () => void;
+  getUser: () => Promise<void>;
+  setUser: React.Dispatch<React.SetStateAction<User | undefined>>; // ✅ нэмэгдсэн
 };
 
-const AuthContext = createContext({} as AuthContextType);
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
   const [user, setUser] = useState<User | undefined>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      const { data } = await api.post("/auth/signin", {
-        email,
-        password,
-      });
-
-      localStorage.setItem("token", data.token);
-      setUser(data.user);
-      toast.success("Амжилттай нэвтэрлээ");
-
-      if (data.user.role === "admin") {
-        router.push("/admin/foodmenu");
-      } else {
-        router.push("/");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Нэвтрэхэд алдаа гарлаа");
-    }
-  };
-
-  const signUp = async (email: string, password: string) => {
-    try {
-      const { data } = await api.post("/auth/signup", {
-        email,
-        password,
-      });
-
-      localStorage.setItem("token", data.token);
-      setUser(data.user);
-      toast.success("Амжилттай нэвтэрлээ");
-
-      if (data.user.role === "admin") {
-        router.push("/admin/foodmenu");
-      } else {
-        router.push("/");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Бүртгүүлэхэд алдаа гарлаа");
-    }
-  };
-
-  const signOut = async () => {
-    localStorage.removeItem("token");
-    setUser(undefined);
-    setAuthToken(null);
-    router.push("/login");
-  };
-
-  useEffect(() => {
-    const tokenFromStorage = localStorage.getItem("token");
-    if (!tokenFromStorage) {
+  const getUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
       setLoading(false);
       return;
     }
-    setAuthToken(tokenFromStorage);
 
-    const getUser = async () => {
-      const token = localStorage.getItem("token");
-      console.log("token", token);
-      if (!token) return;
-      setAuthToken(token);
-      try {
-        const { data } = await api.get("/auth/me");
-        console.log("irj bgaa hereglegch:", data);
+    setAuthToken(token);
 
-        setUser(data);
-      } catch (error) {
-        localStorage.removeItem("token");
-        console.error("Автомат нэвтрэхэд алдаа:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      setLoading(true);
+      const { data } = await api.get<User>("/auth/me");
+      setUser(data);
+    } catch (error) {
+      console.error("Хэрэглэгчийн мэдээлэл авах алдаа:", error);
+      localStorage.removeItem("token");
+      setAuthToken(null);
+      setUser(undefined);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getUser();
   }, []);
 
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data } = await api.post<{
+        token: string;
+        user: User;
+      }>("/auth/signin", { email, password });
+
+      localStorage.setItem("token", data.token);
+      setAuthToken(data.token);
+      setUser(data.user);
+
+      toast.success("Амжилттай нэвтэрлээ!");
+      if (data.user.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Нэвтрэхэд алдаа:", error);
+      toast.error("Нэвтрэхэд алдаа гарлаа");
+      throw error;
+    }
+  };
+
+  const signUp = async (newUser: {
+    email: string;
+    password: string;
+    name?: string;
+  }): Promise<{ data: any; status: number } | undefined> => {
+    try {
+      const response = await api.post("/auth/signup", newUser);
+      localStorage.setItem("token", response.data.token);
+      setAuthToken(response.data.token);
+      setUser(response.data.user);
+
+      toast.success("Амжилттай бүртгүүллээ!");
+      router.push("/");
+      return { data: response.data, status: response.status };
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        toast.error("Имэйл бүртгэлтэй байна");
+      } else {
+        toast.error("Бүртгэл амжилтгүй боллоо");
+      }
+      return undefined;
+    }
+  };
+
+  const signOut = () => {
+    setIsLoggingOut(true);
+    localStorage.removeItem("token");
+    setAuthToken(null);
+    setUser(undefined);
+    router.push("/login");
+    setIsLoggingOut(false);
+    toast.success("Системээс гарлаа");
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, signOut, setUser }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signUp, signOut, getUser, setUser }} // ✅ setUser дамжуулсан
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

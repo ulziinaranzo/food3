@@ -23,10 +23,10 @@ export const AddLocationDialog = ({
 }) => {
   const [localAddress, setLocalAddress] = useState(address);
   const [loading, setLoading] = useState<boolean>(false);
-  const { user, setUser } = useAuth();
+  const { user, getUser, setUser } = useAuth(); // ✅ setUser нэмэгдсэн
 
   const handleSubmit = async () => {
-    if (!user || !user._id) {
+    if (!user || !(user._id || user.id)) {
       toast.error("Хэрэглэгчийн мэдээлэл олдсонгүй.");
       return;
     }
@@ -36,12 +36,17 @@ export const AddLocationDialog = ({
       const token = localStorage.getItem("token");
       if (token) setAuthToken(token);
 
-      const res = await api.put(`/user/${user._id}`, {
+      const res = await api.put(`/user/${user._id || user.id}`, {
         address: localAddress,
       });
 
-      toast.success("Хаяг амжилттай хадгалагдлаа!");
+      // ✅ 1: setUser ашиглах (эсвэл)
       setUser(res.data.user);
+
+      // ✅ 2: эсвэл getUser() дуудах (илүү найдвартай)
+      // await getUser();
+
+      toast.success("Хаяг амжилттай хадгалагдлаа!");
       setOpen(false);
     } catch (err) {
       toast.error("Хаяг илгээхэд алдаа гарлаа");
