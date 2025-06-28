@@ -81,11 +81,6 @@ export const Step = ({
                   </div>
                 )}
               />
-              <div className="flex gap-[12px] mt-[24px] justify-start">
-                <div className="text-[16px] text-[#2563EB]">
-                  Кодоо мартсан уу?
-                </div>
-              </div>
               <Button type="submit" className="w-[416px] h-[36px]">
                 Let's Go
               </Button>

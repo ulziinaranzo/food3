@@ -24,7 +24,7 @@ type AuthContextType = {
     email: string;
     password: string;
     name?: string;
-  }) => Promise<{ data: any; status: number }>; // ✅ undefined хасах
+  }) => Promise<{ data: any; status: number }>;
   signOut: () => void;
   getUser: () => Promise<void>;
   setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
       toast.success("Амжилттай нэвтэрлээ!");
       if (data.user.role === "admin") {
-        router.push("/admin/dashboard");
+        router.push("/admin/foodmenu");
       } else {
         router.push("/");
       }
@@ -110,14 +110,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     localStorage.removeItem("token");
     setAuthToken(null);
     setUser(undefined);
-    router.push("/login");
+    router.push("/");
     setIsLoggingOut(false);
     toast.success("Системээс гарлаа");
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, signIn, signUp, signOut, getUser, setUser }} // ✅ setUser дамжуулсан
+      value={{ user, loading, signIn, signUp, signOut, getUser, setUser }}
     >
       {!loading && children}
     </AuthContext.Provider>
