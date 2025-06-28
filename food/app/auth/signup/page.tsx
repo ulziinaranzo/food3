@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Step } from "./_components/step";
-import { Step1 } from "./_components/step1";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { FormData, EmailStepData, PasswordStepData } from "./_components/Types";
 import { toast } from "sonner";
+import { Step } from "./_components/step";
+import { Step1 } from "./_components/step1";
 
 export default function Home() {
   const [step, setStep] = useState<number>(0);
@@ -30,27 +30,27 @@ export default function Home() {
     setFormData(newFormData);
 
     try {
-      await signUp({
+      const result = await signUp({
         email: newFormData.email,
         password: newFormData.password,
         name: "Таны нэр",
       });
-      setStep(2);
+      if (result) {
+        toast.success("Амжилттай бүртгүүллээ!");
+        setStep(2);
+      }
     } catch (error) {
-      let errorMessage = "Алдаа гарлаа";
-
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        typeof (error as any).response?.data?.message === "string"
-      ) {
-        errorMessage = (error as any).response.data.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
+      if (typeof error === "object" && error !== null && "response" in error) {
+        const responseError = error as any;
+        if (responseError?.response?.status === 409) {
+          toast.error("Имэйл бүртгэлтэй байна");
+        } else {
+          toast.error("Бүртгэл амжилтгүй боллоо");
+        }
+      } else {
+        toast.error("Алдаа гарлаа");
       }
 
-      toast.error(`Бүртгэхэд алдаа гарлаа: ${errorMessage}`);
       console.error("❌ Бүртгэхэд алдаа гарлаа", error);
     }
   };
@@ -89,7 +89,7 @@ export default function Home() {
           }}
         />
       )}
-      {step === 2 && <div>🎉 Бүртгэл амжилттай!</div>}
+      {step === 2}
     </motion.div>
   );
 }

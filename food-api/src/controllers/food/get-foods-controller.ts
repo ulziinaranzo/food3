@@ -6,7 +6,6 @@ export const getByCategoryAndFoodsController: RequestHandler = async (
   res
 ) => {
   const { categoryId } = req.query;
-  console.log("Selected Category ID:", categoryId);
 
   try {
     if (categoryId) {

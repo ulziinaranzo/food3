@@ -14,8 +14,8 @@ export type User = {
   role?: string;
   phoneNumber?: string;
   address?: string;
+  orderedItems?: any[];
 };
-
 type AuthContextType = {
   user?: User;
   loading: boolean;
@@ -24,12 +24,11 @@ type AuthContextType = {
     email: string;
     password: string;
     name?: string;
-  }) => Promise<{ data: any; status: number } | undefined>;
+  }) => Promise<{ data: any; status: number }>; // ✅ undefined хасах
   signOut: () => void;
   getUser: () => Promise<void>;
-  setUser: React.Dispatch<React.SetStateAction<User | undefined>>; // ✅ нэмэгдсэн
+  setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 };
-
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -66,28 +65,21 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     email: string;
     password: string;
     name?: string;
-  }): Promise<{ data: any; status: number } | undefined> => {
+  }): Promise<{ data: any; status: number }> => {
     try {
       const response = await api.post("/auth/signup", newUser);
       localStorage.setItem("token", response.data.token);
       setAuthToken(response.data.token);
       setUser(response.data.user);
-
-      toast.success("Амжилттай бүртгүүллээ!");
       router.push("/");
       return { data: response.data, status: response.status };
     } catch (error: any) {
-      if (error?.response?.status === 409) {
-        toast.error("Имэйл бүртгэлтэй байна");
-      } else {
-        toast.error("Бүртгэл амжилтгүй боллоо");
-      }
-      return undefined;
+      throw error;
     }
   };
-
   const getUser = async () => {
     const token = localStorage.getItem("token");
+
     if (!token) {
       setLoading(false);
       return;
@@ -100,7 +92,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       const { data } = await api.get<User>("/auth/me");
       setUser(data);
     } catch (error) {
-      console.error("Хэрэглэгчийн мэдээлэл авах алдаа:", error);
+      console.error("GetUser error:", error);
       localStorage.removeItem("token");
       setAuthToken(null);
       setUser(undefined);

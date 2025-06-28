@@ -39,13 +39,7 @@ export const AddLocationDialog = ({
       const res = await api.put(`/user/${user._id}`, {
         address: localAddress,
       });
-
-      // ✅ 1: setUser ашиглах (эсвэл)
       setUser(res.data.user);
-
-      // ✅ 2: эсвэл getUser() дуудах (илүү найдвартай)
-      // await getUser();
-
       toast.success("Хаяг амжилттай хадгалагдлаа!");
       setOpen(false);
     } catch (err) {

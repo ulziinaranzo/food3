@@ -12,7 +12,7 @@ export const signUpController: RequestHandler = async (req, res) => {
     const existingUser = await userModel.findOne({ email });
 
     if (existingUser) {
-      res.status(400).json({ message: "Ийм имэйлтэй хэрэглэгч байна" });
+      res.status(409).json({ message: "Ийм имэйлтэй хэрэглэгч байна" }); // ✅ 409 status code
       return;
     }
 
@@ -25,6 +25,7 @@ export const signUpController: RequestHandler = async (req, res) => {
       updatedAt: new Date(),
     });
 
+    // ✅ password-г хасаж, бүх талбарыг буцаах
     const { password: userPassword, ...userWithoutPassword } =
       newUser.toObject();
 
@@ -37,13 +38,10 @@ export const signUpController: RequestHandler = async (req, res) => {
     res.status(200).json({
       message: "Бүртгэл амжилттай, нэвтэрсэн!",
       token,
-      user: {
-        id: newUser._id,
-        email: newUser.email,
-      },
+      user: userWithoutPassword,
     });
   } catch (error) {
-    console.log("Signup error", error);
+    console.error("Signup error", error);
     res.status(500).json({ message: "Сервер дээр алдаа гарлаа", error });
   }
 };

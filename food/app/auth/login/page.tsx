@@ -1,22 +1,12 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Step } from "./_components/step";
 import { Step1 } from "./_components/step1";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-
-export type FormData = {
-  email: string;
-  password: string;
-};
-
-type StepProps = {
-  handlePrev: () => void;
-  handleNext: () => void;
-};
+import { FormData } from "./_components/Types";
 
 export default function Home() {
   const [step, setStep] = useState<number>(0);
@@ -27,19 +17,23 @@ export default function Home() {
     password: "",
   });
 
-  const handlePrev = async () => setStep((prev) => prev - 1);
+  const handlePrev = () => setStep((prev) => prev - 1);
+
   const handleNext = async () => {
     if (step === 1) {
       try {
         await signIn(formData.email, formData.password);
-        console.log("Нэвтрэх гэж буй:", formData.email, formData.password);
-        console.log("Амжилттай нэвтэрлээ");
-        toast.success("Амжилттай нэвтэрлээ");
       } catch (error) {
-        console.error("Нэвтрэхэд алдаа гарлаа");
+        console.error("Нэвтрэхэд алдаа гарлаа", error);
+        return;
       }
+    } else {
+      setStep((prev) => prev + 1);
     }
-    setStep((prev) => prev + 1);
+  };
+
+  const handleFormDataChange = (newData: Partial<FormData>) => {
+    setFormData((prevData) => ({ ...prevData, ...newData }));
   };
 
   const handleAnimation = {
@@ -47,9 +41,6 @@ export default function Home() {
     animate: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: 100 },
     transition: { duration: 0.5 },
-  };
-  const handleFormDataChange = (newData: Partial<FormData>) => {
-    setFormData((prevData) => ({ ...prevData, ...newData }));
   };
 
   return (

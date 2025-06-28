@@ -6,10 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-
-type FormData = {
-  email: string;
-};
+import { FormData, EmailFormData } from "./Types";
 
 type StepProps = {
   handlePrev: () => void;
@@ -37,16 +34,15 @@ export const Step = ({
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<EmailFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: formData.email || "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: EmailFormData) {
     onFormDataChange({ email: values.email });
-
     handleNext();
   }
 

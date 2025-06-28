@@ -35,10 +35,7 @@ export const AddFoodToCart = ({ open, onClose, food }: AddFoodToCartProps) => {
 
     try {
       const cartData = localStorage.getItem("cart");
-      console.log("cart", cartData);
-
       let oldCart: CartItem[] = [];
-
       if (cartData) {
         try {
           oldCart = JSON.parse(cartData);
@@ -71,9 +68,6 @@ export const AddFoodToCart = ({ open, onClose, food }: AddFoodToCartProps) => {
       }
 
       localStorage.setItem("cart", JSON.stringify(newCart));
-      console.log("Successfully added to cart:", newCart);
-
-      // Reset quantity for next time
       setQuantity(1);
       onClose();
     } catch (error) {

@@ -8,10 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { FormData, PasswordFormData } from "./Types";
 
-type FormData = {
-  password: string;
-};
 type StepProps = {
   handlePrev: () => void;
   handleNext: () => void;
@@ -37,17 +35,17 @@ export const Step1 = ({
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<PasswordFormData>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
     defaultValues: {
-      password: formData.password,
+      password: formData.password || "",
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    onFormDataChange(data);
-    console.log(formData.password);
-    handleNext();
+  const onSubmit = async (data: PasswordFormData) => {
+    onFormDataChange({ password: data.password });
+    await handleNext();
   };
 
   return (
@@ -61,7 +59,7 @@ export const Step1 = ({
               onClick={handlePrev}
             />
             <div className="text-black text-[24px] font-[600] mt-[24px]">
-              Нэвтрэх{" "}
+              Нэвтрэх
             </div>
             <div className="text-[16px] text-[#71717A] font-[400] mb-[24px]">
               Нэвтрээд хүссэн хоолоо захиалаарай.
@@ -91,7 +89,7 @@ export const Step1 = ({
                 />
                 <Label htmlFor="showPassword">Show password</Label>
               </div>
-              <div className="flex gap-[12px] mt-[24px] justify-start ">
+              <div className="flex gap-[12px] mt-[24px] justify-start">
                 <div className="text-[16px] text-[#2563EB]">
                   Кодоо мартсан уу?
                 </div>

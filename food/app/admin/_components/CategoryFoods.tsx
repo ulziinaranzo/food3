@@ -58,7 +58,6 @@ const CategoryFoods = ({
     try {
       setFoods((prevFoods) => prevFoods.filter((food) => food._id !== _id));
       await api.delete(`food/${_id}`);
-      console.log("sdf");
       toast.success("Хоол амжилттай устлаа");
       onClose(true);
       getFoods();

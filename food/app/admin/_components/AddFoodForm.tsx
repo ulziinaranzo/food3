@@ -47,7 +47,6 @@ export const AddFoodForm = ({
 
   const handleUpload = async (file: File) => {
     const uploadedUrl = await uploadImage(file);
-    console.log(uploadedUrl);
 
     if (uploadedUrl) {
       setDeployedImg(uploadedUrl);
