@@ -65,7 +65,7 @@ export default function Home() {
   const totalPages = Math.ceil((filteredOrders?.length || 0) / ordersPerPage);
 
   return (
-    <div className="flex w-screen h-screen">
+    <div className="flex w-full h-screen">
       <div className="flex flex-col pl-[24px] pt-[24px] pr-[40px] pb-[52px] bg-[#E4E4E7] w-full gap-[24px]">
         <div className="flex justify-end">
           <AvatarBadge />

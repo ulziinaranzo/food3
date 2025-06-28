@@ -59,7 +59,7 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="flex h-screen w-[1440px] mx-auto overflow-hidden">
       <aside className="flex flex-col bg-white h-full w-[220px] pt-[36px] p-[20px] justify-between">
         <div className="flex flex-col gap-[40px]">
           <Link href={"/"}>
