@@ -35,7 +35,7 @@ export const AddFoodForm = ({
     formData.append("upload_preset", UPLOAD_PRESET);
     try {
       const response = await axios.post(
-        `http://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
         formData
       );
       return response.data.url;
