@@ -24,8 +24,8 @@ import { DialogClose } from "@/components/ui/dialog";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { api, setAuthToken } from "@/axios";
 
-const UPLOAD_PRESET = "ml_default";
-const CLOUD_NAME = "dxhmgs7wt";
+const UPLOAD_PRESET = "food-delivery";
+const CLOUD_NAME = "dfjv83cxe";
 
 export type EditFoodFormProps = {
   onClose: () => void;

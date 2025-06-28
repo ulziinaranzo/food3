@@ -10,8 +10,8 @@ type EditProfileProps = {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   updateLocalUser: (value: User) => void;
 };
-const UPLOAD_PRESET = "ml_default";
-const CLOUD_NAME = "dxhmgs7wt";
+const UPLOAD_PRESET = "food-delivery";
+const CLOUD_NAME = "dfjv83cxe";
 export const EditProfile = ({
   setIsEditing,
   updateLocalUser,
